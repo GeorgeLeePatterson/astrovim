@@ -32,9 +32,6 @@ return {
         "stylua",
       })
     end,
-    handlers = {
-      taplo = function() end,
-    },
   },
   {
     "jay-babu/mason-nvim-dap.nvim",

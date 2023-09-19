@@ -84,5 +84,10 @@ return {
     --     ["~/%.config/foo/.*"] = "fooscript",
     --   },
     -- }
+
+    -- vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(require("noise.lsp.hover").on_hover, { border = "rounded" })
+    -- vim.lsp.handlers["textDocument/signatureHelp"] =
+    --   vim.lsp.with(require "noice.lsp.signature_help", { border = "rounded" })
+    vim.opt.termguicolors = true
   end,
 }

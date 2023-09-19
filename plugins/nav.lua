@@ -2,16 +2,17 @@ return {
   {
     "SmiteshP/nvim-navic",
     dependencies = {
-      "neovim/nvim-lspconfig"}
+      "neovim/nvim-lspconfig",
+    },
   },
   {
     "SmiteshP/nvim-navbuddy",
     dependencies = {
-        "neovim/nvim-lspconfig",
-        "SmiteshP/nvim-navic",
-        "MunifTanjim/nui.nvim",
-        "numToStr/Comment.nvim",        -- Optional
-        "nvim-telescope/telescope.nvim" -- Optional
-    }
-  }
+      "neovim/nvim-lspconfig",
+      "SmiteshP/nvim-navic",
+      "MunifTanjim/nui.nvim",
+      "numToStr/Comment.nvim", -- Optional
+      "nvim-telescope/telescope.nvim", -- Optional
+    },
+  },
 }

@@ -1,23 +1,28 @@
 return {
-  { "rcarriga/nvim-notify", init = false, config = true },
+  "rcarriga/nvim-notify",
   {
     "folke/noice.nvim",
-    event = "VeryLazy",
-    opts = {
-      cmdline = { view = "cmdline" },
-      messages = { view_search = false },
-      lsp = {
-        progress = { enabled = false },
-        hover = { enabled = false },
-        signature = { enabled = false },
-      },
-      routes = {
-        { filter = { event = "msg_show", min_height = 20 }, view = "messages" }, -- send long messages to split
-        { filter = { event = "msg_show", find = "%d+L,%s%d+B" }, opts = { skip = true } }, -- skip save notifications
-        { filter = { event = "msg_show", find = "^%d+ more lines$" }, opts = { skip = true } }, -- skip paste notifications
-        { filter = { event = "msg_show", find = "^%d+ fewer lines$" }, opts = { skip = true } }, -- skip delete notifications
-        { filter = { event = "msg_show", find = "^%d+ lines yanked$" }, opts = { skip = true } }, -- skip yank notifications
-      },
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+      "rcarriga/nvim-notify",
     },
+    event = "VeryLazy",
+    config = function()
+      require("noice").setup {
+        lsp = {
+          hover = { enabled = true },
+          signature = { enabled = true },
+          -- override markdown rendering so that cmp and other plugins use Treesitter
+          override = {
+            ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+            ["vim.lsp.util.stylize_markdown"] = true,
+            ["cmp.entry.get_documentation"] = true,
+          },
+        },
+        presets = {
+          bottom_search = false,
+        },
+      }
+    end,
   },
 }

@@ -6,7 +6,7 @@ return {
       server.settings["rust-analyzer"] = {
         standalone = true,
         checkOnSave = {
-          command = "",
+          command = "clippy",
         },
       }
       return { server = server }

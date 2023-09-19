@@ -1,19 +1,11 @@
 return {
   {
-    "nvim-telescope/telescope-file-browser.nvim",
-    dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" },
-  },
-  {
     "nvim-lua/plenary.nvim",
-  },
-  {
-    "nvim-lua/popup.nvim",
   },
   {
     "jvgrootveld/telescope-zoxide",
     dependencies = {
       "nvim-lua/plenary.nvim",
-      "nvim-lua/popup.nvim",
     },
   },
   {
