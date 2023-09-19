@@ -30,7 +30,8 @@ return {
             "target/debug/*",
             "target/release/*",
             "venv",
-            ".env",
+            ".env/*",
+            "env/*",
             ".cache/*",
             "vendor/*",
             "%.lock",
@@ -117,6 +118,8 @@ return {
         },
         extensions = {
           file_browser = {
+            hijack_netrw = true,
+            prompt_path = true,
             hidden = { file_browser = true, folder_browser = true },
             mappings = {
               i = {
