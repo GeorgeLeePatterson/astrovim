@@ -3,6 +3,7 @@ return {
   "jay-babu/project.nvim",
   "jvgrootveld/telescope-zoxide",
   "rcarriga/nvim-notify",
+  "nvim-lua/plenary.nvim",
   {
     "nvim-telescope/telescope.nvim",
     dependencies = {
@@ -14,7 +15,20 @@ return {
         "jay-babu/project.nvim",
         name = "project_nvim",
         event = "VeryLazy",
-        opts = { ignore_lsp = { "lua_ls" } },
+        opts = {
+          patterns = {
+            ".git",
+            "_darcs",
+            ".hg",
+            ".bzr",
+            ".svn",
+            "Makefile",
+            "package.json",
+            "pyproject.toml",
+            "Cargo.toml",
+          },
+          ignore_lsp = { "lua_ls" },
+        },
       },
       "jvgrootveld/telescope-zoxide",
     },
@@ -120,7 +134,9 @@ return {
           file_browser = {
             hijack_netrw = true,
             prompt_path = true,
-            hidden = { file_browser = true, folder_browser = true },
+            grouped = true,
+            files = false,
+            hidden = true,
             mappings = {
               i = {
                 ["<C-z>"] = fb_actions.toggle_hidden,
@@ -138,6 +154,9 @@ return {
                 ["<C-f>"] = lga_actions.quote_prompt { postfix = " --iglob " },
               },
             },
+          },
+          zoxide = {
+            prompt_title = "[ Let's go ]",
           },
         },
         pickers = {

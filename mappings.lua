@@ -18,6 +18,7 @@ return {
       desc = "Previous buffer",
     },
     ["<leader>fF"] = { ":Telescope file_browser<CR>", desc = "Open File Browser" },
+    ["<leader>fz"] = { ":Telescope zoxide list<CR>", desc = "Open Zoxide List" },
 
     -- mappings seen under group name "Buffer"
     ["<leader>bD"] = {
@@ -31,9 +32,15 @@ return {
     -- tables with the `name` key will be registered with which-key if it's installed
     -- this is useful for naming menus
     ["<leader>b"] = { name = "Buffers" },
+
+    --
+    -- ADDITIONAL COMMANDS
+    --
+
     -- quick save
     ["<C-s>"] = { ":w!<cr>", desc = "Save File" }, -- change description but the same command
 
+    -- open dashboard after closing all buffers
     ["<leader>c"] = {
       function()
         local bufs = vim.fn.getbufinfo { buflisted = true }

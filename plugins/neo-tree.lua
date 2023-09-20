@@ -1,5 +1,6 @@
 return {
   "nvim-neo-tree/neo-tree.nvim",
+  lazy = false,
   dependencies = {
     "nvim-lua/plenary.nvim",
     "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
@@ -8,7 +9,6 @@ return {
       -- only needed if you want to use the commands with "_with_window_picker" suffix
       "s1n7ax/nvim-window-picker",
       event = "VeryLazy",
-      version = "2.*",
       config = function()
         require("window-picker").setup {
           autoselect_one = true,
@@ -27,5 +27,8 @@ return {
         }
       end,
     },
+  },
+  opts = {
+    open_files_do_not_replace_types = { "terminal", "trouble", "qf", "neo-tree" },
   },
 }

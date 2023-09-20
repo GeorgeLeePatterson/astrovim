@@ -1,11 +1,10 @@
 return {
+  { "junegunn/fzf.vim", lazy = false },
   {
-    "nvim-lua/plenary.nvim",
-  },
-  {
-    "jvgrootveld/telescope-zoxide",
+    "nanotee/zoxide.vim",
+    event = "VeryLazy",
     dependencies = {
-      "nvim-lua/plenary.nvim",
+      "junegunn/fzf.vim",
     },
   },
   {
@@ -39,6 +38,37 @@ return {
       { "sn", desc = "Update `MiniSurround.config.n_lines`" },
     },
     opts = { n_lines = 200 },
+  },
+  {
+    "hrsh7th/nvim-cmp",
+    keys = { ":", "/", "?" },
+    dependencies = {
+      "hrsh7th/cmp-cmdline",
+    },
+    config = function(_, opts)
+      local cmp = require "cmp"
+      cmp.setup(opts)
+      -- configure `cmp-cmdline` as described in their repo: https://github.com/hrsh7th/cmp-cmdline#setup
+      cmp.setup.cmdline("/", {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = {
+          { name = "buffer" },
+        },
+      })
+      cmp.setup.cmdline(":", {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = cmp.config.sources({
+          { name = "path" },
+        }, {
+          {
+            name = "cmdline",
+            option = {
+              ignore_cmds = { "Man", "!" },
+            },
+          },
+        }),
+      })
+    end,
   },
   -- You can also add new plugins here as well:
   -- Add plugins, the lazy syntax

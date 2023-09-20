@@ -27,6 +27,17 @@ return {
   },
 
   lsp = {
+    config = {
+      rust_analyzer = {
+        settings = {
+          ["rust-analyzer"] = {
+            checkOnSave = {
+              command = "clippy",
+            },
+          },
+        },
+      },
+    },
     -- customize lsp formatting options
     formatting = {
       -- control auto formatting on save
@@ -89,6 +100,7 @@ return {
     -- vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(require("noise.lsp.hover").on_hover, { border = "rounded" })
     -- vim.lsp.handlers["textDocument/signatureHelp"] =
     --   vim.lsp.with(require "noice.lsp.signature_help", { border = "rounded" })
+    vim.opt.rtp:prepend "/opt/homebrew/bin"
     vim.opt.termguicolors = true
   end,
 }
