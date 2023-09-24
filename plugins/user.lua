@@ -39,45 +39,4 @@ return {
     },
     opts = { n_lines = 200 },
   },
-  {
-    "hrsh7th/nvim-cmp",
-    keys = { ":", "/", "?" },
-    dependencies = {
-      "hrsh7th/cmp-cmdline",
-    },
-    config = function(_, opts)
-      local cmp = require "cmp"
-      cmp.setup(opts)
-      -- configure `cmp-cmdline` as described in their repo: https://github.com/hrsh7th/cmp-cmdline#setup
-      cmp.setup.cmdline("/", {
-        mapping = cmp.mapping.preset.cmdline(),
-        sources = {
-          { name = "buffer" },
-        },
-      })
-      cmp.setup.cmdline(":", {
-        mapping = cmp.mapping.preset.cmdline(),
-        sources = cmp.config.sources({
-          { name = "path" },
-        }, {
-          {
-            name = "cmdline",
-            option = {
-              ignore_cmds = { "Man", "!" },
-            },
-          },
-        }),
-      })
-    end,
-  },
-  -- You can also add new plugins here as well:
-  -- Add plugins, the lazy syntax
-  -- "andweeb/presence.nvim",
-  -- {
-  --   "ray-x/lsp_signature.nvim",
-  --   event = "BufRead",
-  --   config = function()
-  --     require("lsp_signature").setup()
-  --   end,
-  -- },
 }

@@ -10,8 +10,24 @@ return {
     config = function()
       require("noice").setup {
         lsp = {
-          hover = { enabled = true },
-          signature = { enabled = true },
+          hover = {
+            enabled = true,
+            opts = {
+              replace = true,
+              render = "plain",
+              format = { "kind", "abbr", "menu" },
+              win_options = { concealcursor = "n", conceallevel = 3 },
+            },
+          },
+          signature = {
+            enabled = true,
+            opts = {
+              replace = true,
+              render = "plain",
+              format = { "kind", "abbr", "menu" },
+              win_options = { concealcursor = "n", conceallevel = 3 },
+            },
+          },
           -- override markdown rendering so that cmp and other plugins use Treesitter
           override = {
             ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
@@ -22,7 +38,7 @@ return {
         views = {
           cmdline_popup = {
             position = {
-              row = 5,
+              row = "50%",
               col = "50%",
             },
             size = {
@@ -47,7 +63,10 @@ return {
               padding = { 0, 1 },
             },
             win_options = {
-              winhighlight = { Normal = "Normal", FloatBorder = "DiagnosticInfo" },
+              winhighlight = {
+                Normal = "Normal",
+                FloatBorder = "DiagnosticInfo",
+              },
             },
           },
         },
@@ -55,7 +74,7 @@ return {
           bottom_search = false,
           command_palette = true,
           inc_rename = false,
-          lsp_doc_border = false,
+          lsp_doc_border = true,
         },
       }
     end,

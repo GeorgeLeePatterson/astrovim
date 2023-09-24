@@ -11,6 +11,7 @@ return {
       "nvim-telescope/telescope-live-grep-args.nvim",
       "nvim-telescope/telescope-hop.nvim",
       "nvim-telescope/telescope-file-browser.nvim",
+      { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
       {
         "jay-babu/project.nvim",
         name = "project_nvim",
@@ -178,10 +179,9 @@ return {
         },
       })
     end,
-    config = function(...)
-      require "plugins.configs.telescope"(...)
+    config = function(plugin, opts)
+      require "plugins.configs.telescope"(plugin, opts)
       local telescope = require "telescope"
-      telescope.load_extension "fzf"
       telescope.load_extension "live_grep_args"
       telescope.load_extension "file_browser"
       telescope.load_extension "projects"

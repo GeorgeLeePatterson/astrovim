@@ -1,11 +1,12 @@
 -- set vim options here (vim.<first_key>.<second_key> = value)
 return {
   opt = {
-    -- set to true or false etc.
-    relativenumber = true, -- sets vim.opt.relativenumber
+    guifont = { "VictorMono Nerd Font", ":h14" },
     number = true, -- sets vim.opt.number
+    relativenumber = true, -- sets vim.opt.relativenumber
     spell = false, -- sets vim.opt.spell
     signcolumn = "auto", -- sets vim.opt.signcolumn to auto
+    updatetime = 200,
     wrap = false, -- sets vim.opt.wrap
   },
   g = {

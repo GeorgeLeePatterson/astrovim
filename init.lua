@@ -1,3 +1,7 @@
+local user_config = require "user.config"
+-- Lsp configurations
+local rust_analyzer_settings = require "user.lsp.config.rust"
+
 return {
   -- Configure AstroNvim updates
   updater = {
@@ -18,25 +22,23 @@ return {
   },
 
   -- Set colorscheme to use
-  colorscheme = "monokai-pro",
+  colorscheme = user_config.defaults.theme.dark,
 
   -- Diagnostics configuration (for vim.diagnostics.config({...})) when diagnostics are on
   diagnostics = {
-    virtual_text = true,
+    virtual_text = false,
     underline = true,
+    -- float = {
+    --   show_header = true,
+    --   source = "if_many",
+    --   border = "rounded",
+    --   focusable = false,
+    -- },
   },
 
   lsp = {
     config = {
-      rust_analyzer = {
-        settings = {
-          ["rust-analyzer"] = {
-            checkOnSave = {
-              command = "clippy",
-            },
-          },
-        },
-      },
+      rust_analyzer = rust_analyzer_settings.config,
     },
     -- customize lsp formatting options
     formatting = {
@@ -59,13 +61,12 @@ return {
       --   return true
       -- end
     },
-    skip_setup = { "rust_analyzer" },
     -- enable servers that you already have installed without mason
     servers = {
       -- "pyright"
     },
     setup_handers = {
-      rust_analyzer = function(_, opts) require("rust-tools").setup { server = opts } end,
+      rust_analyzer = rust_analyzer_settings.setup_handlers,
     },
   },
 
@@ -97,9 +98,6 @@ return {
     --   },
     -- }
 
-    -- vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(require("noise.lsp.hover").on_hover, { border = "rounded" })
-    -- vim.lsp.handlers["textDocument/signatureHelp"] =
-    --   vim.lsp.with(require "noice.lsp.signature_help", { border = "rounded" })
     vim.opt.rtp:prepend "/opt/homebrew/bin"
     vim.opt.termguicolors = true
   end,
