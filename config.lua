@@ -6,6 +6,7 @@ return {
     },
     background = "dark",
     background_toggle = false,
+    zen = false,
   },
   bufferline = {
     options = {

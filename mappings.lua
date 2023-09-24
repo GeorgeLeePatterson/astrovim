@@ -117,12 +117,23 @@ local maps = {
   },
 }
 
--- Hook up Devdocs rust
+-- ZenMode
+maps.n["zZ"] = {
+  function() require("zen-mode").toggle() end,
+  desc = "Zen Mode",
+}
+-- Devdocs rust
 maps.n["<leader>f?"] = {
   function()
     if is_available "nvim-devdocs" then vim.cmd [[DevdocsOpenFloat rust]] end
   end,
   desc = "Open Rust docs",
+}
+
+-- Git blame
+maps.n["<leader>gi"] = {
+  function() require("blame").toggle "virtual" end,
+  desc = "Git blame inline",
 }
 
 -- Map buffer view to flubuf
