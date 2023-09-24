@@ -1,3 +1,11 @@
+local get_hlgroup = require("astronvim.utils").get_hlgroup
+-- get highlights from highlight groups
+local normal = get_hlgroup "Pmenu"
+local fg, bg = normal.fg, normal.bg
+local bg_alt = get_hlgroup("Visual").bg
+local green = get_hlgroup("String").fg
+local red = get_hlgroup("Error").fg
+
 return { -- this table overrides highlights in all themes
   -- nvim-cmp menu overrides
   PmenuSel = { bg = "#282C34", fg = "NONE" },
@@ -45,4 +53,18 @@ return { -- this table overrides highlights in all themes
   CmpItemKindInterface = { fg = "#58B5A8" },
   CmpItemKindColor = { fg = "#58B5A8" },
   CmpItemKindTypeParameter = { fg = "#58B5A8" },
+
+  -- Telescope overrides
+  TelescopeBorder = { fg = "#3774B4", bg = "None" }, -- { fg = bg_alt, bg = bg },
+  -- TelescopeNormal = { bg = bg },
+  TelescopePreviewBorder = { fg = bg, bg = bg },
+  TelescopePreviewNormal = { bg = bg },
+  TelescopePreviewTitle = { fg = bg, bg = green },
+  TelescopePromptBorder = { fg = bg_alt, bg = bg_alt },
+  TelescopePromptNormal = { fg = fg, bg = bg_alt },
+  TelescopePromptPrefix = { fg = red, bg = bg_alt },
+  TelescopePromptTitle = { bg = "#3774B4", fg = "#FFFFFF" }, -- { fg = bg },
+  TelescopeResultsBorder = { fg = bg, bg = bg },
+  TelescopeResultsNormal = { bg = bg },
+  TelescopeResultsTitle = { fg = bg, bg = bg },
 }

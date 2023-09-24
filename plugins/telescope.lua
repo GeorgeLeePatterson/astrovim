@@ -44,9 +44,8 @@ return {
           file_ignore_patterns = {
             "target/debug/*",
             "target/release/*",
-            "venv",
+            "venv/",
             ".env/*",
-            "env/*",
             ".cache/*",
             "vendor/*",
             "%.lock",
@@ -98,9 +97,15 @@ return {
             "%.epub",
             "%.flac",
             "%.tar.gz",
+            -- Specific to home folder
+            "~/Downloads/",
+            "~/Library/",
+            "~/Applications/",
+            "~/.cargo",
           },
           results_title = "",
           selection_caret = "  ",
+          winblend = 5,
           layout_config = {
             width = 0.90,
             height = 0.85,
