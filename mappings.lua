@@ -117,6 +117,14 @@ local maps = {
   },
 }
 
+-- Hook up Devdocs rust
+maps.n["<leader>f?"] = {
+  function()
+    if is_available "nvim-devdocs" then vim.cmd [[DevdocsOpenFloat rust]] end
+  end,
+  desc = "Open Rust docs",
+}
+
 -- Map buffer view to flubuf
 if is_available "flybuf.nvim" then
   maps.n["<leader>bb"] = { function() vim.cmd [[FlyBuf]] end, desc = "View Buffers" }

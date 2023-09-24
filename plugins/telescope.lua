@@ -109,9 +109,10 @@ return {
           layout_config = {
             width = 0.90,
             height = 0.85,
-            preview_cutoff = 120,
+            preview_cutoff = 5,
             horizontal = {
               preview_width = 0.6,
+              prompt_position = "bottom",
             },
             vertical = {
               width = 0.9,
@@ -167,6 +168,7 @@ return {
         },
         pickers = {
           find_files = {
+            theme = "ivy",
             hidden = true,
             find_command = function(cfg)
               local find_command = { "rg", "--files" }
@@ -180,6 +182,9 @@ return {
               i = { ["<c-d>"] = actions.delete_buffer },
               n = { ["d"] = actions.delete_buffer },
             },
+          },
+          zoxide = {
+            theme = "ivy",
           },
         },
       })
