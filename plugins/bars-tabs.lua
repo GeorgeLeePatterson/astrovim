@@ -10,6 +10,17 @@ return {
     event = "VeryLazy",
   },
   {
+    "SmiteshP/nvim-navic",
+    dependencies = {
+      "neovim/nvim-lspconfig",
+    },
+    event = "VeryLazy",
+    opts = {
+      highlight = true,
+      click = true,
+    },
+  },
+  {
     "utilyre/barbecue.nvim",
     name = "barbecue",
     version = "*",
@@ -17,10 +28,6 @@ return {
     dependencies = {
       {
         "SmiteshP/nvim-navic",
-        opts = {
-          highlight = true,
-          click = true,
-        },
       },
       {
         "SmiteshP/nvim-navbuddy",

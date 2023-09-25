@@ -54,6 +54,7 @@ return {
   },
   { "marko-cerovac/material.nvim" },
   { "dasupradyumna/midnight.nvim", lazy = false },
+  { "akinsho/horizon.nvim", version = "*", priority = 1000 },
   {
     "projekt0n/github-nvim-theme",
     lazy = false,
@@ -75,8 +76,8 @@ return {
     enabled = user_config.defaults.background_toggle,
     config = function(_, opts)
       opts.update_interval = 1000
-      opts.set_dark_mode = function() user_utils.set_background_and_theme("dark", "github_dark") end
-      opts.set_light_mode = function() user_utils.set_background_and_theme("light", "github_light") end
+      opts.set_dark_mode = function() user_utils.set_background_and_theme("dark", user_config.defaults.theme.dark) end
+      opts.set_light_mode = function() user_utils.set_background_and_theme("light", user_config.defaults.theme.light) end
       require("auto-dark-mode").setup(opts)
     end,
   },

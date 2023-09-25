@@ -1,6 +1,17 @@
 local user_config = require "user.config"
+local user_utils = require "user.utils"
 -- Lsp configurations
 local rust_analyzer_settings = require "user.lsp.config.rust"
+
+-- -- Startup scripts
+-- local custom_highlights = ((user_config or {}).custom_highlights or {})
+-- for section_name, section in pairs(custom_highlights) do
+--   vim.notify("Setting highlights for group " .. section_name)
+--   for name, opts in pairs(section or {}) do
+--     vim.notify("Setting hl " .. name)
+--     if name ~= nil and opts ~= nil then user_utils.set_hl(name, opts, {}) end
+--   end
+-- end
 
 return {
   -- Configure AstroNvim updates
@@ -22,7 +33,7 @@ return {
   },
 
   -- Set colorscheme to use
-  colorscheme = user_config.defaults.theme.dark,
+  colorscheme = user_utils.random_gen(user_config.favorite_themes),
 
   -- Diagnostics configuration (for vim.diagnostics.config({...})) when diagnostics are on
   diagnostics = {
@@ -80,7 +91,6 @@ return {
       },
     },
   },
-
   -- This function is run last and is a good place to configuring
   -- augroups/autocommands and custom filetypes also this just pure lua so
   -- anything that doesn't fit in the normal config locations above can go here

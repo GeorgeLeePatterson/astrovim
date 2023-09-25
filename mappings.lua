@@ -73,6 +73,7 @@ local maps = {
     ["<leader>m4"] = { function() vim.cmd [[colorscheme oxocarbon]] end, desc = "Oxocarbon" },
     ["<leader>m5"] = { function() vim.cmd [[colorscheme Tokyodark]] end, desc = "TokyoDark" },
     ["<leader>m6"] = { function() vim.cmd [[colorscheme gruvbox]] end, desc = "Gruvbox" },
+    ["<leader>m7"] = { function() vim.cmd [[colorscheme horizon]] end, desc = "Horizon" },
     -- Monokai Variations
     ["<leader>ma"] = { name = "Monokai" },
     ["<leader>ma0"] = { function() vim.cmd [[colorscheme monokai-pro-default]] end, desc = "Default" },
@@ -128,12 +129,6 @@ maps.n["<leader>f?"] = {
     if is_available "nvim-devdocs" then vim.cmd [[DevdocsOpenFloat rust]] end
   end,
   desc = "Open Rust docs",
-}
-
--- Git blame
-maps.n["<leader>gi"] = {
-  function() require("blame").toggle "virtual" end,
-  desc = "Git blame inline",
 }
 
 -- Map buffer view to flubuf
