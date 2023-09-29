@@ -1,9 +1,23 @@
+local R = function(name) return require(name) end
+
+if pcall(require, "plenary") then
+  RELOAD = require("plenary.reload").reload_module
+
+  R = function(name)
+    RELOAD(name)
+    return require(name)
+  end
+end
+
 return {
-  "phaazon/hop.nvim",
-  "jay-babu/project.nvim",
   "jvgrootveld/telescope-zoxide",
   "rcarriga/nvim-notify",
   "nvim-lua/plenary.nvim",
+  {
+    "tiagovla/scope.nvim",
+    lazy = false,
+    config = function(_, opts) require("scope").setup(opts) end,
+  },
   {
     "nvim-telescope/telescope.nvim",
     dependencies = {
@@ -12,33 +26,14 @@ return {
       "nvim-telescope/telescope-hop.nvim",
       "nvim-telescope/telescope-file-browser.nvim",
       { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
-      {
-        "jay-babu/project.nvim",
-        name = "project_nvim",
-        event = "VeryLazy",
-        opts = {
-          patterns = {
-            ".git",
-            "_darcs",
-            ".hg",
-            ".bzr",
-            ".svn",
-            "Makefile",
-            "package.json",
-            "pyproject.toml",
-            "Cargo.toml",
-          },
-          ignore_lsp = { "lua_ls" },
-        },
-      },
+      "jay-babu/project.nvim",
       "jvgrootveld/telescope-zoxide",
+      { "tiagovla/scope.nvim" },
     },
     opts = function(_, opts)
-      local telescope = require "telescope"
       local actions = require "telescope.actions"
       local fb_actions = require("telescope").extensions.file_browser.actions
       local lga_actions = require "telescope-live-grep-args.actions"
-      local hop = telescope.extensions.hop
       return require("astronvim.utils").extend_tbl(opts, {
         defaults = {
           file_ignore_patterns = {
@@ -127,13 +122,13 @@ return {
           },
           mappings = {
             i = {
-              ["<C-h>"] = hop.hop,
-              -- ["<C-space>"] = function(prompt_bufnr)
-              --   hop._hop_loop(
-              --     prompt_bufnr,
-              --     { callback = actions.toggle_selection, loop_callback = actions.send_selected_to_qflist }
-              --   )
-              -- end,
+              ["<C-h>"] = R("telescope").extensions.hop.hop,
+              ["<C-space>"] = function(prompt_bufnr)
+                require("telescope").extensions.hop._hop_loop(
+                  prompt_bufnr,
+                  { callback = actions.toggle_selection, loop_callback = actions.send_selected_to_qflist }
+                )
+              end,
             },
           },
         },
@@ -143,7 +138,8 @@ return {
             prompt_path = true,
             grouped = true,
             files = false,
-            hidden = true,
+            hidden = { file_browser = true, folder_browser = false },
+            depth = 2,
             mappings = {
               i = {
                 ["<C-z>"] = fb_actions.toggle_hidden,
@@ -197,6 +193,7 @@ return {
       telescope.load_extension "projects"
       telescope.load_extension "noice"
       telescope.load_extension "zoxide"
+      telescope.load_extension "scope"
     end,
   },
 }

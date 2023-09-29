@@ -1,5 +1,4 @@
 return {
-  "rcarriga/nvim-notify",
   {
     "folke/noice.nvim",
     dependencies = {
@@ -15,7 +14,6 @@ return {
             opts = {
               replace = true,
               render = "plain",
-              format = { "kind", "abbr", "menu" },
               win_options = { concealcursor = "n", conceallevel = 3 },
             },
           },
@@ -78,5 +76,16 @@ return {
         },
       }
     end,
+  },
+  {
+    "stevearc/dressing.nvim",
+    lazy = "VeryLazy",
+    dependencies = {
+      "nvim-telescope/telescope.nvim",
+      "MunifTanjim/nui.nvim",
+    },
+    opts = {
+      input = { enabled = false },
+    },
   },
 }

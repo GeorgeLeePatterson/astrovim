@@ -2,13 +2,17 @@ local user_utils = require "user.utils"
 local user_config = require "user.config"
 
 return {
+  { "nyoom-engineering/oxocarbon.nvim", priority = 1000 },
+  { "tiagovla/tokyodark.nvim", priority = 1000 },
+  { "ellisonleao/gruvbox.nvim", priority = 1000 },
+  { "marko-cerovac/material.nvim" },
+  { "dasupradyumna/midnight.nvim", priority = 1000 },
+  { "akinsho/horizon.nvim", version = "*", priority = 1000 },
+  { "zootedb0t/citruszest.nvim", priority = 1000 },
   {
     "loctvl842/monokai-pro.nvim",
     lazy = false,
     priority = 1000,
-  },
-  {
-    "nyoom-engineering/oxocarbon.nvim",
   },
   {
     "navarasu/onedark.nvim",
@@ -24,12 +28,6 @@ return {
       style = "storm",
       light_style = "day",
     },
-  },
-  {
-    "tiagovla/tokyodark.nvim",
-  },
-  {
-    "ellisonleao/gruvbox.nvim",
   },
   {
     "catppuccin/nvim",
@@ -52,9 +50,6 @@ return {
     },
     priority = 1000,
   },
-  { "marko-cerovac/material.nvim" },
-  { "dasupradyumna/midnight.nvim", lazy = false },
-  { "akinsho/horizon.nvim", version = "*", priority = 1000 },
   {
     "projekt0n/github-nvim-theme",
     lazy = false,

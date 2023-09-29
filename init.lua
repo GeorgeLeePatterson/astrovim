@@ -108,7 +108,15 @@ return {
     --   },
     -- }
 
+    -- update path to include brew
     vim.opt.rtp:prepend "/opt/homebrew/bin"
-    vim.opt.termguicolors = true
+
+    -- source overrides
+    for _, source in ipairs {
+      "user/overrides/astronvim",
+    } do
+      local status_ok, fault = pcall(require, source)
+      if not status_ok then vim.api.nvim_err_writeln("Failed to load " .. source .. "\n\n" .. fault) end
+    end
   end,
 }

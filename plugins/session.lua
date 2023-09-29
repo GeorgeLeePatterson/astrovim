@@ -1,32 +1,51 @@
-local function get_session_name()
-  local name = vim.fn.getcwd()
-  local branch = vim.trim(vim.fn.system "git branch --show-current")
-  if vim.v.shell_error == 0 then
-    return name .. branch
-  else
-    return name
-  end
+local function tab_buf_filter(tabpage, bufnr)
+  local dir = vim.fn.getcwd(-1, vim.api.nvim_tabpage_get_number(tabpage))
+  return vim.startswith(vim.api.nvim_buf_get_name(bufnr), dir) and vim.tbl_contains(vim.t[tabpage].bufs, bufnr)
 end
 
 return {
   {
     "stevearc/resession.nvim",
-    priority = 900,
-    config = function(_, opts)
-      require("resession").setup(opts)
-
-      -- Save one session per git
-      vim.api.nvim_create_autocmd("VimEnter", {
-        callback = function()
-          -- Only load the session if nvim was started with no args
-          if vim.fn.argc(-1) == 0 then
-            require("resession").load(get_session_name(), { dir = "dirsession", silence_errors = true })
-          end
-        end,
-      })
-      vim.api.nvim_create_autocmd("VimLeavePre", {
-        callback = function() require("resession").save(get_session_name(), { dir = "dirsession", notify = false }) end,
-      })
-    end,
+    opts = {
+      autosave = {
+        notify = true,
+      },
+      tab_scoped = true,
+      buf_filter = function(bufnr) return require("astronvim.utils.buffer").is_restorable(bufnr) end,
+      tab_buf_filter = tab_buf_filter,
+    },
+    config = function(_, opts) require("resession").setup(opts) end,
+  },
+  {
+    "jay-babu/project.nvim",
+    event = "VeryLazy",
+    name = "project_nvim",
+    opts = {
+      patterns = {
+        ".git",
+        "_darcs",
+        ".hg",
+        ".bzr",
+        ".svn",
+        "Makefile",
+        "package.json",
+        "pyproject.toml",
+        "Cargo.toml",
+        "requirements.txt",
+        "src/",
+      },
+      ignore_lsp = { "lua_ls" },
+      exclude_dirs = {
+        "~/.cargo/*",
+        "~/Downloads/*",
+        "~/.nvm/*",
+        "~/.npm/",
+        "~/.cache/*",
+        "~/.vscode/",
+      },
+      silent_chdir = false,
+      show_hidden = true,
+    },
+    config = function(_, opts) require("project_nvim").setup(opts) end,
   },
 }

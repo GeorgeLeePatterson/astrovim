@@ -6,6 +6,7 @@ return {
     relativenumber = true, -- sets vim.opt.relativenumber
     spell = false, -- sets vim.opt.spell
     signcolumn = "auto", -- sets vim.opt.signcolumn to auto
+    termguicolors = true,
     updatetime = 200,
     wrap = false, -- sets vim.opt.wrap
   },

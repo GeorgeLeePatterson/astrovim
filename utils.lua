@@ -1,3 +1,24 @@
+------------------------
+--- global functions ---
+------------------------
+_G.P = function(...)
+  local msg = vim.inspect(...)
+  notify(msg, "info", {
+    on_open = function(win)
+      vim.wo[win].conceallevel = 3
+      vim.wo[win].concealcursor = ""
+      vim.wo[win].spell = false
+      local buf = vim.api.nvim_win_get_buf(win)
+      vim.treesitter.start(buf, "lua")
+    end,
+  })
+end
+
+_G.R = function(pkg_name)
+  require("plenary.reload").reload_module(pkg_name)
+  return require(pkg_name)
+end
+
 local M = {}
 local a_utils = require "astronvim.utils"
 local user_config = require "user.config"
@@ -90,13 +111,112 @@ end
 
 function M.str_insert(str, pos, text) return string.sub(str, 1, pos - 1) .. text .. string.sub(str, pos) end
 
+function M.str_pad_len(str, total_len)
+  if #str >= total_len then return str end
+  return str .. string.rep(" ", total_len - #str)
+end
+
+function M.longest_line(tbl)
+  local longest = 0
+  for _, v in pairs(tbl) do
+    local width = vim.fn.strdisplaywidth(v)
+    if width > longest then longest = width end
+  end
+  return longest
+end
+
+-- List helper
+
+function M.arr_has(arr, str)
+  if not arr then return true end
+  if not str then return false end
+  for _, value in ipairs(arr) do
+    if value == str then return true end
+  end
+
+  return false
+end
+--
+-- Resession helpers
+--
+
+function M.session_name_to_path(name) return string.gsub(name, "_", "/") end
+
+function M.open_from_dashboard(session, dir, bufnr, group)
+  local found_group = nil
+  -- Get alpha autocommands, delete if any
+  local ok, autocommands = pcall(vim.api.nvim_get_autocmds, { group = group })
+  if ok then
+    for _, cmd in ipairs(autocommands) do
+      if not pcall(function() vim.api.nvim_del_augroup_by_id(cmd.group) end) then found_group = cmd.group end
+    end
+  end
+  -- Load resession
+  if not pcall(function() require("resession").load(session, { dir = dir }) end) then
+    vim.notify("Could not load session", vim.log.levels.ERROR)
+  end
+  -- Close alpha, ignore errors
+  pcall(function() require("alpha").close { buf = bufnr, group = found_group } end)
+end
+
+--
+-- Buffer functions
+--
+
+M.find_buffer_by_name = function(name)
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    local buf_name = vim.api.nvim_buf_get_name(buf)
+    if vim.endswith(buf_name, name) then return buf end
+  end
+  return -1
+end
+
 --
 -- Utility functions
 --
 
+-- Random
 function M.random_gen(list)
   math.randomseed(os.time())
   return list[math.random(1, #list)]
+end
+
+-- File Helpers
+function M.shorten_path(path, cwd, target_width)
+  local path_ok, plenary_path = pcall(require, "plenary.path")
+  if not path_ok then return path end
+  target_width = target_width or 35
+  local short_fn = vim.fn.fnamemodify(path, ":.")
+  if cwd then short_fn = vim.fn.fnamemodify(path, ":~") end
+  if #short_fn > target_width then
+    ---@diagnostic disable-next-line: param-type-mismatch
+    local short_fn_result, err = pcall(function() return plenary_path.new(short_fn):shorten(1, { -2, -1 }) end)
+    if err then return short_fn end
+    if #short_fn_result > target_width then
+      local short_fn_final, err_final = pcall(
+        ---@diagnostic disable-next-line: param-type-mismatch
+        function() return plenary_path.new(short_fn_result):shorten(1, { -1 }) end
+      )
+      if err_final then return short_fn_result end
+      return short_fn_final
+    end
+  end
+  return short_fn
+end
+
+function M.shorten_paths(paths, target_width)
+  if not pcall(require, "plenary.path") then return paths end
+  local cwd = vim.fn.getcwd()
+  local tbl = {}
+  for i, path in ipairs(paths) do
+    tbl[i] = M.shorten_path(path, cwd, target_width)
+  end
+  return tbl
+end
+
+function M.git_root()
+  local git_path = vim.fn.finddir(".git", ".;")
+  return vim.fn.fnamemodify(git_path, ":h")
 end
 
 return M

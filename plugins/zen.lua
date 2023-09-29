@@ -15,7 +15,7 @@ return {
     },
     cmd = "ZenMode",
     config = function(_, opts)
-      opts.window = { width = 0.8 }
+      opts.window = { width = 0.618 }
       local zen = require "zen-mode"
       zen.setup(opts)
       if user_config.defaults.zen then zen.toggle(opts) end

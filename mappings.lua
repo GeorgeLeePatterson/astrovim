@@ -5,6 +5,7 @@
 -- automatically pick-up stored data by this setting.)
 local utils = require "astronvim.utils"
 local user_utils = require "user.utils"
+local alpha_config = require "user.plugins.config.alpha"
 local is_available = utils.is_available
 
 local maps = {
@@ -44,14 +45,29 @@ local maps = {
     -- quick save
     ["<C-s>"] = { ":w!<cr>", desc = "Save File" }, -- change description but the same command
 
+    -- Alpha
     -- open dashboard after closing all buffers
     ["<leader>c"] = {
       function()
         local bufs = vim.fn.getbufinfo { buflisted = true }
         require("astronvim.utils.buffer").close(0)
-        if require("astronvim.utils").is_available "alpha-nvim" and not bufs[2] then require("alpha").start(true) end
+        if require("astronvim.utils").is_available "alpha-nvim" and not bufs[2] then
+          if not pcall(function() require("alpha").start(false) end) then vim.notify "Error opening dashboard" end
+        end
       end,
       desc = "Close buffer",
+    },
+
+    -- overwrite astronvim keymapif is_available "alpha-nvim" then
+    ["<leader>h"] = {
+      function()
+        local wins = vim.api.nvim_tabpage_list_wins(0)
+        if #wins > 1 and vim.api.nvim_get_option_value("filetype", { win = wins[1] }) == "neo-tree" then
+          vim.fn.win_gotoid(wins[2]) -- go to non-neo-tree window to toggle alpha
+        end
+        require("alpha").start(false, alpha_config.configure())
+      end,
+      desc = "Home Screen",
     },
 
     -- Toggle lsp lines

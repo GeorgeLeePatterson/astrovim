@@ -1,4 +1,6 @@
-local handler = function(virtText, lnum, endLnum, width, truncate)
+local M = {}
+
+function M.handler(virtText, lnum, endLnum, width, truncate)
   local newVirtText = {}
   local suffix = (" ... 󰁂 %d "):format(endLnum - lnum)
   local sufWidth = vim.fn.strdisplaywidth(suffix)
@@ -24,19 +26,4 @@ local handler = function(virtText, lnum, endLnum, width, truncate)
   return newVirtText
 end
 
-return {
-  {
-    "kevinhwang91/nvim-ufo",
-    config = function(_, opts)
-      -- global handler
-      -- `handler` is the 2nd parameter of `setFoldVirtTextHandler`,
-      -- check out `./lua/ufo.lua` and search `setFoldVirtTextHandler` for detail.
-      opts.fold_virt_text_handler = handler
-      require("ufo").setup(opts)
-
-      -- buffer scope handler
-      -- will override global handler if it is existed
-      -- local bufnr = vim.api.nvim_get_current_buf()
-    end,
-  },
-}
+return M
