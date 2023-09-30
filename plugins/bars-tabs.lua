@@ -39,26 +39,27 @@ return {
       }))
     end,
   },
-  -- {
-  --   "Bekaboo/dropbar.nvim",
-  --   event = "BufReadPre",
-  --   keys = {
-  --     {
-  --       "g<Tab>",
-  --       function() require("dropbar.api").pick() end,
-  --       mode = { "n" },
-  --     },
-  --   },
-  --   config = function()
-  --     require("dropbar").setup {
-  --       manu = {
-  --         icons = {
-  --           kinds = icons.kinds,
-  --         },
-  --       },
-  --     }
-  --   end,
-  -- },
+  {
+    "Bekaboo/dropbar.nvim",
+    event = "BufReadPre",
+    keys = {
+      {
+        "g<Tab>",
+        function() require("dropbar.api").pick() end,
+        mode = { "n" },
+        desc = "Dropbar Nav",
+      },
+    },
+    config = function()
+      require("dropbar").setup {
+        manu = {
+          icons = {
+            kinds = icons.kinds,
+          },
+        },
+      }
+    end,
+  },
   -- {
   --   "SmiteshP/nvim-navic",
   --   dependencies = {

@@ -3,7 +3,7 @@
 ------------------------
 _G.P = function(...)
   local msg = vim.inspect(...)
-  notify(msg, "info", {
+  vim.notify(msg, "info", {
     on_open = function(win)
       vim.wo[win].conceallevel = 3
       vim.wo[win].concealcursor = ""
@@ -157,6 +157,9 @@ function M.open_from_dashboard(session, dir, bufnr, group)
   end
   -- Close alpha, ignore errors
   pcall(function() require("alpha").close { buf = bufnr, group = found_group } end)
+
+  -- Try to close tab if possible
+  -- TODO
 end
 
 --
