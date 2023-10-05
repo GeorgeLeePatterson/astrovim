@@ -5,6 +5,7 @@ local longest_kind_type = user_utils.longest_line(vim.tbl_keys(icons.kinds))
 local M = {}
 
 M.default_kind_priority = {
+  Copilot = 13,
   Field = 13,
   Property = 12,
   Module = 11,

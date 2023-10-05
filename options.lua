@@ -3,6 +3,7 @@ return {
   opt = {
     guifont = { "VictorMono Nerd Font", ":h14" },
     number = true, -- sets vim.opt.number
+    completeopt = { "menu", "menuone", "preview", "noselect", "noinsert" },
     relativenumber = true, -- sets vim.opt.relativenumber
     spell = false, -- sets vim.opt.spell
     signcolumn = "auto", -- sets vim.opt.signcolumn to auto

@@ -1,9 +1,10 @@
 return {
-  -- Add the community repository of plugin specifications
   "AstroNvim/astrocommunity",
-  -- example of importing a plugin, comment out to use it or add your own
-  -- available plugins can be found at https://github.com/AstroNvim/astrocommunity
   { import = "astrocommunity.pack.rust" },
+  {
+    "simrat39/rust-tools.nvim",
+    config = require("user.plugins.config.rust-tools").setup,
+  },
   { import = "astrocommunity.editing-support.vim-move" },
   { import = "astrocommunity.motion/nvim-surround" },
   { import = "astrocommunity.bars-and-lines.vim-illuminate" },

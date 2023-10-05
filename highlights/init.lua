@@ -7,11 +7,12 @@ local green = get_hlgroup("String").fg
 local red = get_hlgroup("Error").fg
 
 return { -- this table overrides highlights in all themes
-  -- nvim-cmp menu overrides
   PmenuSel = { bg = "#282C34", fg = "NONE" },
-  Pmenu = { bg = "NONE" },
+  Pmenu = { bg = "NONE", fg = "NONE" },
 
   FloatBorder = { fg = "#3774B4", bg = "NONE" },
+
+  -- nvim-cmp menu overrides
 
   -- Custom border with transparent bg
   BorderOnly = { fg = "#3774B4", bg = "None" },
@@ -53,6 +54,8 @@ return { -- this table overrides highlights in all themes
   CmpItemKindInterface = { fg = "#58B5A8" },
   CmpItemKindColor = { fg = "#58B5A8" },
   CmpItemKindTypeParameter = { fg = "#58B5A8" },
+
+  CmpItemKindCopilot = { fg = "#6CC644" },
 
   -- Telescope overrides
   TelescopeBorder = { fg = "#3774B4", bg = "None" }, -- { fg = bg_alt, bg = bg },

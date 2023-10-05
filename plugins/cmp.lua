@@ -3,21 +3,34 @@ local cmp_utils = require "user.plugins.config.cmp"
 return {
   {
     "hrsh7th/nvim-cmp",
+    event = "InsertEnter",
     keys = { ":", "/", "?" },
+    version = false,
     dependencies = {
       "hrsh7th/cmp-nvim-lua",
       "hrsh7th/cmp-cmdline",
       "hrsh7th/cmp-nvim-lsp-signature-help",
       "neovim/nvim-lspconfig",
       "simrat39/rust-tools.nvim",
+      -- "zbirenbaum/copilot-cmp",
     },
     opts = function(_, opts)
+      vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
+      local has_words_before = function()
+        unpack = unpack or table.unpack
+        local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+        return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match "%s" == nil
+      end
       local cmp = require "cmp"
+      local compare = require "cmp.config.compare"
+      local luasnip = require "luasnip"
+
       -- Sources
       opts.source = cmp.config.sources {
-        { name = "nvim_lsp_signature_help", priority = 1000 },
-        { name = "nvim_lsp", priority = 800, keyword_length = 1 },
-        { name = "nvim_lua", priority = 700, keyword_length = 1 },
+        -- { name = "copilot", priority = 900 },
+        { name = "nvim_lsp", priority = 800, keyword_length = 3 },
+        { name = "nvim_lua", priority = 700, keyword_length = 2 },
+        { name = "nvim_lsp_signature_help", priority = 700 },
         {
           name = "buffer",
           priority = 600,
@@ -33,23 +46,20 @@ return {
             end,
           },
         },
-        { name = "luasnip", priority = 600 },
+        { name = "luasnip", priority = 600, keyword_length = 3 },
         { name = "path", priority = 250 },
       }
 
       -- Inside formatting
       opts.formatting.fields = { "kind", "abbr", "menu" }
-      opts.formatting.format = cmp_utils.format_suggestion
-
-      -- luasnip configuration
-      opts.snippet.expand = function(args) require("luasnip").lsp_expand(args.body) end
+      opts.formatting.format = cmp_utils.format_suggestionsigncolumn
 
       -- Sorting
-      local compare = require "cmp.config.compare"
       opts.sorting = {
         comparators = {
           compare.offset,
           compare.exact,
+          -- require("copilot_cmp.comparators").prioritize,
           cmp_utils.lspkind_comparator {},
           compare.recently_used,
           compare.score,
@@ -63,6 +73,42 @@ return {
         col_offset = -4,
         side_padding = 0,
       }
+
+      -- Mapping
+      opts.mapping = vim.tbl_extend("force", opts.mapping, {
+        ["<CR>"] = cmp.mapping.confirm { select = false },
+
+        ["<Tab>"] = cmp.mapping(function(fallback)
+          if cmp.visible() then
+            cmp.select_next_item()
+          elseif require("copilot.suggestion").is_visible() then
+            require("copilot.suggestion").accept()
+          elseif luasnip.expand_or_locally_jumpable() then
+            luasnip.expand_or_jump()
+          elseif has_words_before() then
+            cmp.complete()
+          else
+            fallback()
+          end
+        end, { "i", "s" }),
+
+        ["<S-Tab>"] = cmp.mapping(function(fallback)
+          if cmp.visible() then
+            cmp.select_prev_item()
+          elseif luasnip.jumpable(-1) then
+            luasnip.jump(-1)
+          else
+            fallback()
+          end
+        end, { "i", "s" }),
+      })
+      opts.preselect = cmp.PreselectMode.None
+      -- Ghost text
+      opts.experimental = {
+        ghost_text = {
+          hl_group = "CmpGhostTest",
+        },
+      }
     end,
     config = function(_, opts)
       local cmp = require "cmp"
@@ -73,11 +119,9 @@ return {
         mapping = cmp.mapping.preset.cmdline(),
         window = { completion = cmp.config.window.bordered { col_offset = 0 } },
         formatting = { fields = { "abbr" } },
-        sources = cmp.config.sources({
-          name = "nvim_lsp_document_symbol",
-        }, {
+        sources = cmp.config.sources {
           { name = "buffer" },
-        }),
+        },
       })
       cmp.setup.cmdline(":", {
         mapping = cmp.mapping.preset.cmdline(),
@@ -100,8 +144,32 @@ return {
       cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
     end,
   },
+  { "onsails/lspkind.nvim" },
   {
-    "onsails/lspkind.nvim",
-    -- opts = function(_, opts) cmp_utils.lsp_kind_opts(cmp_utils.lsp_kind_opts(opts)) end,
+    "zbirenbaum/copilot.lua",
+    cmd = "Copilot",
+    build = ":Copilot auth",
+    event = "InsertEnter",
+    config = function()
+      require("copilot").setup {
+        panel = {
+          enabled = true,
+          auto_refresh = true,
+        },
+        suggestion = {
+          enabled = true,
+          auto_trigger = true,
+          debounce = 50,
+          keymap = {
+            accept = false,
+            accept_word = false,
+            accept_line = false,
+            next = "<M-]>",
+            prev = "<M-[>",
+            dismiss = "<C-]>",
+          },
+        },
+      }
+    end,
   },
 }

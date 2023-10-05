@@ -1,14 +1,4 @@
 return {
-  {
-    "lukas-reineke/indent-blankline.nvim",
-    opts = function(_, opts)
-      return require("astronvim.utils").extend_tbl(opts, {
-        space_char_blankline = " ",
-        show_current_context = true,
-        show_current_context_start = true,
-      })
-    end,
-  },
   "nvim-treesitter/nvim-treesitter",
   dependencies = {
     "rrethy/nvim-treesitter-textsubjects",
@@ -41,4 +31,19 @@ return {
     }
     return opts
   end,
+  {
+    "lukas-reineke/indent-blankline.nvim",
+    opts = function(_, opts)
+      return require("astronvim.utils").extend_tbl(opts, {
+        space_char_blankline = " ",
+        show_current_context = true,
+        show_current_context_start = true,
+      })
+    end,
+  },
+  {
+    "chrisgrieser/nvim-various-textobjs",
+    lazy = false,
+    opts = { useDefaultKeymapps = true },
+  },
 }

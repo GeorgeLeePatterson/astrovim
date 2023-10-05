@@ -101,6 +101,7 @@ return {
           results_title = "",
           selection_caret = "  ",
           winblend = 5,
+          scroll_strategy = "limit",
           layout_config = {
             width = 0.90,
             height = 0.85,
@@ -163,6 +164,18 @@ return {
           },
         },
         pickers = {
+          colorscheme = {
+            enable_preview = true,
+            theme = "ivy",
+          },
+          buffers = {
+            theme = "dropdown",
+            path_display = { "smart" },
+            mappings = {
+              i = { ["<c-d>"] = actions.delete_buffer },
+              n = { ["d"] = actions.delete_buffer },
+            },
+          },
           find_files = {
             theme = "ivy",
             hidden = true,
@@ -172,12 +185,11 @@ return {
               return find_command
             end,
           },
-          buffers = {
-            path_display = { "smart" },
-            mappings = {
-              i = { ["<c-d>"] = actions.delete_buffer },
-              n = { ["d"] = actions.delete_buffer },
-            },
+          lsp_references = {
+            theme = "cursor",
+          },
+          notify = {
+            layout_strategy = "vertical",
           },
           zoxide = {
             theme = "ivy",

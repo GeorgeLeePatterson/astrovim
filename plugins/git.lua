@@ -13,6 +13,13 @@ return {
     event = "User AstroGitFile",
   },
   {
+    "rbong/vim-flog",
+    cmd = "Flog",
+    dependencies = {
+      "tpope/vim-fugitive",
+    },
+  },
+  {
     "NeogitOrg/neogit",
     event = "User AstroGitFile",
     dependencies = {

@@ -3,13 +3,63 @@ return {
     "folke/trouble.nvim",
     cmd = "TroubleToggle",
     dependencies = { "nvim-tree/nvim-web-devicons" },
-    config = function(_, opts)
-      require("astronvim.utils").set_mappings {
-        n = {
-          ["<leader>u2"] = { "<cmd>TroubleToggle<CR>", desc = "Toggle Trouble" },
+    keys = {
+      {
+        "<leader>ve",
+        function() require("trouble").open "document_diagnostics" end,
+        mode = { "n" },
+        desc = "Diagnostics (document)",
+      },
+      {
+        "<leader>gR",
+        function() require("trouble").open "lsp_references" end,
+        mode = { "n" },
+        desc = "Diagnostics (document)",
+      },
+    },
+    config = function(_, opts) require("trouble").setup(opts) end,
+  },
+  {
+    "nvimdev/lspsaga.nvim",
+    event = "LspAttach",
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+      "nvim-tree/nvim-web-devicons",
+    },
+    keys = {
+      {
+        "<leader>vci",
+        function() vim.cmd [[Lspsaga incoming_calls]] end,
+        mode = { "n" },
+        desc = "Incoming calls",
+      },
+      {
+        "<leader>vco",
+        function() vim.cmd [[Lspsaga outgoing_calls]] end,
+        mode = { "n" },
+        desc = "Outgoing calls",
+      },
+      {
+        "<leader>vd",
+        function() vim.cmd [[Lspsaga peek_definition]] end,
+        mode = { "n" },
+        desc = "Definition",
+      },
+    },
+    config = function()
+      require("lspsaga").setup {
+        breadcrumbs = {
+          enable = false,
         },
+        code_action = {
+          extend_gitsigns = true,
+        },
+        diagnostic = {
+          diagnostic_only_current = true,
+          extend_relatedInformation = true,
+        },
+        impelement = { enable = false },
       }
-      require("trouble").setup(opts)
     end,
   },
   {
@@ -32,8 +82,13 @@ return {
         },
       }
       require("actions-preview").setup(opts)
-      vim.keymap.set({ "v", "n" }, "gf", require("actions-preview").code_actions)
+      vim.keymap.set({ "v", "n" }, "gf", require("actions-preview").code_actions, { desc = "Actions preview" })
     end,
+  },
+  {
+    "dnlhc/glance.nvim",
+    cmd = "Glance",
+    config = function() require("glance").setup() end,
   },
   {
     "luckasRanarison/nvim-devdocs",

@@ -16,11 +16,11 @@ return {
     },
   },
   {
-    "abecodes/tabout.nvim",
-    event = "VeryLazy",
-    dependencies = {
-      "nvim-treesitter/nvim-treesitter",
-      "hrsh7th/nvim-cmp",
+    "rainbowhxch/accelerated-jk.nvim",
+    lazy = false,
+    keys = {
+      { "j", mode = { "n" }, "<Plug>(accelerated_jk_gj)", desc = "Accelerated j" },
+      { "k", mode = { "n" }, "<Plug>(accelerated_jk_gk)", desc = "Accelerated k" },
     },
   },
   {

@@ -22,7 +22,6 @@ return {
             opts = {
               replace = true,
               render = "plain",
-              format = { "kind", "abbr", "menu" },
               win_options = { concealcursor = "n", conceallevel = 3 },
             },
           },

@@ -4,24 +4,22 @@
 -- lower level configuration and more robust one. (which-key will
 -- automatically pick-up stored data by this setting.)
 local utils = require "astronvim.utils"
+local telescope_themes = require "telescope.themes"
 local user_utils = require "user.utils"
 local alpha_config = require "user.plugins.config.alpha"
 local is_available = utils.is_available
 
 local maps = {
-  -- first key is the mode
   n = {
-    -- second key is the lefthand side of the map
-
     -- navigate buffer tabs with `H` and `L`
-    L = {
-      function() require("astronvim.utils.buffer").nav(vim.v.count > 0 and vim.v.count or 1) end,
-      desc = "Next buffer",
-    },
-    H = {
-      function() require("astronvim.utils.buffer").nav(-(vim.v.count > 0 and vim.v.count or 1)) end,
-      desc = "Previous buffer",
-    },
+    -- L = {
+    --   function() require("astronvim.utils.buffer").nav(vim.v.count > 0 and vim.v.count or 1) end,
+    --   desc = "Next buffer",
+    -- },
+    -- H = {
+    --   function() require("astronvim.utils.buffer").nav(-(vim.v.count > 0 and vim.v.count or 1)) end,
+    --   desc = "Previous buffer",
+    -- },
     ["<leader>fF"] = { ":Telescope file_browser<CR>", desc = "Open File Browser" },
     ["<leader>fz"] = { ":Telescope zoxide list<CR>", desc = "Open Zoxide List" },
 
@@ -37,6 +35,37 @@ local maps = {
     -- tables with the `name` key will be registered with which-key if it's installed
     -- this is useful for naming menus
     ["<leader>b"] = { name = "Buffers" },
+
+    -- Telescope Overrides
+    ["<leader>fi"] = {
+      function() require("telescope.builtin").lsp_implementations() end,
+      desc = "Find implementations",
+    },
+    ["<leader>fd"] = {
+      function() require("telescope.builtin").diagnostics(telescope_themes.get_dropdown { bufnr = 0, winblend = 5 }) end,
+      desc = "Show current diagnostics",
+    },
+    ["<leader>fD"] = {
+      function() require("telescope.builtin").diagnostics(telescope_themes.get_ivy { winblend = 5 }) end,
+      desc = "Show all diagnostics",
+    },
+    ["<leader>fr"] = { function() require("telescope.builtin").lsp_references() end, desc = "Show references" },
+    ["<leader>fR"] = { function() require("telescope.builtin").registers() end, desc = "Find registers" },
+
+    -- Neo Tree
+
+    -- NeoTree
+    ["<leader>e"] = { "<cmd>Neotree toggle<cr>", desc = "Toggle Explorer" },
+    ["<leader>o"] = {
+      function()
+        if vim.bo.filetype == "neo-tree" then
+          vim.cmd.wincmd "p"
+        else
+          vim.cmd.Neotree "focus"
+        end
+      end,
+      desc = "Toggle Explorer Focus",
+    },
 
     --
     -- ADDITIONAL COMMANDS
@@ -130,6 +159,9 @@ local maps = {
       function() vim.cmd [[colorscheme github_light_high_contrast]] end,
       desc = "Light High Contrast",
     },
+
+    -- Lspsaga
+    ["<leader>v"] = { name = "View More" },
   },
   t = {
     -- setting a mapping to false will disable it
@@ -149,6 +181,13 @@ maps.n["<leader>f?"] = {
   end,
   desc = "Open Rust docs",
 }
+
+-- Sessions
+-- NOTE: Resession allows sending "dir" into `load` but it doesn't even use it when "listing" *smh*
+if is_available "resession.nvim" then
+  maps.n["<leader>SF"] =
+    { function() require("resession").load(nil, { dir = "dirsession", reset = true }) end, desc = "Load a DIR session" }
+end
 
 -- Map buffer view to flubuf
 if is_available "flybuf.nvim" then

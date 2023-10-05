@@ -26,14 +26,15 @@ local user_config = require "user.config"
 --
 -- LSP Helpers
 --
+---@diagnostic disable-next-line: unused-local
 function M.lsp_on_attach(client, bufnr)
-  -- Attach nvim-navic if installed
-  if a_utils.is_available "nvim-navic" then
-    if client.server_capabilities.documentSymbolProvider then
-      local nvim_navic_avail, nvim_navic = pcall(require, "nvim_navic")
-      if nvim_navic_avail then nvim_navic.attach(client, bufnr) end
-    end
-  end
+  -- -- Attach nvim-navic if installed
+  -- if a_utils.is_available "nvim-navic" then
+  --   if client.server_capabilities.documentSymbolProvider then
+  --     local nvim_navic_avail, nvim_navic = pcall(require, "nvim_navic")
+  --     if nvim_navic_avail then nvim_navic.attach(client, bufnr) end
+  --   end
+  -- end
 end
 
 --
@@ -92,28 +93,30 @@ function M.str_startswith(start) return string.sub(1, #start) == start end
 
 function M.str_endswith(str, ending) return ending == "" or string.sub(str, -#ending) == ending end
 
-function M.str_replace(old, new)
-  local search_start_idx = 1
-
-  local s = old
-  while true do
-    local start_idx, end_idx = string.find(old, new, search_start_idx, true)
-    if not start_idx then break end
-
-    local postfix = s:sub(end_idx + 1)
-    s = s:sub(1, (start_idx - 1)) .. new .. postfix
-
-    search_start_idx = -1 * postfix:len()
-  end
-
-  return s
-end
+function M.str_replace(original, old, new) return string.gsub(original, old, new) end
 
 function M.str_insert(str, pos, text) return string.sub(str, 1, pos - 1) .. text .. string.sub(str, pos) end
 
 function M.str_pad_len(str, total_len)
   if #str >= total_len then return str end
   return str .. string.rep(" ", total_len - #str)
+end
+
+function M.str_split(str, pat)
+  local t = {} -- NOTE: use {n = 0} in Lua-5.0
+  local fpat = "(.-)" .. pat
+  local last_end = 1
+  local s, e, cap = str:find(fpat, 1)
+  while s do
+    if s ~= 1 or cap ~= "" then table.insert(t, cap) end
+    last_end = e + 1
+    s, e, cap = str:find(fpat, last_end)
+  end
+  if last_end <= #str then
+    cap = str:sub(last_end)
+    table.insert(t, cap)
+  end
+  return t
 end
 
 function M.longest_line(tbl)
@@ -136,31 +139,6 @@ function M.arr_has(arr, str)
 
   return false
 end
---
--- Resession helpers
---
-
-function M.session_name_to_path(name) return string.gsub(name, "_", "/") end
-
-function M.open_from_dashboard(session, dir, bufnr, group)
-  local found_group = nil
-  -- Get alpha autocommands, delete if any
-  local ok, autocommands = pcall(vim.api.nvim_get_autocmds, { group = group })
-  if ok then
-    for _, cmd in ipairs(autocommands) do
-      if not pcall(function() vim.api.nvim_del_augroup_by_id(cmd.group) end) then found_group = cmd.group end
-    end
-  end
-  -- Load resession
-  if not pcall(function() require("resession").load(session, { dir = dir }) end) then
-    vim.notify("Could not load session", vim.log.levels.ERROR)
-  end
-  -- Close alpha, ignore errors
-  pcall(function() require("alpha").close { buf = bufnr, group = found_group } end)
-
-  -- Try to close tab if possible
-  -- TODO
-end
 
 --
 -- Buffer functions
@@ -182,6 +160,23 @@ end
 function M.random_gen(list)
   math.randomseed(os.time())
   return list[math.random(1, #list)]
+end
+
+function M.random_tbl_gen(tbl)
+  math.randomseed(os.time())
+  local rnd_idx = math.random(1, #tbl)
+  local keys = {}
+  for k in pairs(tbl) do
+    table.insert(keys, k)
+  end
+  local key = keys[rnd_idx]
+  local value = tbl[key]
+
+  if type(value) == "table" then
+    return key, value[math.random(1, #value)]
+  else
+    return key, value
+  end
 end
 
 -- File Helpers

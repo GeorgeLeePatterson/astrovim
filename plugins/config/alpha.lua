@@ -191,7 +191,7 @@ local is_available = astro_utils.is_available
 local insert_unique = astro_utils.list_insert_unique
 local shorten_path = user_utils.shorten_path
 local random_gen = user_utils.random_gen
-local fix_session_name = user_utils.session_name_to_path
+local fix_session_name = require("user.plugins.config.resession").session_name_to_path
 
 -- Get sessions
 function M.get_session_buttons()
@@ -229,7 +229,7 @@ function M.get_session_buttons()
         if filename == "Last Session" then ico = "  " end
         filename = ico .. filename
         local command = {
-          "<cmd>lua require('user.utils').open_from_dashboard(",
+          "<cmd>lua require('user.plugins.config.resession').open_from_dashboard(",
           "'",
           session,
           "',",
