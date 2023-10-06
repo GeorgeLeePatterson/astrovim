@@ -52,6 +52,7 @@ return {
         filtered_items = {
           always_show = { ".github", ".gitignore" },
           hide_gitignored = false,
+          never_show = { ".DS_Store" },
         },
       },
       window = {

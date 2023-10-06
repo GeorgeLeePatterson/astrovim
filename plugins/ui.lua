@@ -47,13 +47,13 @@ return {
             enabled = true,
             backend = "nui",
             relative = "editor",
-            position = {
-              row = 8,
-              col = "50%",
-            },
+            -- position = {
+            --   row = 8,
+            --   col = "50%",
+            -- },
             size = {
-              width = 60,
-              height = 10,
+              width = "auto",
+              height = "auto",
             },
             border = {
               style = "rounded",

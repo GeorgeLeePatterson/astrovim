@@ -4,14 +4,15 @@ return {
       light = "github_light",
       dark = "horizon",
     },
-    background = "dark",
+    background = "light", -- "dark",
     background_toggle = false,
     zen = false,
   },
   favorite_themes = {
-    "gruvbox",
-    "horizon",
-    ["github-nvim-theme"] = { "github_dark", "github_light" },
+    "mellifluous",
+    -- "gruvbox",
+    -- "horizon",
+    -- ["github-nvim-theme"] = { "github_dark", "github_light" },
   },
   bufferline = {
     options = {

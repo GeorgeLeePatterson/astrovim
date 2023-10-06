@@ -1,6 +1,7 @@
 local theme_config = require "user.plugins.config.theme"
 
 local themes = {}
+table.insert(themes, theme_config.configure_theme("ramojus/mellifluous.nvim", { dim_inactive = true }))
 table.insert(themes, theme_config.configure_theme "nyoom-engineering/oxocarbon.nvim")
 table.insert(themes, theme_config.configure_theme "tiagovla/tokyodark.nvim")
 table.insert(themes, theme_config.configure_theme "ellisonleao/gruvbox.nvim")

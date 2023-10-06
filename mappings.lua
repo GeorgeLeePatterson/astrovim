@@ -162,6 +162,9 @@ local maps = {
 
     -- Lspsaga
     ["<leader>v"] = { name = "View More" },
+
+    -- Wezterm
+    ["<leader>W"] = { name = " Wezterm" },
   },
   t = {
     -- setting a mapping to false will disable it

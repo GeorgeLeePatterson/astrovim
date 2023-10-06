@@ -14,7 +14,7 @@ return {
       "simrat39/rust-tools.nvim",
       -- "zbirenbaum/copilot-cmp",
     },
-    opts = function(_, opts)
+    opts = function(_, o)
       vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
       local has_words_before = function()
         unpack = unpack or table.unpack
@@ -25,90 +25,98 @@ return {
       local compare = require "cmp.config.compare"
       local luasnip = require "luasnip"
 
-      -- Sources
-      opts.source = cmp.config.sources {
-        -- { name = "copilot", priority = 900 },
-        { name = "nvim_lsp", priority = 800, keyword_length = 3 },
-        { name = "nvim_lua", priority = 700, keyword_length = 2 },
-        { name = "nvim_lsp_signature_help", priority = 700 },
-        {
-          name = "buffer",
-          priority = 600,
-          keyword_length = 3,
-          options = {
-            get_bufnrs = function() -- from all buffers (less than 1MB)
-              local bufs = {}
-              for _, bufn in ipairs(vim.api.nvim_list_bufs()) do
-                local buf_size = vim.api.nvim_buf_get_offset(bufn, vim.api.nvim_buf_line_count(bufn))
-                if buf_size < 1024 * 1024 then table.insert(bufs, bufn) end
-              end
-              return bufs
-            end,
+      local opts = vim.tbl_deep_extend("force", o, {
+        -- Sources
+        sources = cmp.config.sources {
+          -- { name = "copilot", priority = 900 },
+          { name = "nvim_lsp", priority = 800, keyword_length = 3 },
+          { name = "nvim_lua", priority = 700, keyword_length = 2 },
+          { name = "nvim_lsp_signature_help", priority = 700 },
+          {
+            name = "buffer",
+            priority = 600,
+            keyword_length = 3,
+            options = {
+              get_bufnrs = function() -- from all buffers (less than 1MB)
+                local bufs = {}
+                for _, bufn in ipairs(vim.api.nvim_list_bufs()) do
+                  local buf_size = vim.api.nvim_buf_get_offset(bufn, vim.api.nvim_buf_line_count(bufn))
+                  if buf_size < 1024 * 1024 then table.insert(bufs, bufn) end
+                end
+                return bufs
+              end,
+            },
+          },
+          { name = "luasnip", priority = 600, keyword_length = 3 },
+          { name = "path", priority = 250 },
+        },
+
+        -- Inside formatting
+        formatting = {
+          fields = { "kind", "abbr", "menu" },
+          format = cmp_utils.format_suggestion,
+        },
+
+        -- Sorting
+        sorting = {
+          comparators = {
+            compare.offset,
+            compare.exact,
+            -- require("copilot_cmp.comparators").prioritize,
+            cmp_utils.lspkind_comparator {},
+            compare.recently_used,
+            compare.score,
+            compare.order,
           },
         },
-        { name = "luasnip", priority = 600, keyword_length = 3 },
-        { name = "path", priority = 250 },
-      }
 
-      -- Inside formatting
-      opts.formatting.fields = { "kind", "abbr", "menu" }
-      opts.formatting.format = cmp_utils.format_suggestionsigncolumn
-
-      -- Sorting
-      opts.sorting = {
-        comparators = {
-          compare.offset,
-          compare.exact,
-          -- require("copilot_cmp.comparators").prioritize,
-          cmp_utils.lspkind_comparator {},
-          compare.recently_used,
-          compare.score,
-          compare.order,
+        -- Window formatting
+        window = {
+          completion = {
+            border = "rounded",
+            winhighlight = "Normal:Pmenu,Search:None,FloatBorder:BorderOnly", --
+            col_offset = -4,
+            side_padding = 0,
+          },
         },
-      }
-      -- Window formatting
-      opts.window.completion = {
-        border = "rounded",
-        winhighlight = "Normal:Pmenu,Search:None,FloatBorder:BorderOnly", --
-        col_offset = -4,
-        side_padding = 0,
-      }
 
-      -- Mapping
-      opts.mapping = vim.tbl_extend("force", opts.mapping, {
-        ["<CR>"] = cmp.mapping.confirm { select = false },
+        -- Mapping
+        mapping = vim.tbl_extend("force", o.mapping, {
+          ["<CR>"] = cmp.mapping.confirm { select = false },
 
-        ["<Tab>"] = cmp.mapping(function(fallback)
-          if cmp.visible() then
-            cmp.select_next_item()
-          elseif require("copilot.suggestion").is_visible() then
-            require("copilot.suggestion").accept()
-          elseif luasnip.expand_or_locally_jumpable() then
-            luasnip.expand_or_jump()
-          elseif has_words_before() then
-            cmp.complete()
-          else
-            fallback()
-          end
-        end, { "i", "s" }),
+          ["<Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_next_item()
+            elseif require("copilot.suggestion").is_visible() then
+              require("copilot.suggestion").accept()
+            elseif luasnip.expand_or_locally_jumpable() then
+              luasnip.expand_or_jump()
+            elseif has_words_before() then
+              cmp.complete()
+            else
+              fallback()
+            end
+          end, { "i", "s" }),
 
-        ["<S-Tab>"] = cmp.mapping(function(fallback)
-          if cmp.visible() then
-            cmp.select_prev_item()
-          elseif luasnip.jumpable(-1) then
-            luasnip.jump(-1)
-          else
-            fallback()
-          end
-        end, { "i", "s" }),
+          ["<S-Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_prev_item()
+            elseif luasnip.jumpable(-1) then
+              luasnip.jump(-1)
+            else
+              fallback()
+            end
+          end, { "i", "s" }),
+        }),
+        preselect = cmp.PreselectMode.None,
+        -- Ghost text
+        experimental = {
+          ghost_text = {
+            hl_group = "CmpGhostTest",
+          },
+        },
       })
-      opts.preselect = cmp.PreselectMode.None
-      -- Ghost text
-      opts.experimental = {
-        ghost_text = {
-          hl_group = "CmpGhostTest",
-        },
-      }
+      return opts
     end,
     config = function(_, opts)
       local cmp = require "cmp"

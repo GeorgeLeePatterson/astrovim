@@ -88,7 +88,38 @@ return {
   {
     "dnlhc/glance.nvim",
     cmd = "Glance",
-    config = function() require("glance").setup() end,
+    event = "LspAttach",
+    keys = {
+      {
+        "gR",
+        ":Glance references<CR>",
+        mode = { "n" },
+        desc = "Glance references",
+      },
+      {
+        "gD",
+        ":Glance definitions<CR>",
+        mode = { "n" },
+        desc = "Glance definitions",
+      },
+      {
+        "gT",
+        ":Glance type_definitions<CR>",
+        mode = { "n" },
+        desc = "Glance type definitions",
+      },
+      {
+        "gI",
+        ":Glance implementations<CR>",
+        mode = { "n" },
+        desc = "Glance implementations",
+      },
+    },
+    config = function()
+      require("glance").setup {
+        border = { enable = true },
+      }
+    end,
   },
   {
     "luckasRanarison/nvim-devdocs",
@@ -100,7 +131,7 @@ return {
     event = "VeryLazy",
     opts = {
       previewer_cmd = "glow",
-      after_open = function(bufnr) vim.api.nvim_buf_set_keymap(bufnr, "n", "<Esc>", ":close<CR>", {}) end,
+      after_open = function(bufnr) vim.keymap.set({ "n" }, "<Esc>", ":close<CR>", { buffer = bufnr, desc = "Close" }) end,
     },
   },
   {

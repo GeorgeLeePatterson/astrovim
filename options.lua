@@ -1,12 +1,62 @@
--- set vim options here (vim.<first_key>.<second_key> = value)
+local opt = vim.opt
+
+local formatoptions = function(o)
+  o.formatoptions = o.formatoptions
+    - "a" -- Auto formatting is BAD.
+    - "t" -- Don't auto format my code. I got linters for that.
+    + "c" -- In general, I like it when comments respect textwidth
+    + "q" -- Allow formatting comments w/ gq
+    - "o" -- O and o, don't continue comments
+    + "r" -- But do continue when pressing enter.
+    + "n" -- Indent past the formatlistpat, not underneath it.
+    + "j" -- Auto-remove comments if possible.
+    - "2" -- I'm not in gradeschool anymore
+end
+
+-- Persistent formatoptions
+local format_group = vim.api.nvim_create_augroup("FormatOptions", { clear = true })
+vim.api.nvim_create_autocmd({ "BufEnter" }, {
+  pattern = "*",
+  desc = "Always set formatoptions consistently",
+  group = format_group,
+  callback = function() formatoptions(vim.opt_local) end,
+})
+
+-- Cursorline highlighting control
+--  Only have it on in the active buffer
+opt.cursorline = true -- Highlight the current line
+local cursorline_group = vim.api.nvim_create_augroup("CursorLineControl", { clear = true })
+local set_cursorline = function(event, value, pattern)
+  vim.api.nvim_create_autocmd(event, {
+    group = cursorline_group,
+    pattern = pattern,
+    callback = function() vim.opt_local.cursorline = value end,
+  })
+end
+set_cursorline("WinLeave", false)
+set_cursorline("WinEnter", true)
+set_cursorline("FileType", false, "TelescopePrompt")
+
+-- Additional options
 return {
   opt = {
-    guifont = { "VictorMono Nerd Font", ":h14" },
-    number = true, -- sets vim.opt.number
+    autoindent = true,
+    background = require("user.config").defaults.background,
     completeopt = { "menu", "menuone", "preview", "noselect", "noinsert" },
+    guifont = { "VictorMono Nerd Font", ":h14" },
+    expandtab = true,
+    formatoptions = formatoptions(vim.opt),
+    incsearch = true,
+    number = true, -- sets vim.opt.number
     relativenumber = true, -- sets vim.opt.relativenumber
-    spell = false, -- sets vim.opt.spell
+    shiftwidth = 4,
+    showmatch = true,
     signcolumn = "auto", -- sets vim.opt.signcolumn to auto
+    smartcase = true,
+    smoothscroll = true,
+    softtabstop = 4,
+    spell = false, -- sets vim.opt.spell
+    tabstop = 4,
     termguicolors = true,
     updatetime = 200,
     wrap = false, -- sets vim.opt.wrap

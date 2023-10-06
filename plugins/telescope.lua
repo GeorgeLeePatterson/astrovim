@@ -187,12 +187,15 @@ return {
           },
           lsp_references = {
             theme = "cursor",
+            initial_mode = "normal",
+            prompt_title = false,
           },
           notify = {
             layout_strategy = "vertical",
           },
           zoxide = {
             theme = "ivy",
+            initial_mode = "normal",
           },
         },
       })
