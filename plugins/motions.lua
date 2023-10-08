@@ -8,24 +8,11 @@ return {
       },
     },
     keys = {
-      { "s", mode = { "n", "o", "x" }, function() require("flash").jump() end, desc = "Flash" },
-      { "S", mode = { "n", "o", "x" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
-      { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
-      { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
-      { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
+      { "s", function() require("flash").jump() end, mode = { "n", "o", "x" }, desc = "Flash" },
+      { "S", function() require("flash").treesitter() end, mode = { "n", "o", "x" }, desc = "Flash Treesitter" },
+      { "r", function() require("flash").remote() end, mode = "o", desc = "Remote Flash" },
+      { "R", function() require("flash").treesitter_search() end, mode = { "o", "x" }, desc = "Treesitter Search" },
+      { "<c-s>", function() require("flash").toggle() end, mode = { "c" }, desc = "Toggle Flash Search" },
     },
-  },
-  {
-    "rainbowhxch/accelerated-jk.nvim",
-    lazy = false,
-    keys = {
-      { "j", mode = { "n" }, "<Plug>(accelerated_jk_gj)", desc = "Accelerated j" },
-      { "k", mode = { "n" }, "<Plug>(accelerated_jk_gk)", desc = "Accelerated k" },
-    },
-  },
-  {
-    "roobert/tabtree.nvim",
-    event = "VeryLazy",
-    config = function() require("tabtree").setup() end,
   },
 }

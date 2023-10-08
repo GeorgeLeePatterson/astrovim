@@ -18,6 +18,7 @@ function M.open_from_dashboard(session, dir, bufnr, group)
   if not pcall(function() require("resession").load(session, { dir = dir, reset = true }) end) then
     vim.notify("Could not load session", vim.log.levels.ERROR)
   end
+
   -- Close alpha, ignore errors
   pcall(function() require("alpha").close { buf = bufnr, group = found_group } end)
 

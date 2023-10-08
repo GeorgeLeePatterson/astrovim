@@ -10,14 +10,6 @@ if pcall(require, "plenary") then
 end
 
 return {
-  "jvgrootveld/telescope-zoxide",
-  "rcarriga/nvim-notify",
-  "nvim-lua/plenary.nvim",
-  {
-    "tiagovla/scope.nvim",
-    lazy = false,
-    config = function(_, opts) require("scope").setup(opts) end,
-  },
   {
     "nvim-telescope/telescope.nvim",
     dependencies = {
@@ -34,6 +26,7 @@ return {
       local actions = require "telescope.actions"
       local fb_actions = require("telescope").extensions.file_browser.actions
       local lga_actions = require "telescope-live-grep-args.actions"
+      local mappings = (opts.defaults or {}).mappings or {}
       return require("astronvim.utils").extend_tbl(opts, {
         defaults = {
           file_ignore_patterns = {
@@ -121,7 +114,7 @@ return {
               },
             },
           },
-          mappings = {
+          mappings = vim.tbl_deep_extend("force", mappings, {
             i = {
               ["<C-h>"] = R("telescope").extensions.hop.hop,
               ["<C-space>"] = function(prompt_bufnr)
@@ -131,7 +124,7 @@ return {
                 )
               end,
             },
-          },
+          }),
         },
         extensions = {
           file_browser = {

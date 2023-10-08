@@ -1,36 +1,39 @@
 return {
-  "nvim-treesitter/nvim-treesitter",
-  dependencies = {
-    "rrethy/nvim-treesitter-textsubjects",
+  {
+    "nvim-treesitter/nvim-treesitter",
+    dependencies = {
+      "rrethy/nvim-treesitter-textsubjects",
+    },
+    opts = function(_, opts)
+      return vim.tbl_extend("force", opts, {
+        auto_install = true,
+        ensure_installed = require("astronvim.utils").list_insert_unique(opts.ensure_installed, {
+          "lua",
+          "bash",
+          "css",
+          "html",
+          "markdown",
+          "markdown_inline",
+          "python",
+          "regex",
+          "rust",
+          "toml",
+          "typescript",
+          "vim",
+        }),
+        textsubjects = {
+          enable = true,
+          prev_selection = ",",
+          keymaps = {
+            ["."] = "textsubjects-smart",
+            [";"] = "textsubjects-container-outer",
+            ["i;"] = "textsubjects-container-inner",
+          },
+        },
+      })
+    end,
+    config = function(_, opts) require("nvim-treesitter.configs").setup(opts) end,
   },
-  opts = function(_, opts)
-    opts.auto_install = true
-    -- add more things to the ensure_installed table protecting against community packs modifying it
-    opts.ensure_installed = require("astronvim.utils").list_insert_unique(opts.ensure_installed, {
-      "lua",
-      "bash",
-      "css",
-      "html",
-      "markdown",
-      "markdown_inline",
-      "python",
-      "regex",
-      "rust",
-      "toml",
-      "vim",
-    })
-
-    opts.textsubjects = {
-      enable = true,
-      -- prev_selection = ",",
-      keymaps = {
-        ["."] = "textsubjects-smart",
-        [";"] = "textsubjects-container-outer",
-        ["i;"] = "textsubjects-container-inner",
-      },
-    }
-    return opts
-  end,
   {
     "lukas-reineke/indent-blankline.nvim",
     opts = function(_, opts)
@@ -44,6 +47,10 @@ return {
   {
     "chrisgrieser/nvim-various-textobjs",
     lazy = false,
-    opts = { useDefaultKeymapps = true },
+    opts = { useDefaultKeymaps = true },
+  },
+  {
+    "IndianBoy42/tree-sitter-just",
+    config = function() require("tree-sitter-just").setup() end,
   },
 }

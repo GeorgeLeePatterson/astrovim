@@ -92,25 +92,25 @@ return {
     keys = {
       {
         "gR",
-        ":Glance references<CR>",
+        function() vim.cmd [[Glance references]] end,
         mode = { "n" },
         desc = "Glance references",
       },
       {
         "gD",
-        ":Glance definitions<CR>",
+        function() vim.cmd [[Glance definitions]] end,
         mode = { "n" },
         desc = "Glance definitions",
       },
       {
         "gT",
-        ":Glance type_definitions<CR>",
+        function() vim.cmd [[Glance type_definitions]] end,
         mode = { "n" },
         desc = "Glance type definitions",
       },
       {
         "gI",
-        ":Glance implementations<CR>",
+        function() vim.cmd [[Glance implementations]] end,
         mode = { "n" },
         desc = "Glance implementations",
       },

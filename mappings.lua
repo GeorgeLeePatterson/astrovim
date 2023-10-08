@@ -52,8 +52,6 @@ local maps = {
     ["<leader>fr"] = { function() require("telescope.builtin").lsp_references() end, desc = "Show references" },
     ["<leader>fR"] = { function() require("telescope.builtin").registers() end, desc = "Find registers" },
 
-    -- Neo Tree
-
     -- NeoTree
     ["<leader>e"] = { "<cmd>Neotree toggle<cr>", desc = "Toggle Explorer" },
     ["<leader>o"] = {
@@ -87,14 +85,19 @@ local maps = {
       desc = "Close buffer",
     },
 
-    -- overwrite astronvim keymapif is_available "alpha-nvim" then
+    -- overwrite astronvim keymap if is_available "alpha-nvim" then
     ["<leader>h"] = {
       function()
         local wins = vim.api.nvim_tabpage_list_wins(0)
         if #wins > 1 then
-          local buf = vim.api.nvim_win_get_buf(wins[1])
-          if vim.api.nvim_get_option_value("filetype", { buf = buf }) == "neo-tree" then
-            vim.fn.win_gotoid(wins[2]) -- go to non-neo-tree window to toggle alpha
+          for win = 1, #wins do
+            local buf = vim.api.nvim_win_get_buf(wins[win])
+            local usable = vim.api.nvim_get_option_value("filetype", { buf = buf }) ~= "neo-tree"
+              and vim.api.nvim_get_option_value("filetype", { buf = buf }) ~= "notify"
+            if usable then
+              vim.fn.win_gotoid(wins[win]) -- go to non-neo-tree window to toggle alpha
+              break
+            end
           end
         end
         require("alpha").start(false, alpha_config.configure())
@@ -159,6 +162,15 @@ local maps = {
       function() vim.cmd [[colorscheme github_light_high_contrast]] end,
       desc = "Light High Contrast",
     },
+    -- Nightfox
+    ["<leader>mj"] = { name = "Nightfox" },
+    ["<leader>mj0"] = { function() vim.cmd [[colorscheme nightfox]] end, desc = "Nightfox" },
+    ["<leader>mj1"] = { function() vim.cmd [[colorscheme dayfox]] end, desc = "Dayfox (light)" },
+    ["<leader>mj2"] = { function() vim.cmd [[colorscheme dawnfox]] end, desc = "Dawnfox (light)" },
+    ["<leader>mj3"] = { function() vim.cmd [[colorscheme duskfox]] end, desc = "Duskfox" },
+    ["<leader>mj4"] = { function() vim.cmd [[colorscheme nordfox]] end, desc = "Nordfox" },
+    ["<leader>mj5"] = { function() vim.cmd [[colorscheme terafox]] end, desc = "Terafox" },
+    ["<leader>mj6"] = { function() vim.cmd [[colorscheme carbonfox]] end, desc = "Carbonfox" },
 
     -- Lspsaga
     ["<leader>v"] = { name = "View More" },

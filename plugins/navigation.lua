@@ -50,6 +50,8 @@ return {
           enabled = true,
         },
         filtered_items = {
+          visible = true,
+          hide_dotfiles = false,
           always_show = { ".github", ".gitignore" },
           hide_gitignored = false,
           never_show = { ".DS_Store" },

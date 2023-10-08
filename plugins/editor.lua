@@ -1,6 +1,13 @@
 local ufo_config = require "user.plugins.config.ufo"
 
 return {
+  { "ellisonleao/glow.nvim", config = true, cmd = "Glow" },
+  {
+    "lukas-reineke/headlines.nvim",
+    dependencies = "nvim-treesitter/nvim-treesitter",
+    ft = "markdown",
+    config = true,
+  },
   {
     "nvim-pack/nvim-spectre",
     cmd = "Spectre",

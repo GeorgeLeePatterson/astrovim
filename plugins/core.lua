@@ -1,4 +1,5 @@
 return {
+  { "AstroNvim/astrotheme", enabled = false },
   -- use mason-lspconfig to configure LSP installations
   {
     "williamboman/mason-lspconfig.nvim",
@@ -45,39 +46,34 @@ return {
       })
     end,
   },
-  "jose-elias-alvarez/null-ls.nvim",
-  opts = function(_, config)
-    -- config variable is the default configuration table for the setup function call
-    -- local null_ls = require "null-ls"
-
-    -- Check supported formatters and linters
-    -- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins/formatting
-    -- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins/diagnostics
-    config.sources = {
-      -- Set a formatter
-      -- null_ls.builtins.formatting.stylua,
-      -- null_ls.builtins.formatting.prettier,
-    }
-    return config -- return final config table
-  end,
   {
-    "mrjones2014/legendary.nvim",
-    priority = 10000,
-    lazy = false,
-    opts = {
-      select_prompt = "  ~ legendary ~  ",
-      lazy_nvim = { auto_register = true },
-      which_key = { auto_register = true },
-    },
+    -- Deprecated, use nvimtools/none-ls.nvim instead
+    "jose-elias-alvarez/null-ls.nvim",
+    enabled = false,
   },
   {
-    "folke/which-key.nvim",
-    opts = {
-      key_labels = {
-        ["M"] = "<Alt>",
+    "nvimtools/none-ls.nvim",
+    name = "null-ls",
+    dependencies = {
+      {
+        "jay-babu/mason-null-ls.nvim",
+        cmd = { "NullLsInstall", "NullLsUninstall" },
+        opts = { handlers = {} },
       },
     },
+    event = "User AstroFile",
+    opts = function() return { on_attach = require("astronvim.utils.lsp").on_attach } end,
   },
+  -- {
+  --   "mrjones2014/legendary.nvim",
+  --   priority = 10000,
+  --   -- lazy = false,
+  --   opts = {
+  --     select_prompt = "  ~ legendary ~  ",
+  --     lazy_nvim = { auto_register = true },
+  --     which_key = { auto_register = true },
+  --   },
+  -- },
   {
     "mrjones2014/smart-splits.nvim",
     opts = {

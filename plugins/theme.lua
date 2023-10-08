@@ -1,7 +1,23 @@
 local theme_config = require "user.plugins.config.theme"
+local common_styles = {
+  comments = "italic",
+  keywords = "bold",
+  types = "italic,bold",
+}
 
 local themes = {}
-table.insert(themes, theme_config.configure_theme("ramojus/mellifluous.nvim", { dim_inactive = true }))
+table.insert(
+  themes,
+  theme_config.configure_theme("EdenEast/nightfox.nvim", {
+    init = function()
+      require("nightfox").init {
+        dim_inactive = true,
+        styles = common_styles,
+      }
+    end,
+  })
+)
+table.insert(themes, theme_config.configure_theme("ramojus/mellifluous.nvim", { opts = { dim_inactive = true } }))
 table.insert(themes, theme_config.configure_theme "nyoom-engineering/oxocarbon.nvim")
 table.insert(themes, theme_config.configure_theme "tiagovla/tokyodark.nvim")
 table.insert(themes, theme_config.configure_theme "ellisonleao/gruvbox.nvim")
@@ -56,11 +72,8 @@ table.insert(
     priority = 1000,
     config = function()
       require("github-theme").setup {
-        -- dim_inactive = true,
-        styles = {
-          comments = "italic",
-          functions = "callout",
-        },
+        dim_inactive = true,
+        styles = common_styles,
       }
     end,
   })
