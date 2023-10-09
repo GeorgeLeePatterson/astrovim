@@ -15,7 +15,7 @@ return {
   {
     "stevearc/resession.nvim",
     lazy = false,
-    dependences = {
+    dependencies = {
       {
         "tiagovla/scope.nvim",
         lazy = false,
