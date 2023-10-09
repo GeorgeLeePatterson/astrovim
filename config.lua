@@ -8,6 +8,10 @@ return {
     background_toggle = false,
     zen = false,
   },
+  ai = {
+    copilot = true,
+    tabnine = true,
+  },
   favorite_themes = {
     -- "mellifluous",
     -- "gruvbox",
@@ -78,6 +82,7 @@ return {
       Package = "󰏗",
       String = "𝓐",
       Copilot = "",
+      TabNine = "",
     },
     cmp_sources = {
       nvim_lsp = "✨",
@@ -87,6 +92,7 @@ return {
       cmdline = "💻",
       nvim_lua = "🌗",
       copilot_cmp = "🧠",
+      cmp_tabnine = "🧠",
     },
     statusline = {
       Error = "❗",

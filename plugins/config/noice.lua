@@ -5,19 +5,9 @@ M.config = function()
     lsp = {
       hover = {
         enabled = true,
-        opts = {
-          replace = true,
-          render = "plain",
-          win_options = { concealcursor = "n", conceallevel = 3 },
-        },
       },
       signature = {
         enabled = true,
-        opts = {
-          replace = true,
-          render = "plain",
-          win_options = { concealcursor = "n", conceallevel = 3 },
-        },
       },
       -- override markdown rendering so that cmp and other plugins use Treesitter
       override = {
@@ -64,8 +54,8 @@ M.config = function()
     presets = {
       bottom_search = false,
       command_palette = true,
-      inc_rename = false,
-      lsp_doc_border = true,
+      inc_rename = true,
+      -- lsp_doc_border = true,
       long_message_to_split = true,
     },
   }

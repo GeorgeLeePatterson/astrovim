@@ -200,8 +200,10 @@ maps.n["<leader>f?"] = {
 -- Sessions
 -- NOTE: Resession allows sending "dir" into `load` but it doesn't even use it when "listing" *smh*
 if is_available "resession.nvim" then
-  maps.n["<leader>SF"] =
-    { function() require("resession").load(nil, { dir = "dirsession", reset = true }) end, desc = "Load a DIR session" }
+  maps.n["<leader>SF"] = {
+    function() require("resejssion").load(nil, { dir = "dirsession", reset = true }) end,
+    desc = "Load a DIR session",
+  }
 end
 
 -- Map buffer view to flubuf
@@ -213,5 +215,32 @@ end
 maps.n["<leader>bd"] = false
 maps.n["<leader>b\\"] = false
 maps.n["<leader>b|"] = false
+
+-- AI
+maps.n = vim.tbl_extend("force", maps.n, {
+  ["<leader>A"] = { name = " AI" },
+  ["<leader>At"] = {
+    function()
+      local tn_ok, _ = pcall(require, "tabnine")
+      if tn_ok then
+        vim.cmd [[TabnineToggle]]
+        vim.cmd [[TabnineStatus]]
+      end
+    end,
+
+    desc = "Toggle Tabnine",
+  },
+  ["<leader>Acd"] = {
+    function()
+      local tn_ok, _ = pcall(require, "copilot")
+      if tn_ok then
+        vim.cmd [[Copilot disable]]
+        vim.cmd [[Copilot status]]
+      end
+    end,
+
+    desc = "Disable Copilot",
+  },
+})
 
 return maps

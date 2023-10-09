@@ -5,19 +5,21 @@ local longest_kind_type = user_utils.longest_line(vim.tbl_keys(icons.kinds))
 local M = {}
 
 M.default_kind_priority = {
-  Copilot = 13,
+  TabNine = 15,
+  -- Copilot = 15,
+  Module = 14,
   Field = 13,
-  Property = 12,
-  Module = 11,
-  Method = 11,
-  Function = 10,
+  Function = 12,
+  Method = 12,
+  Struct = 11,
+  Property = 11,
   Constant = 10,
   Enum = 10,
+  Interface = 10,
   EnumMember = 10,
   Event = 10,
   Operator = 10,
   Reference = 10,
-  Struct = 10,
   Variable = 9,
   File = 8,
   Folder = 8,
@@ -25,12 +27,11 @@ M.default_kind_priority = {
   Color = 5,
   Keyword = 2,
   Constructor = 1,
-  Interface = 1,
-  Snippet = 0,
   Text = 1,
   TypeParameter = 1,
   Unit = 1,
   Value = 1,
+  Snippet = 0,
 }
 
 M.lsp_kind_opts = function(opts)
@@ -42,23 +43,36 @@ M.lsp_kind_opts = function(opts)
   return opts
 end
 
+M.under = function(entry1, entry2)
+  local _, entry1_under = entry1.completion_item.label:find "^_+"
+  local _, entry2_under = entry2.completion_item.label:find "^_+"
+  entry1_under = entry1_under or 0
+  entry2_under = entry2_under or 0
+  if entry1_under > entry2_under then
+    return false
+  elseif entry1_under < entry2_under then
+    return true
+  end
+end
+
 function M.lspkind_comparator(conf)
-  conf.kind_priority = vim.tbl_deep_extend("force", M.default_kind_priority, (conf.kind_priority or {}) or {})
+  conf.kind_priority = vim.tbl_deep_extend("force", M.default_kind_priority, (conf or {}).kind_priority or {})
   local lsp_types = require("cmp.types").lsp
+  local compare = require "cmp.config.compare"
   return function(entry1, entry2)
-    if entry1.source.name ~= "nvim_lsp" then
-      if entry2.source.name == "nvim_lsp" then
-        return false
-      else
-        return nil
-      end
-    end
+    -- LSPs get priority
+    local lsp_list = { "nvim_lsp", "nvim_lua" }
+    local entry1_lsp = user_utils.arr_has(lsp_list, entry1.source.name)
+    local entry2_lsp = user_utils.arr_has(lsp_list, entry2.source.name)
+    if not entry1_lsp and not entry2_lsp then return nil end
+
+    -- Then lsp kind
     local kind1 = lsp_types.CompletionItemKind[entry1:get_kind()]
     local kind2 = lsp_types.CompletionItemKind[entry2:get_kind()]
 
     local priority1 = conf.kind_priority[kind1] or 0
     local priority2 = conf.kind_priority[kind2] or 0
-    if priority1 == priority2 then return nil end
+    if priority1 == priority2 then return compare.order(entry1, entry2) end
     return priority2 < priority1
   end
 end
@@ -71,18 +85,32 @@ function M.format_suggestion(entry, vim_item)
 
   -- split `kind` to separate icon and actual `type`
   local strings = vim.split(parts.kind, "%s", { trimempty = true })
-  parts.kind = " " .. (strings[1] or "") .. " "
+  local kind = strings[1] or ""
+  parts.kind = " " .. kind .. " "
+
+  local kind_type = (strings[2] or "")
+  if entry.source.name == "cmp_tabnine" then
+    local detail = (entry.completion_item.labelDetails or {}).detail
+    if detail and detail:find ".*%%.*" then kind_type = kind_type .. " " .. detail end
+    if (entry.completion_item.data or {}).multiline then kind_type = kind_type .. " " .. " " .. "[ml]" end
+  end
 
   -- Combine Kind `type` and Menu
-  parts.menu = "    " .. (strings[2] or "") .. " "
-  parts.menu = user_utils.str_pad_len(parts.menu, longest_kind_type) .. "  "
+  parts.menu = "    " .. kind_type .. " "
+
+  local longest_w_tn = longest_kind_type + 4
+  parts.menu = user_utils.str_pad_len(parts.menu, longest_w_tn) .. "  "
+
   if original_menu then parts.menu = parts.menu .. original_menu end
 
   return parts
 end
 
 function M.opts(_, o)
+  -- Highlight groups for extras
   vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
+  vim.api.nvim_set_hl(0, "CmpItemKindTabNine", { fg = "#6CC644" })
+
   local has_words_before = function()
     unpack = unpack or table.unpack
     local line, col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -95,9 +123,8 @@ function M.opts(_, o)
   local opts = vim.tbl_deep_extend("force", o, {
     -- Sources
     sources = cmp.config.sources {
+      { name = "cmp_tabnine", priority = 1000 },
       { name = "nvim_lsp", priority = 800, keyword_length = 1 },
-      { name = "nvim_lua", priority = 700, keyword_length = 1 },
-      { name = "nvim_lsp_signature_help", priority = 700 },
       {
         name = "buffer",
         priority = 600,
@@ -113,8 +140,9 @@ function M.opts(_, o)
           end,
         },
       },
-      { name = "luasnip", priority = 600, keyword_length = 2 },
-      { name = "path", priority = 250 },
+      { name = "nvim_lua", keyword_length = 1 },
+      { name = "luasnip", keyword_length = 2 },
+      { name = "path" },
       { name = "emoji" },
     },
 
@@ -127,12 +155,13 @@ function M.opts(_, o)
     -- Sorting
     sorting = {
       comparators = {
-        compare.offset,
         compare.exact,
-        -- require("copilot_cmp.comparators").prioritize,
-        M.lspkind_comparator {},
-        compare.recently_used,
+        M.under,
         compare.score,
+        M.lspkind_comparator {},
+        compare.offset,
+        compare.recently_used,
+        compare.locality,
         compare.order,
       },
     },
@@ -149,12 +178,11 @@ function M.opts(_, o)
 
     -- Mapping
     mapping = vim.tbl_extend("force", o.mapping, {
-      ["<CR>"] = cmp.mapping.confirm { select = false },
-
+      ["<CR>"] = cmp.mapping.confirm { select = true },
       ["<Tab>"] = cmp.mapping(function(fallback)
         if cmp.visible() then
           cmp.select_next_item()
-        elseif require("copilot.suggestion").is_visible() then
+        elseif require("user.config").ai.copilot and require("copilot.suggestion").is_visible() then
           require("copilot.suggestion").accept()
         elseif luasnip.expand_or_locally_jumpable() then
           luasnip.expand_or_jump()

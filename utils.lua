@@ -156,6 +156,8 @@ end
 -- Utility functions
 --
 
+-- Function to require lua modules safely
+
 -- Random
 function M.random_gen(list)
   math.randomseed(os.time())

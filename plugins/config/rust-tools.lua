@@ -24,6 +24,15 @@ M.setup = function(_, o)
       end,
     },
   }
+  -- Add cargo autocmp
+  local ok, cmp = pcall(require, "cmp")
+  if ok then
+    vim.api.nvim_create_autocmd("BufRead", {
+      group = vim.api.nvim_create_augroup("CmpSourceCargo", { clear = true }),
+      pattern = "Cargo.toml",
+      callback = function() cmp.setup.buffer { sources = { { name = "crates" } } } end,
+    })
+  end
 end
 
 return M
