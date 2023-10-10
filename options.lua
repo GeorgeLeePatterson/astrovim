@@ -49,6 +49,7 @@ return {
     incsearch = true,
     number = true, -- sets vim.opt.number
     relativenumber = true, -- sets vim.opt.relativenumber
+    shell = "zsh",
     shiftwidth = 4,
     showmatch = true,
     signcolumn = "auto", -- sets vim.opt.signcolumn to auto
