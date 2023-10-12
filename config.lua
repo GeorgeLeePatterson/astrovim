@@ -15,8 +15,9 @@ return {
   favorite_themes = {
     -- "mellifluous",
     -- "gruvbox",
-    -- "horizon",
+    "horizon",
     -- ["github-nvim-theme"] = { "github_dark", "github_light" },
+    -- "bluloco",
     ["nightfox"] = { "nightfox", "nordfox" },
     ["github-nvim-theme"] = { "github_dark" },
   },
@@ -91,7 +92,7 @@ return {
       path = "📁",
       cmdline = "💻",
       nvim_lua = "🌗",
-      copilot_cmp = "🧠",
+      copilot = "🧠",
       cmp_tabnine = "🧠",
     },
     statusline = {

@@ -115,11 +115,10 @@ return {
         desc = "Glance implementations",
       },
     },
-    config = function()
-      require("glance").setup {
-        border = { enable = true },
-      }
-    end,
+    opts = {
+      border = { enable = true },
+    },
+    config = function(_, opts) require("glance").setup(opts) end,
   },
   {
     "luckasRanarison/nvim-devdocs",
@@ -151,6 +150,7 @@ return {
         end,
       }
       -- Create a global helper
+      ---@diagnostic disable-next-line: duplicate-set-field
       _G.Msg = function(...) require("messages.api").capture_thing(...) end
     end,
   },

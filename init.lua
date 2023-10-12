@@ -4,6 +4,11 @@ local user_utils = require "user.utils"
 -- Lsp configurations
 local rust_analyzer_settings = require "user.lsp.config.rust"
 
+local load_capabilities = function()
+  local ok, cmp_lsp = pcall(require, "cmp_nvim_lsp")
+  if ok then cmp_lsp.default_capabilities() end
+end
+
 return {
   -- Configure AstroNvim updates
   updater = {
@@ -16,11 +21,6 @@ return {
     skip_prompts = false, -- skip prompts about breaking changes
     show_changelog = true, -- show the changelog after performing an update
     auto_quit = false, -- automatically quit the current session after a successful update
-    remotes = { -- easily add new remotes to track
-      --   ["remote_name"] = "https://remote_url.come/repo.git", -- full remote url
-      --   ["remote2"] = "github_user/repo", -- GitHub user/repo shortcut,
-      --   ["remote3"] = "github_user", -- GitHub user assume AstroNvim fork
-    },
   },
 
   -- Set colorscheme to use
@@ -34,18 +34,13 @@ return {
     virtual_text = false,
     signs = true,
     underline = true,
-    -- float = {
-    --   show_header = true,
-    --   source = "if_many",
-    --   border = "rounded",
-    --   focusable = false,
-    -- },
   },
 
   lsp = {
     config = {
       lua_ls = {
         Lua = require "user.lsp.config.lua",
+        capabilities = load_capabilities(),
       },
       rust_analyzer = rust_analyzer_settings.config,
     },

@@ -52,6 +52,7 @@ return {
     enabled = false,
   },
   {
+    -- Community maintained alternative
     "nvimtools/none-ls.nvim",
     name = "null-ls",
     dependencies = {
@@ -64,16 +65,8 @@ return {
     event = "User AstroFile",
     opts = function() return { on_attach = require("astronvim.utils.lsp").on_attach } end,
   },
-  -- {
-  --   "mrjones2014/legendary.nvim",
-  --   priority = 10000,
-  --   -- lazy = false,
-  --   opts = {
-  --     select_prompt = "  ~ legendary ~  ",
-  --     lazy_nvim = { auto_register = true },
-  --     which_key = { auto_register = true },
-  --   },
-  -- },
+  -- This is integrated with wezterm.
+  -- see `~/.config/wezterm/keys.lua` for mappings
   {
     "mrjones2014/smart-splits.nvim",
     opts = {

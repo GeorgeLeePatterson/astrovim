@@ -7,13 +7,17 @@ return {
     event = { "InsertEnter", "CmdlineEnter" },
     version = false,
     dependencies = {
+      "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-nvim-lua",
       "hrsh7th/cmp-cmdline",
       "hrsh7th/cmp-emoji",
       "neovim/nvim-lspconfig",
       "simrat39/rust-tools.nvim",
-      -- "hrsh7th/cmp-nvim-lsp-signature-help",
-      -- "zbirenbaum/copilot-cmp",
+      {
+        "zbirenbaum/copilot-cmp",
+        dependencies = { "zbirenbaum/copilot.lua" },
+        config = function() require("copilot_cmp").setup() end,
+      },
     },
     opts = cmp_utils.opts,
     config = cmp_utils.config,
@@ -32,7 +36,7 @@ return {
           auto_refresh = true,
         },
         suggestion = {
-          enabled = true,
+          enabled = false, -- true,
           auto_trigger = true,
           debounce = 50,
           keymap = {
@@ -41,12 +45,14 @@ return {
             accept_line = false,
             next = "<M-]>",
             prev = "<M-[>",
-            dismiss = "<C-]>",
+            dismiss = "<Tab-CR>",
           },
         },
       }
     end,
   },
+  -- Pretty disapponted with tabnine, copilot is much better
+  -- TODO: remove this
   {
     "tzachar/cmp-tabnine",
     event = "VeryLazy",
@@ -56,7 +62,7 @@ return {
       local tabnine = require "cmp_tabnine.config"
       tabnine:setup {
         max_lines = 1000,
-        max_num_results = 10,
+        max_num_results = 2,
         sort = true,
         run_on_every_keystroke = true,
         snippet_placeholder = "..",
@@ -64,22 +70,4 @@ return {
       }
     end,
   },
-  -- {
-  --   "codota/tabnine-nvim",
-  --   cmd = "TabnineHub",
-  --   build = "./dl_binaries.sh",
-  --   event = "VeryLazy",
-  --   enabled = require("user.config").ai.tabnine,
-  --   config = function()
-  --     require("tabnine").setup {
-  --       disable_auto_comment = false,
-  --       accept_keymap = "<Tab>",
-  --       dismiss_keymap = "<C-]>",
-  --       debounce_ms = 800,
-  --       suggestion_color = { gui = "#FF0000", cterm = 244 },
-  --       exclude_filetypes = { "TelescopePrompt", "neo-tree" },
-  --       -- log_file_path = nil, -- absolute path to Tabnine log file
-  --     }
-  --   end,
-  -- },
 }

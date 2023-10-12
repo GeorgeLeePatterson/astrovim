@@ -5,7 +5,10 @@ local common_styles = {
   types = "italic,bold",
 }
 
-local themes = {}
+local themes = {
+  "rktjmp/lush.nvim",
+}
+
 table.insert(
   themes,
   theme_config.configure_theme("EdenEast/nightfox.nvim", {
@@ -17,13 +20,22 @@ table.insert(
     end,
   })
 )
+table.insert(
+  themes,
+  theme_config.configure_theme("uloco/bluloco.nvim", {
+    dependencies = { "rktjmp/lush.nvim" },
+  })
+)
 table.insert(themes, theme_config.configure_theme("ramojus/mellifluous.nvim", { opts = { dim_inactive = true } }))
 table.insert(themes, theme_config.configure_theme "nyoom-engineering/oxocarbon.nvim")
 table.insert(themes, theme_config.configure_theme "tiagovla/tokyodark.nvim")
 table.insert(themes, theme_config.configure_theme "ellisonleao/gruvbox.nvim")
 table.insert(themes, theme_config.configure_theme "marko-cerovac/material.nvim")
 table.insert(themes, theme_config.configure_theme "dasupradyumna/midnight.nvim")
-table.insert(themes, theme_config.configure_theme("akinsho/horizon.nvim", { version = "*" }))
+table.insert(
+  themes,
+  theme_config.configure_theme("akinsho/horizon.nvim", { version = "*", lazy = false, priority = 1000 })
+)
 table.insert(themes, theme_config.configure_theme "zootedb0t/citruszest.nvim")
 table.insert(themes, theme_config.configure_theme "loctvl842/monokai-pro.nvim")
 table.insert(

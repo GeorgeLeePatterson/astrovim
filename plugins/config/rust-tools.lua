@@ -1,3 +1,5 @@
+local lsp_config = require "user.plugins.config.lsp"
+
 local M = {}
 
 M.setup = function(_, o)
@@ -22,6 +24,7 @@ M.setup = function(_, o)
           )
         end
       end,
+      capabilities = lsp_config.capabilities,
     },
   }
   -- Add cargo autocmp
@@ -30,6 +33,7 @@ M.setup = function(_, o)
     vim.api.nvim_create_autocmd("BufRead", {
       group = vim.api.nvim_create_augroup("CmpSourceCargo", { clear = true }),
       pattern = "Cargo.toml",
+      ---@diagnostic disable-next-line: missing-fields
       callback = function() cmp.setup.buffer { sources = { { name = "crates" } } } end,
     })
   end

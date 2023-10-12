@@ -43,7 +43,7 @@ return {
     autoindent = true,
     background = require("user.config").defaults.background,
     completeopt = { "menu", "menuone", "preview", "noselect", "noinsert" },
-    guifont = { "VictorMono Nerd Font", ":h14" },
+    -- guifont = { "VictorMono Nerd Font", ":h14" },
     expandtab = true,
     formatoptions = formatoptions(vim.opt),
     incsearch = true,

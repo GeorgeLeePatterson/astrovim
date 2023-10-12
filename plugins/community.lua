@@ -1,3 +1,6 @@
+-- TODO: Move out from `community`
+-- Don't really want some of these core plugins here like this...
+
 return {
   "AstroNvim/astrocommunity",
   { import = "astrocommunity.pack.rust" },

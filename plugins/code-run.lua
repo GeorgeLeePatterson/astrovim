@@ -1,3 +1,5 @@
+-- This plugin is confusing. I wished it worked better. Will probably remove
+
 local group = vim.api.nvim_create_augroup("LuadevMappings", { clear = true })
 vim.api.nvim_create_autocmd({ "BufEnter", "BufNewFile" }, {
   pattern = "*",

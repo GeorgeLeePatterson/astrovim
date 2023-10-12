@@ -1,3 +1,5 @@
+---@diagnostic disable: missing-fields
+
 local icons = require("user.config").icons
 local user_utils = require "user.utils"
 local longest_kind_type = user_utils.longest_line(vim.tbl_keys(icons.kinds))
@@ -6,7 +8,7 @@ local M = {}
 
 M.default_kind_priority = {
   TabNine = 15,
-  -- Copilot = 15,
+  Copilot = 15,
   Module = 14,
   Field = 13,
   Function = 12,
@@ -110,12 +112,15 @@ function M.opts(_, o)
   -- Highlight groups for extras
   vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
   vim.api.nvim_set_hl(0, "CmpItemKindTabNine", { fg = "#6CC644" })
+  vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg = "#ff5170" })
 
   local has_words_before = function()
+    if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then return false end
     unpack = unpack or table.unpack
     local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-    return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match "%s" == nil
+    return col ~= 0 and vim.api.nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]:match "^%s*$" == nil
   end
+
   local cmp = require "cmp"
   local compare = require "cmp.config.compare"
   local luasnip = require "luasnip"
@@ -123,7 +128,8 @@ function M.opts(_, o)
   local opts = vim.tbl_deep_extend("force", o, {
     -- Sources
     sources = cmp.config.sources {
-      { name = "cmp_tabnine", priority = 1000 },
+      { name = "copilot", priority = 1000 },
+      { name = "cmp_tabnine", priority = 900 },
       { name = "nvim_lsp", priority = 800, keyword_length = 1 },
       {
         name = "buffer",
@@ -156,6 +162,7 @@ function M.opts(_, o)
     sorting = {
       comparators = {
         compare.exact,
+        require("copilot_cmp.comparators").prioritize,
         M.under,
         compare.score,
         M.lspkind_comparator {},
@@ -180,7 +187,7 @@ function M.opts(_, o)
     mapping = vim.tbl_extend("force", o.mapping, {
       ["<CR>"] = cmp.mapping.confirm { select = true },
       ["<Tab>"] = cmp.mapping(function(fallback)
-        if cmp.visible() then
+        if cmp.visible() and has_words_before() then
           cmp.select_next_item()
         elseif require("user.config").ai.copilot and require("copilot.suggestion").is_visible() then
           require("copilot.suggestion").accept()
@@ -206,9 +213,7 @@ function M.opts(_, o)
     preselect = cmp.PreselectMode.None,
     -- Ghost text
     experimental = {
-      ghost_text = {
-        hl_group = "CmpGhostTest",
-      },
+      ghost_text = true,
     },
   })
   return opts

@@ -1,4 +1,6 @@
 local get_hlgroup = require("astronvim.utils").get_hlgroup
+local custom_colors = require "user.utils.colors"
+
 -- get highlights from highlight groups
 local normal = get_hlgroup "Pmenu"
 local fg, bg = normal.fg, normal.bg
@@ -6,7 +8,7 @@ local bg_alt = get_hlgroup("Visual").bg
 local green = get_hlgroup("String").fg
 local red = get_hlgroup("Error").fg
 
-return { -- this table overrides highlights in all themes
+local custom_highlights = { -- this table overrides highlights in all themes
   PmenuSel = { bg = "#282C34", fg = "NONE" },
   Pmenu = { bg = "NONE", fg = "NONE" },
 
@@ -113,3 +115,8 @@ return { -- this table overrides highlights in all themes
   StartLogoPop5 = { ctermfg = 202, fg = "#FB5D01", default = true },
   StartLogoPop6 = { ctermfg = 202, fg = "#FF4E00", default = true },
 }
+
+local color_highlights = custom_colors.generate_hls()
+custom_highlights = vim.tbl_extend("force", custom_highlights, color_highlights)
+
+return custom_highlights

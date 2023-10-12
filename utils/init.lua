@@ -1,3 +1,5 @@
+---@diagnostic disable: duplicate-set-field
+
 ------------------------
 --- global functions ---
 ------------------------
@@ -22,20 +24,10 @@ end
 local M = {}
 local a_utils = require "astronvim.utils"
 local user_config = require "user.config"
+local random = require "user.utils.random"
 
---
--- LSP Helpers
---
----@diagnostic disable-next-line: unused-local
-function M.lsp_on_attach(client, bufnr)
-  -- -- Attach nvim-navic if installed
-  -- if a_utils.is_available "nvim-navic" then
-  --   if client.server_capabilities.documentSymbolProvider then
-  --     local nvim_navic_avail, nvim_navic = pcall(require, "nvim_navic")
-  --     if nvim_navic_avail then nvim_navic.attach(client, bufnr) end
-  --   end
-  -- end
-end
+-- Merge random functions
+M = vim.tbl_extend("force", M, random)
 
 --
 -- Theme Helpers
@@ -89,7 +81,7 @@ end
 --
 function M.str_contains(haystack, needle) return string.find(haystack, needle, 1, true) ~= nil end
 
-function M.str_startswith(start) return string.sub(1, #start) == start end
+function M.str_startswith(str, start) return string.sub(str, 1, #start) == start end
 
 function M.str_endswith(str, ending) return ending == "" or string.sub(str, -#ending) == ending end
 
@@ -119,6 +111,7 @@ function M.str_split(str, pat)
   return t
 end
 
+-- calculate the length of the longest line in a table
 function M.longest_line(tbl)
   local longest = 0
   for _, v in pairs(tbl) do
@@ -128,7 +121,9 @@ function M.longest_line(tbl)
   return longest
 end
 
--- List helper
+--
+-- List helpers
+--
 
 function M.arr_has(arr, str)
   if not arr then return true end
@@ -155,31 +150,6 @@ end
 --
 -- Utility functions
 --
-
--- Function to require lua modules safely
-
--- Random
-function M.random_gen(list)
-  math.randomseed(os.time())
-  return list[math.random(1, #list)]
-end
-
-function M.random_tbl_gen(tbl)
-  math.randomseed(os.time())
-  local rnd_idx = math.random(1, #tbl)
-  local keys = {}
-  for k in pairs(tbl) do
-    table.insert(keys, k)
-  end
-  local key = keys[rnd_idx]
-  local value = tbl[key]
-
-  if type(value) == "table" then
-    return key, value[math.random(1, #value)]
-  else
-    return key, value
-  end
-end
 
 -- File Helpers
 function M.shorten_path(path, cwd, target_width)
