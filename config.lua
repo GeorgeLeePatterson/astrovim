@@ -12,14 +12,17 @@ return {
     copilot = true,
     tabnine = true,
   },
-  favorite_themes = {
-    -- "mellifluous",
-    -- "gruvbox",
-    "horizon",
-    -- ["github-nvim-theme"] = { "github_dark", "github_light" },
-    -- "bluloco",
-    ["nightfox"] = { "nightfox", "nordfox" },
-    ["github-nvim-theme"] = { "github_dark" },
+  colorscheme = {
+    debug = false,
+    favorite_themes = {
+      -- "mellifluous",
+      -- "gruvbox",
+      -- ["github-nvim-theme"] = { "github_dark", "github_light" },
+      -- "bluloco",
+      ["nightfox"] = { "nightfox", "nordfox" },
+      ["github-nvim-theme"] = { "github_dark" },
+      "horizon",
+    },
   },
   bufferline = {
     options = {

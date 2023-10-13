@@ -1,20 +1,6 @@
+local heirline = require "heirline.utils"
+local astro_status = require "astronvim.utils.status"
 local util = {}
-
-util.mode_colors = {
-  n = "red",
-  i = "green",
-  v = "cyan",
-  V = "cyan",
-  ["\22"] = "cyan",
-  c = "orange",
-  s = "purple",
-  S = "purple",
-  ["\19"] = "purple",
-  R = "orange",
-  r = "orange",
-  ["!"] = "red",
-  t = "red",
-}
 
 util.diagnostics = { "errors", "warnings", "info", "hints" }
 
@@ -62,40 +48,49 @@ util.icons = {
 }
 
 util.mode = setmetatable({
-  n = "normal",
-  no = "op",
-  nov = "op",
-  noV = "op",
+  ["n"] = "normal",
+  ["no"] = "op",
+  ["nov"] = "op",
+  ["noV"] = "op",
   ["no"] = "op",
-  niI = "normal",
-  niR = "normal",
-  niV = "normal",
-  nt = "normal",
-  v = "visual",
-  V = "visual_lines",
+  ["niI"] = "normal",
+  ["niR"] = "normal",
+  ["niV"] = "normal",
+  ["v"] = "visual",
+  ["vs"] = "visual",
+  ["V"] = "visual_lines",
+  ["Vs"] = "visual_lines",
   [""] = "visual_block",
-  s = "select",
-  S = "select",
+  [" "] = "visual_block",
+  [" s"] = "visual_block",
+  ["s"] = "select",
+  ["S"] = "select",
   [""] = "block",
-  i = "insert",
-  ic = "insert",
-  ix = "insert",
-  R = "replace",
-  Rc = "replace",
-  Rv = "v_replace",
-  Rx = "replace",
-  c = "command",
-  cv = "command",
-  ce = "command",
-  r = "enter",
-  rm = "more",
+  ["i"] = "insert",
+  ["ic"] = "insert",
+  ["ix"] = "insert",
+  ["R"] = "replace",
+  ["Rc"] = "replace",
+  ["Rv"] = "v_replace",
+  ["Rx"] = "replace",
+  ["c"] = "command",
+  ["cv"] = "command",
+  ["ce"] = "command",
+  ["r"] = "enter",
+  ["rm"] = "more",
   ["r?"] = "confirm",
   ["!"] = "shell",
-  t = "terminal",
+  ["t"] = "terminal",
+  ["nt"] = "terminal",
   ["null"] = "none",
 }, {
   __call = function(self, raw_mode) return self[raw_mode] end,
 })
+
+util.get_mode = function(mode)
+  local m = util.mode[mode]
+  return m or util.mode["null"]
+end
 
 util.mode_label = {
   normal = "NORMAL",
@@ -166,6 +161,39 @@ util.create_metatable = function(default, opts, default_key, no_index)
     end,
     __index = no_index and nil or function(_, key) return (default or {})[key] or (default or {})[default_key] end,
   })
+end
+
+-- Create callout sections in the statusline, to stand out from theme supplied colors
+-- @param component component to surround
+-- @param options? specify surround delimiters and hl colors
+-- @param opts? heirline opts
+-- @return heirline component surrounded
+util.CalloutSection = function(component, options)
+  options = options or {}
+  local surround = options["surround"] or {}
+  if #surround == 0 then return component end
+
+  local hl = options["hl"]
+  local left = options["left"]
+  local right = options["right"]
+  local condition = options["condition"]
+
+  if #surround == 0 then return component end
+
+  if left or right then
+    local colors = function(self)
+      local l = type(left) == "function" and left(self) or left
+      local r = type(right) == "function" and right(self) or right
+      local h = type(hl) == "function" and hl(self) or hl
+      return { main = h, left = l, right = r }
+    end
+
+    return astro_status.utils.surround(surround, colors, component or { provider = "" }, condition)
+  end
+
+  return heirline.surround(surround, function() -- color
+    return type(hl) == "function" and hl() or hl
+  end, component or { provider = "" })
 end
 
 return util

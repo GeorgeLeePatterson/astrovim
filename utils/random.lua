@@ -16,25 +16,25 @@ function M.random_gen(list)
   return list[math.random(1, #list)]
 end
 
+function M.get_random_key(tbl)
+  local keys = vim.tbl_keys(tbl)
+  return M.random_gen(keys)
+end
+
 -- choose a random element from `tbl`
 -- `simple` is a boolean flag to return the key and nested table
 function M.random_tbl_gen(tbl, simple)
-  math.randomseed(os.time())
-  local rnd_idx = math.random(1, #tbl)
-  local keys = {}
-  for k in pairs(tbl) do
-    table.insert(keys, k)
-  end
-  local key = keys[rnd_idx]
+  local key = M.get_random_key(tbl)
   local value = tbl[key]
 
   if simple then return key, value end
 
   if type(value) == "table" then
-    return key, value[math.random(1, #value)]
-  else
-    return key, value
+    local t_key = M.get_random_key(value)
+    return key, value[t_key]
   end
+
+  return key, value
 end
 
 return M

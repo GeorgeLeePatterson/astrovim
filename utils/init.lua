@@ -26,9 +26,6 @@ local a_utils = require "astronvim.utils"
 local user_config = require "user.config"
 local random = require "user.utils.random"
 
--- Merge random functions
-M = vim.tbl_extend("force", M, random)
-
 --
 -- Theme Helpers
 --
@@ -188,5 +185,18 @@ function M.git_root()
   local git_path = vim.fn.finddir(".git", ".;")
   return vim.fn.fnamemodify(git_path, ":h")
 end
+
+function M.create_user_command(name, fn, opts)
+  vim.api.nvim_create_user_command(name, function()
+    if type(fn) == "function" then
+      fn()
+    else
+      vim.notify(vim.inspect(fn))
+    end
+  end, opts)
+end
+
+-- Merge random functions
+M = vim.tbl_extend("force", M, random)
 
 return M

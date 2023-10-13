@@ -11,11 +11,14 @@ local M = {
 
 M.random = function()
   local categories = M.categories
+
   local cat_keys = vim.tbl_keys(categories)
   cat_keys = user_utils.list_extend_rep(cat_keys, "neovim", 2)
   cat_keys = user_utils.list_extend_rep(cat_keys, "gaming", 2)
+
   local category = user_utils.random_gen(cat_keys)
   local name, art = user_utils.random_tbl_gen(categories[category], true)
+
   return category, name, art
 end
 

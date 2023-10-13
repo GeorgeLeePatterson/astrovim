@@ -12,7 +12,7 @@ local astro_status = require "astronvim.utils.status"
 
 local util = require "user.utils.heirline.util"
 local icons = util.icons
-local mode = util.mode
+local get_mode = util.get_mode
 
 local theme = require "user.utils.heirline.theme"
 local hl = theme.highlight
@@ -84,17 +84,14 @@ do
 
     local ActiveModeIndicator = {
       condition = function(self) return self.mode ~= "normal" end,
-      hl = { bg = hl.StatusLine.bg },
+      -- hl = { bg = hl.StatusLine.bg },
       heirline.surround(
         { icons.powerline.block, icons.powerline.block .. icons.powerline.right_filled },
         function(self) -- color
           return hl.Mode[self.mode].bg
         end,
         {
-          {
-            fallthrough = false,
-            { provider = icons.pacman },
-          },
+          { provider = icons.pacman },
           Space,
           { provider = function(self) return util.mode_label[self.mode] end },
           hl = function(self) return hl.Mode[self.mode] end,
@@ -104,9 +101,14 @@ do
 
     VimMode = {
       init = function(self)
-        self.mode = mode[fn.mode(1)] -- :h mode()
+        self.mode = get_mode(fn.mode(1)) -- :h mode()
       end,
-      condition = function() return bo.buftype == "" end,
+      update = {
+        "ModeChanged",
+        pattern = "*:*",
+        callback = vim.schedule_wrap(function() vim.cmd.redrawstatus() end),
+      },
+      -- condition = function() return bo.buftype == "" end,
       {
         fallthrough = false,
         ActiveModeIndicator,
@@ -121,6 +123,101 @@ do
   }
 end
 
+local FileIcon = function()
+  return astro_status.component.file_info { -- file icon
+    filetype = false,
+    filename = false,
+    file_modified = false,
+    surround = {
+      separator = { "", "" },
+      color = "file_info_bg",
+    },
+    condition = function() return astro_conditions.has_filetype(nil) and bo.buftype == "" end,
+  }
+end
+
+local FileName = function()
+  return util.CalloutSection(
+    astro_status.component.file_info { -- file name
+      filetype = false,
+      filename = {},
+      file_modified = { padding = { left = 1, right = 1 }, hl = hl.ReadOnly },
+      file_icon = false,
+      surround = false,
+      hl = function() return theme.get_callout_hl(true) end,
+    },
+    {
+      surround = {
+        icons.powerline.left_filled .. icons.powerline.block,
+        icons.powerline.block .. icons.powerline.right_filled,
+      },
+      hl = function() return theme.get_callout_hl()["bg"] end,
+    }
+  )
+end
+
+local Diagnostics = function()
+  return util.CalloutSection({
+    ReadOnly,
+    astro_status.component.git_diff {
+      surround = false,
+    },
+    astro_status.component.diagnostics {
+      surround = false,
+    },
+    {
+      provider = " ",
+      condition = function(self) return not self.has_diagnostics and bo.buftype == "" end,
+    },
+    {
+      provider = "  ",
+      hl = function() return { fg = hl_colors["ForestgreenCustomFg"].fg } end,
+      condition = function(self) return not self.has_diagnostics and bo.buftype == "" end,
+    },
+    condition = astro_conditions.has_filetype,
+  }, {
+    surround = {
+      icons.powerline.left_filled .. icons.powerline.block,
+      icons.powerline.block .. icons.powerline.right_filled,
+    },
+    hl = function() return theme.get_callout_hl()["bg"] end,
+  })
+end
+
+local Treesitter = function()
+  return util.CalloutSection(
+    astro_status.component.treesitter {
+      surround = false,
+      hl = function() return theme.get_callout_hl() end,
+    },
+    {
+      surround = {
+        icons.powerline.left_filled .. icons.powerline.block,
+        icons.powerline.block .. icons.powerline.right_filled,
+      },
+      right = function(self) return theme.lsp_server_accent(self.lsp_names).bg end,
+      hl = function() return theme.get_callout_hl()["bg"] end,
+    }
+  )
+end
+
+local Nav = function()
+  return util.CalloutSection(
+    astro_status.component.nav {
+      surround = false,
+      hl = function() return theme.get_callout_hl(true) end,
+    },
+    {
+      surround = {
+        icons.powerline.left_filled .. icons.powerline.block,
+        "",
+      },
+      left = function(self) return theme.lsp_server_accent(self.lsp_names).bg end,
+      hl = function() return theme.get_callout_hl()["bg"] end,
+    }
+  )
+end
+
 M.StatusLines = {
   init = function(self)
     local names = {}
@@ -128,8 +225,8 @@ M.StatusLines = {
     for _, server in pairs(vim.lsp.get_clients { bufnr = bufnr }) do
       table.insert(names, server.name)
     end
-    self.lsp_names = names
 
+    self.lsp_names = names
     self.errors = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
     self.warnings = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
     self.hints = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.HINT })
@@ -142,77 +239,17 @@ M.StatusLines = {
     Indicator,
     astro_status.component.cmd_info(),
 
-    -- File information
-    astro_status.component.file_info { -- file icon
-      filetype = false,
-      filename = false,
-      file_modified = false,
-      surround = {
-        separator = { "", "" },
-        color = "file_info_bg",
-      },
-      condition = function() return astro_conditions.has_filetype(nil) and bo.buftype == "" end,
-    },
-    util.IconProvider(icons.powerline.left_filled .. icons.powerline.block, {
-      hl = { fg = hl.StatusLineDark.bg },
-      condition = astro_conditions.has_filetype,
-    }),
-    astro_status.component.file_info { -- file name
-      filetype = false,
-      filename = {},
-      file_icon = false,
-      file_modified = false,
-      hl = hl.StatusLineDark,
-      surround = {
-        separator = { "", "" },
-        condition = astro_conditions.has_filetype,
-      },
-    },
+    -- File info
+    FileIcon(),
+    FileName(),
 
     -- Git information
-    util.IconProvider(icons.powerline.block .. icons.powerline.right_filled, {
-      hl = function(self) return theme.lsp_server_accent(self.lsp_names) end,
-      condition = astro_conditions.has_filetype,
-    }),
     astro_status.component.git_branch {
-      surround = {
-        separator = { " ", " " },
-        color = function(self) return theme.lsp_server_surround(self.lsp_names, { "main", "left", "right" }) end,
-      },
-      hl = { fg = hl.StatusLineDark.bg },
+      surround = { separator = { " ", " " } },
     },
-    util.IconProvider(icons.powerline.left_filled .. icons.powerline.block, {
-      hl = function(self) return theme.lsp_server_accent(self.lsp_names) end,
-    }),
 
     -- Diagnostic information
-    astro_status.utils.surround({ "", "" }, hl.StatusDark, {
-      ReadOnly {
-        hl = { bg = hl.StatusLineDark.bg },
-      },
-      astro_status.component.git_diff {
-        hl = hl.StatusLineDark,
-        surround = {
-          separator = { "", "" },
-          condition = astro_conditions.has_filetype,
-        },
-      },
-      astro_status.component.diagnostics {
-        hl = hl.StatusLineDark,
-        surround = {
-          separator = { "", "" },
-          condition = astro_conditions.has_filetype,
-        },
-      },
-      {
-        provider = "  ",
-        hl = { fg = hl_colors["LawngreenCustomFg"].fg, bg = hl.StatusLineDark.bg },
-        condition = function(self) return not self.has_diagnostics and bo.buftype == "" end,
-      },
-    }, nil),
-    util.IconProvider(icons.powerline.block .. icons.powerline.right_filled, {
-      hl = { fg = hl.StatusLineDark.bg },
-    }),
+    Diagnostics(),
 
     -- LSP information
     Align,
@@ -220,17 +257,10 @@ M.StatusLines = {
     Align,
 
     -- Treesitter information
-    astro_status.component.treesitter {
-      surround = {
-        separator = { icons.powerline.left_filled .. icons.powerline.block, "" },
-        color = { main = hl.StatusLineDark.bg },
-      },
-    },
+
+    Treesitter(),
 
     -- File type
-    util.IconProvider(icons.powerline.block .. icons.powerline.right_filled, {
-      hl = function(self) return theme.lsp_server_accent(self.lsp_names) end,
-    }),
     astro_status.component.file_info {
       filetype = {},
       filename = false,
@@ -240,19 +270,11 @@ M.StatusLines = {
         separator = { " ", " " },
         color = function(self) return theme.lsp_server_surround(self.lsp_names, { "main", "left", "right" }) end,
       },
-      hl = { fg = hl.StatusLineDark.bg },
+      hl = { fg = theme.get_callout_hl()["bg"] },
     },
-    util.IconProvider(icons.powerline.left_filled .. icons.powerline.block, {
-      hl = function(self) return theme.lsp_server_accent(self.lsp_names) end,
-    }),
 
     -- Nav information
-    astro_status.component.nav {
-      surround = {
-        separator = { "", "" },
-        color = hl.StatusLineDark.bg,
-      },
-    },
+    Nav(),
   },
 }
 

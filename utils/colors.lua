@@ -158,4 +158,26 @@ M.generate_hls = function()
   return hl
 end
 
+-- Using lush, get information about colorscheme
+M.theme_info = function()
+  local lush_ok, lush = pcall(require, "lush")
+  if lush_ok then
+    local normal = vim.api.nvim_get_hl_by_name("Normal", true)
+    if normal and normal["background"] then
+      local norm_bg = normal["background"]
+      local norm_bg_hex = string.format("%06x", norm_bg)
+      local norm_hsl = lush.hsl("#" .. norm_bg_hex)
+      if norm_hsl then
+        local fg = norm_hsl.readable().hex
+        return {
+          fg = fg,
+          lightness = norm_hsl.l,
+          is_dark = fg == "#FFFFFF",
+        }
+      end
+    end
+    return { is_dark = vim.o.background == "dark" }
+  end
+end
+
 return M

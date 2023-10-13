@@ -28,9 +28,14 @@ return {
     opts = function(_, opts)
       -- add more things to the ensure_installed table protecting against community packs modifying it
       opts.ensure_installed = require("astronvim.utils").list_insert_unique(opts.ensure_installed, {
+        "eslint_d",
+        "just",
         "prettier",
+        "stylelint",
         "stylua",
       })
+      opts.automatic_installation = true
+      return opts
     end,
   },
   {
@@ -63,7 +68,23 @@ return {
       },
     },
     event = "User AstroFile",
-    opts = function() return { on_attach = require("astronvim.utils.lsp").on_attach } end,
+    opts = function()
+      local null_ls = require "null-ls"
+      return {
+        on_attach = require("astronvim.utils.lsp").on_attach,
+        sources = {
+          null_ls.builtins.code_actions.eslint_d,
+          null_ls.builtins.diagnostics.stylint,
+          null_ls.builtins.diagnostics.tsc,
+          null_ls.builtins.formatting.hclfmt,
+          null_ls.builtins.formatting.just,
+          null_ls.builtins.formatting.nginx_beautifier,
+          null_ls.builtins.formatting.prettier,
+          null_ls.builtins.formatting.shfmt,
+          null_ls.builtins.formatting.stylelint,
+        },
+      }
+    end,
   },
   -- This is integrated with wezterm.
   -- see `~/.config/wezterm/keys.lua` for mappings

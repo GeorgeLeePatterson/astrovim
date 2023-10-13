@@ -74,6 +74,9 @@ return {
 
     -- Disabled for Noice plugin
     lsp_handlers_enabled = false, -- enable or disable default vim.lsp.handlers (hover and signature help)
+
+    -- Custom optons
+    colorscheme_bg = "dark",
   },
 }
 -- If you need more control, you can use the function()...end notation

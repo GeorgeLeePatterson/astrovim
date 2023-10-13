@@ -6,7 +6,12 @@ local common_styles = {
 }
 
 local themes = {
-  "rktjmp/lush.nvim",
+  {
+    "rktjmp/lush.nvim",
+    lazy = false,
+    priority = 999,
+    config = theme_config.configure_lush,
+  },
 }
 
 table.insert(

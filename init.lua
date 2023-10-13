@@ -25,7 +25,7 @@ return {
 
   -- Set colorscheme to use
   colorscheme = (function()
-    local _, theme = user_utils.random_tbl_gen(user_config.favorite_themes)
+    local _, theme = user_utils.random_tbl_gen(user_config.colorscheme.favorite_themes)
     return theme
   end)(),
 
