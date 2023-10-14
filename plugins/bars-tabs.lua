@@ -1,4 +1,3 @@
-local bufferline_opts = require("user.config").bufferline
 local icons = require("user.config").icons
 
 return {
@@ -18,7 +17,7 @@ return {
     dependencies = {
       "nvim-tree/nvim-web-devicons",
     },
-    opts = bufferline_opts,
+    opts = require "user.plugins.config.bufferline",
     event = "VeryLazy",
   },
   {

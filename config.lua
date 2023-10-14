@@ -1,5 +1,6 @@
 return {
   defaults = {
+    -- Only used if auto-dark-mode is enabled
     theme = {
       light = "github_light",
       dark = "horizon",
@@ -9,35 +10,27 @@ return {
     zen = false,
   },
   ai = {
+    -- Use this if you want to load one over the other. Remember to run
+    -- `Copilot auth` for copilot and `TabnineHub` for tabnine before using.
     copilot = true,
     tabnine = true,
   },
   colorscheme = {
     debug = false,
     favorite_themes = {
+      -- -- The loader uses the key (if k/v) or name to configure the theme.
+      -- -- If the name of the theme you want to randomly load is different
+      -- -- from the name of its plugin, them use the format below.
+      -- ["github-nvim-theme"] = { "github_dark", "github_light" },
+
+      -- -- More examples of some themes
       -- "mellifluous",
       -- "gruvbox",
-      -- ["github-nvim-theme"] = { "github_dark", "github_light" },
-      -- "bluloco",
+      -- "horizon",
+
+      -- Default themes. Keep, delete, add, whatever you want.
+      "bluloco",
       ["nightfox"] = { "nightfox", "nordfox" },
-      ["github-nvim-theme"] = { "github_dark" },
-      "horizon",
-    },
-  },
-  bufferline = {
-    options = {
-      offsets = {
-        { filetype = "neo-tree", text = "File Explorer", highlight = "NeoTreeNormal", padding = 0 },
-      },
-      themable = true,
-      indicator = {
-        icon = " ",
-        style = "icon",
-      },
-      diagnostics_update_in_insert = true,
-      show_tab_indicators = true,
-      separator_style = "slope",
-      diagnostics = "nvim_lsp",
     },
   },
   icons = {
