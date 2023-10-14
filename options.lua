@@ -57,6 +57,7 @@ local options = {
     smoothscroll = true,
     softtabstop = 4,
     spell = false, -- sets vim.opt.spell
+    splitkeep = "screen",
     tabstop = 4,
     termguicolors = true,
     updatetime = 200,

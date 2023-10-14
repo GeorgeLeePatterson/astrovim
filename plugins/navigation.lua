@@ -1,3 +1,4 @@
+---@diagnostic disable: missing-parameter
 local alpha_config = require "user.plugins.config.alpha"
 
 return {

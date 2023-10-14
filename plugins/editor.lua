@@ -1,6 +1,80 @@
 local ufo_config = require "user.plugins.config.ufo"
 
 return {
+  -- Layout
+  {
+    "folke/edgy.nvim",
+    event = "VeryLazy",
+    opts = {
+      options = {
+        left = { size = 40 },
+        bottom = { size = 10 },
+        right = { size = 40 },
+        top = { size = 10 },
+      },
+      bottom = {
+        {
+          ft = "toggleterm",
+          title = "TERMINAL",
+          size = { height = 0.4 },
+          filter = function(_, win) return vim.api.nvim_win_get_config(win).relative == "" end,
+        },
+        { ft = "spectre_panel", title = "SPECTRE", size = { height = 0.4 } },
+        { ft = "Trouble", title = "TROUBLE" },
+        { ft = "qf", title = "QUICKFIX" },
+        {
+          ft = "help",
+          size = { height = 20 },
+          -- only show help buffers
+          filter = function(buf) return vim.bo[buf].buftype == "help" end,
+        },
+      },
+      left = {
+        {
+          title = "  FILE",
+          ft = "neo-tree",
+          filter = function(buf) return vim.b[buf].neo_tree_source == "filesystem" end,
+          size = { height = 0.7 },
+        },
+        {
+          title = "  GIT",
+          ft = "neo-tree",
+          filter = function(buf) return vim.b[buf].neo_tree_source == "git_status" end,
+          pinned = true,
+          open = "Neotree position=right git_status",
+        },
+        {
+          title = "  BUFFERS",
+          ft = "neo-tree",
+          filter = function(buf) return vim.b[buf].neo_tree_source == "buffers" end,
+          pinned = true,
+          open = "Neotree position=top buffers",
+        },
+        {
+          title = "  OUTLINE",
+          ft = "Outline",
+          pinned = true,
+          open = "SymbolsOutline",
+        },
+        -- {
+        --   ft = "裂 DIAGNOSTICS",
+        --   filter = function(buf) return vim.b[buf].neo_tree_source == "diagnostics" end,
+        --   pinned = true,
+        --   open = "Neotree position=right diagnostics",
+        -- },
+        "neo-tree",
+      },
+    },
+  },
+  -- Symbols
+  {
+    "simrat39/symbols-outline.nvim",
+    cmd = "SymbolsOutline",
+    keys = { { "<leader>vs", "<cmd>SymbolsOutline<cr>", desc = "Symbols Outline" } },
+    opts = {
+      position = "right",
+    },
+  },
   -- Markdown
   { "ellisonleao/glow.nvim", config = true, cmd = "Glow" },
   {
@@ -119,6 +193,7 @@ return {
   {
     "AckslD/muren.nvim",
     cmd = { "MurenOpen", "MurenFresh", "MurenUnique" },
+    event = { "BufNewFile", "BufAdd" },
     keys = {
       {
         "<leader>sn",
