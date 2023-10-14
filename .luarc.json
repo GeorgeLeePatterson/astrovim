@@ -1,3 +1,32 @@
 {
-    "diagnostics.disable": []
+    "diagnostics": {
+        "disable": [
+            "missing-fields",
+            "incomplete-signature-doc"
+        ],
+        "groupSeverity": {
+            "strong": "Warning",
+            "strict": "Warning"
+        },
+        "groupFileStatus": {
+            "ambiguity": "Opened",
+            "await": "Opened",
+            "codestyle": "None",
+            "duplicate": "Opened",
+            "global": "Opened",
+            "luadoc": "Opened",
+            "redefined": "Opened",
+            "strict": "Opened",
+            "strong": "Opened",
+            "type-check": "Opened",
+            "unbalanced": "Opened",
+            "unused": "Opened"
+        },
+        "unusedLocalExclude": [
+            "^_"
+        ]
+    },
+    "telemetry": {
+        "enable": false
+    }
 }

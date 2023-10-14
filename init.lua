@@ -1,3 +1,4 @@
+---@diagnostic disable: no-unknown
 local user_config = require "user.config"
 local user_utils = require "user.utils"
 
