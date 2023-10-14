@@ -38,7 +38,7 @@ set_cursorline("WinEnter", true)
 set_cursorline("FileType", false, "TelescopePrompt")
 
 -- Additional options
-return {
+local options = {
   opt = {
     autoindent = true,
     background = require("user.config").defaults.background,
@@ -63,22 +63,33 @@ return {
     wrap = false, -- sets vim.opt.wrap
   },
   g = {
-    mapleader = " ", -- sets vim.g.mapleader
     autoformat_enabled = true, -- enable or disable auto formatting at start (lsp.formatting.format_on_save must be enabled)
-    cmp_enabled = true, -- enable completion at start
     autopairs_enabled = true, -- enable autopairs at start
+    cmp_enabled = true, -- enable completion at start
     diagnostics_mode = 3, -- set the visibility of diagnostics in the UI (0=off, 1=only show in status line, 2=virtual text off, 3=all on)
     icons_enabled = true, -- disable icons in the UI (disable if no nerd font is available, requires :PackerSync after changing)
-    ui_notifications_enabled = true, -- disable notifications when toggling UI elements
-    resession_enabled = true, -- enable experimental resession.nvim session management (will be default in AstroNvim v4)
+
+    -- Turn off warnings related to certain languages
+    loaded_perl_provider = 0,
+    loaded_ruby_provider = 0,
 
     -- Disabled for Noice plugin
     lsp_handlers_enabled = false, -- enable or disable default vim.lsp.handlers (hover and signature help)
+    mapleader = " ", -- sets vim.g.mapleader
+    resession_enabled = true, -- enable experimental resession.nvim session management (will be default in AstroNvim v4)
+    ui_notifications_enabled = true, -- disable notifications when toggling UI elements
 
-    -- Custom optons
+    -- Custom optons: Initialize variable, not strictly necessary, automatically set by autocmd
     colorscheme_bg = "dark",
   },
 }
+
+-- neovide specific
+if vim.g.neovide then
+  options.o.guifont = "JetBrainsMono Nerd Font,VictorMono Nerd Font"
+  options.g.neovide_scale_factor = 0.3
+end
+
 -- If you need more control, you can use the function()...end notation
 -- return function(local_vim)
 --   local_vim.opt.relativenumber = true
@@ -88,3 +99,5 @@ return {
 --
 --   return local_vim
 -- end
+
+return options

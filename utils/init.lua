@@ -196,6 +196,22 @@ function M.create_user_command(name, fn, opts)
   end, opts)
 end
 
+function M.get_cursor()
+  local cursor = vim.api.nvim_win_get_cursor(0)
+  return { row = cursor[1], col = cursor[2] }
+end
+
+function M.get_visual_selection()
+  local vpos = vim.fn.getpos "v"
+  local begin_pos = { row = vpos[2], col = vpos[3] - 1 }
+  local end_pos = M.get_cursor()
+  if (begin_pos.row < end_pos.row) or ((begin_pos.row == end_pos.row) and (begin_pos.col <= end_pos.col)) then
+    return { start = begin_pos, ["end"] = end_pos }
+  else
+    return { start = end_pos, ["end"] = begin_pos }
+  end
+end
+
 -- Merge random functions
 M = vim.tbl_extend("force", M, random)
 

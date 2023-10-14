@@ -172,8 +172,11 @@ local maps = {
     ["<leader>mj5"] = { function() vim.cmd [[colorscheme terafox]] end, desc = "Terafox" },
     ["<leader>mj6"] = { function() vim.cmd [[colorscheme carbonfox]] end, desc = "Carbonfox" },
 
+    -- Spectre
+    ["<leader>s"] = { name = "󰬲 Search & Replace" },
+
     -- Lspsaga
-    ["<leader>v"] = { name = "View More" },
+    ["<leader>v"] = { name = " View More" },
 
     -- Wezterm
     ["<leader>W"] = { name = " Wezterm" },

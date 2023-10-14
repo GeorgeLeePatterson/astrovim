@@ -101,8 +101,47 @@ return {
 
   -- Searching
   {
+    "ray-x/sad.nvim",
+    cmd = "Sad",
+    dependencies = {
+      { "ray-x/guihua.lua", build = "cd lua/fzy && make" },
+    },
+    keys = {
+      {
+        "<leader>ss",
+        function() vim.cmd(":Sad " .. vim.fn.input "Enter search pattern: ") end,
+        mode = { "n", "v", "s" },
+        desc = "Sad s&r (cursor)",
+      },
+    },
+    config = function() require("sad").setup {} end,
+  },
+  {
+    "AckslD/muren.nvim",
+    cmd = { "MurenOpen", "MurenFresh", "MurenUnique" },
+    keys = {
+      {
+        "<leader>sn",
+        function() vim.cmd [[MurenOpen]] end,
+      },
+    },
+    config = function()
+      require("muren").setup {
+        anchor = "bottom_right",
+      }
+    end,
+  },
+  {
     "nvim-pack/nvim-spectre",
     cmd = "Spectre",
+    keys = {
+      {
+        "<leader>so",
+        function() vim.cmd [[Spectre]] end,
+        mode = { "n", "v", "s" },
+        desc = "Start spectre search",
+      },
+    },
     opts = function()
       local prefix = "<leader>s"
       return {
