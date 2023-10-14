@@ -57,6 +57,11 @@ return {
           never_show = { ".DS_Store" },
         },
       },
+      default_component_configs = {
+        name = {
+          highlight_opened_files = true,
+        },
+      },
       window = {
         width = 30,
       },

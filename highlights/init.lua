@@ -9,15 +9,15 @@ local green = get_hlgroup("String").fg
 local red = get_hlgroup("Error").fg
 
 local custom_highlights = { -- this table overrides highlights in all themes
-  PmenuSel = { bg = "#282C34", fg = "NONE" },
-  Pmenu = { bg = "NONE", fg = "NONE" },
+  -- PmenuSel = { bg = "#282C34", fg = "NONE" },
+  -- Pmenu = { bg = "NONE", fg = "NONE" },
 
-  FloatBorder = { fg = "#3774B4", bg = "NONE" },
+  -- FloatBorder = { fg = "#3774B4", bg = "NONE" },
 
   -- nvim-cmp menu overrides
 
   -- Custom border with transparent bg
-  BorderOnly = { fg = "#3774B4", bg = "None" },
+  -- BorderOnly = { fg = "#3774B4", bg = "None" },
 
   CmpItemAbbrDeprecated = { fg = "#7E8294", bg = "NONE", strikethrough = true },
   CmpItemAbbrMatch = { fg = "#FB4374", bg = "NONE", bold = true },

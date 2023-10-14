@@ -40,14 +40,14 @@ M.config = function()
           height = "auto",
         },
         border = {
-          style = "rounded",
+          -- style = "rounded",
           padding = { 0, 1 },
         },
         win_options = {
-          winhighlight = {
-            Normal = "Normal",
-            FloatBorder = "DiagnosticInfo",
-          },
+          -- winhighlight = {
+          --   Normal = "Normal",
+          --   FloatBorder = "DiagnosticInfo",
+          -- },
         },
       },
     },

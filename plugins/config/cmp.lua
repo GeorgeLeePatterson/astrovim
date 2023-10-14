@@ -37,11 +37,12 @@ M.default_kind_priority = {
 }
 
 M.lsp_kind_opts = function(opts)
-  opts.mode = "symbol_text"
+  opts = opts or {}
+  opts.mode = opts.mode or "symbol_text"
   opts.symbol_map = icons.kinds
   opts.menu = icons.cmp_sources
-  opts.maxwidth = 50
-  opts.ellipsis_char = "..."
+  opts.maxwidth = opts.maxwidth or 50
+  opts.ellipsis_char = opts.ellipsis_char or "..."
   return opts
 end
 
@@ -80,32 +81,67 @@ function M.lspkind_comparator(conf)
 end
 
 -- Format suggestions
-function M.format_suggestion(entry, vim_item)
-  local default_lsp_kind_opts = M.lsp_kind_opts {}
-  local parts = require("lspkind").cmp_format(default_lsp_kind_opts)(entry, vim_item)
-  local original_menu = parts.menu
 
-  -- split `kind` to separate icon and actual `type`
-  local strings = vim.split(parts.kind, "%s", { trimempty = true })
-  local kind = strings[1] or ""
-  parts.kind = " " .. kind .. " "
+-- Variation: Icon - Abbr - { KindType, Menu }
+-- @returns col_offset, formatting
+function M.format_ico_first()
+  local format = function(entry, vim_item)
+    local default_lsp_kind_opts = M.lsp_kind_opts { maxwidth = 30 }
+    local parts = require("lspkind").cmp_format(default_lsp_kind_opts)(entry, vim_item)
+    local original_menu = parts.menu
 
-  local kind_type = (strings[2] or "")
-  if entry.source.name == "cmp_tabnine" then
-    local detail = (entry.completion_item.labelDetails or {}).detail
-    if detail and detail:find ".*%%.*" then kind_type = kind_type .. " " .. detail end
-    if (entry.completion_item.data or {}).multiline then kind_type = kind_type .. " " .. " " .. "[ml]" end
+    -- split `kind` to separate icon and actual `type`
+    local strings = vim.split(parts.kind, "%s", { trimempty = true })
+    local kind = strings[1] or ""
+    parts.kind = " " .. kind .. " "
+
+    local kind_type = (strings[2] or "")
+    if entry.source.name == "cmp_tabnine" then
+      local detail = (entry.completion_item.labelDetails or {}).detail
+      if detail and detail:find ".*%%.*" then kind_type = kind_type .. " " .. detail end
+      if (entry.completion_item.data or {}).multiline then kind_type = kind_type .. " " .. "[ml]" end
+    end
+
+    -- Combine Kind `type` and Menu
+    parts.menu = "    " .. kind_type .. " "
+
+    local longest_w_tn = longest_kind_type + 2
+    parts.menu = user_utils.str_pad_len(parts.menu, longest_w_tn) .. "  "
+
+    if original_menu then parts.menu = parts.menu .. original_menu end
+
+    return parts
   end
+  return -4, {
+    fields = { "kind", "abbr", "menu" },
+    format = format,
+  }
+end
 
-  -- Combine Kind `type` and Menu
-  parts.menu = "    " .. kind_type .. " "
+-- Variation: Abbr - Kind - Menu
+-- @returns col_offset, formatting
+function M.format_abbr_first()
+  local format = function(entry, vim_item)
+    local default_lsp_kind_opts = M.lsp_kind_opts {}
+    local parts = require("lspkind").cmp_format(default_lsp_kind_opts)(entry, vim_item)
+    local kind = parts.kind
 
-  local longest_w_tn = longest_kind_type + 4
-  parts.menu = user_utils.str_pad_len(parts.menu, longest_w_tn) .. "  "
+    if entry.source.name == "cmp_tabnine" then
+      local detail = (entry.completion_item.labelDetails or {}).detail
+      if detail and detail:find ".*%%.*" then kind = kind .. " " .. detail end
+      if (entry.completion_item.data or {}).multiline then kind = kind .. " " .. "[ml]" end
+    end
 
-  if original_menu then parts.menu = parts.menu .. original_menu end
+    local longest_w_tn = longest_kind_type + 2
+    kind = user_utils.str_pad_len(kind, longest_w_tn) .. "  "
+    parts.kind = kind
 
-  return parts
+    return parts
+  end
+  return 0, {
+    fields = { "abbr", "kind", "menu" },
+    format = format,
+  }
 end
 
 function M.opts(_, o)
@@ -124,6 +160,8 @@ function M.opts(_, o)
   local cmp = require "cmp"
   local compare = require "cmp.config.compare"
   local luasnip = require "luasnip"
+
+  local col_offset, formatter = M.format_abbr_first()
 
   local opts = vim.tbl_deep_extend("force", o, {
     -- Sources
@@ -153,10 +191,7 @@ function M.opts(_, o)
     },
 
     -- Inside formatting
-    formatting = {
-      fields = { "kind", "abbr", "menu" },
-      format = M.format_suggestion,
-    },
+    formatting = formatter,
 
     -- Sorting
     sorting = {
@@ -176,16 +211,32 @@ function M.opts(_, o)
     -- Window formatting
     window = {
       completion = {
-        border = "rounded",
-        winhighlight = "Normal:Pmenu,Search:None,FloatBorder:BorderOnly", --
-        col_offset = -4,
-        side_padding = 0,
+        --- top-left, top, top-right, right, bottom-right, bottom, bottom-left, left
+        border = { "", "", "", "", "", "", "", "" },
+        -- winhighlight = "Normal:Pmenu,Search:None,FloatBorder:BorderOnly", --
+        winhighlight = "Normal:Pmenu,FloatBorder:None,Search:None,CursorLine:PmenuSel",
+        col_offset = col_offset,
+        side_padding = 1,
+      },
+      documentation = {
+        border = { "", "", "", " ", "", "", "", " " },
+        winhighlight = "FloatBorder:NormalFloat",
       },
     },
 
     -- Mapping
     mapping = vim.tbl_extend("force", o.mapping, {
-      ["<CR>"] = cmp.mapping.confirm { select = true },
+      ["<CR>"] = cmp.mapping {
+        i = function(fallback)
+          if cmp.visible() and cmp.get_active_entry() then
+            cmp.confirm { behavior = cmp.ConfirmBehavior.Replace, select = false }
+          else
+            fallback()
+          end
+        end,
+        s = cmp.mapping.confirm { select = true },
+        c = cmp.mapping.confirm { behavior = cmp.ConfirmBehavior.Replace, select = false },
+      },
       ["<Tab>"] = cmp.mapping(function(fallback)
         if cmp.visible() and has_words_before() then
           cmp.select_next_item()
