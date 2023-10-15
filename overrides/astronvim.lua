@@ -18,3 +18,6 @@ if is_available "resession.nvim" then
     end,
   })
 end
+
+-- Disable autocmd for alpha. No statusline would be ideal, but it's buggy
+if is_available "alpha-nvim" then local _ = pcall(vim.api.nvim_del_augroup_by_name, "alpha_settings") end

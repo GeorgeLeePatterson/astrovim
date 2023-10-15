@@ -9,12 +9,21 @@ local _themes = {
   {
     "EdenEast/nightfox.nvim",
     {
-      init = function()
-        require("nightfox").init {
+      opts = {
+        options = {
           dim_inactive = true,
           styles = common_styles,
-        }
-      end,
+          inverse = {
+            search = true,
+            visual = true,
+          },
+          modules = {
+            telescope = {
+              TelescopeMatching = { link = "Substitute" },
+            },
+          },
+        },
+      },
     },
   },
   { "uloco/bluloco.nvim", { dependencies = { "rktjmp/lush.nvim" } } },

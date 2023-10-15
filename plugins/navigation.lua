@@ -28,24 +28,24 @@ return {
         "s1n7ax/nvim-window-picker",
         event = "VeryLazy",
         opts = {
+          hint = "floating-big-letter",
           autoselect_one = true,
-          include_current = false,
+          include_current = true,
           filter_rules = {
             -- filter using buffer options
             bo = {
               -- if the file type is one of following, the window will be ignored
-              filetype = { "neo-tree", "neo-tree-popup", "notify" },
+              filetype = { "neo-tree", "neo-tree-popup", "notify", "alpha", "dashboard", "Trouble" },
 
               -- if the buffer type is one of following, the window will be ignored
-              buftype = { "terminal", "quickfix" },
+              -- buftype = { "terminal" },
             },
           },
-          other_win_hl_color = "#e35e4f",
         },
       },
     },
     opts = {
-      open_files_do_not_replace_types = { "terminal", "trouble", "qf" },
+      open_files_do_not_replace_types = { "terminal", "trouble", "qf", "edgy", "notify" },
       filesystem = {
         follow_current_file = {
           enabled = true,
@@ -63,9 +63,7 @@ return {
           highlight_opened_files = true,
         },
       },
-      window = {
-        width = 30,
-      },
+      window = { width = 30 },
     },
   },
   { "glepnir/flybuf.nvim", cmd = "FlyBuf", config = function() require("flybuf").setup {} end },

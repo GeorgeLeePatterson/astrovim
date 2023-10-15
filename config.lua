@@ -30,7 +30,8 @@ return {
 
       -- Default themes. Keep, delete, add, whatever you want.
       "bluloco",
-      ["nightfox"] = { "nightfox", "nordfox" },
+      "nightfox",
+      "gruvbox",
     },
   },
   icons = {

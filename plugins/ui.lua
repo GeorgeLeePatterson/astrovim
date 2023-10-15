@@ -1,5 +1,20 @@
 return {
   {
+    "rcarriga/nvim-notify",
+    branch = "master",
+    event = "VimEnter",
+    config = function(_, opts)
+      require("notify").setup(vim.tbl_deep_extend("force", opts, {
+        timeout = 3000,
+        level = vim.log.levels.INFO,
+        fps = 20,
+        -- max_height = function() return math.floor(vim.o.lines * 0.75) end,
+        -- max_width = function() return math.floor(vim.o.columns * 0.75) end,
+        render = "compact",
+      }))
+    end,
+  },
+  {
     "folke/noice.nvim",
     dependencies = {
       "MunifTanjim/nui.nvim",

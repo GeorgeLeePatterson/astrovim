@@ -47,6 +47,7 @@ local options = {
     expandtab = true,
     formatoptions = formatoptions(vim.opt),
     incsearch = true,
+    laststatus = 3,
     number = true, -- sets vim.opt.number
     relativenumber = true, -- sets vim.opt.relativenumber
     shell = "zsh",

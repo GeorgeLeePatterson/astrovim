@@ -116,7 +116,7 @@ return {
           },
           mappings = vim.tbl_deep_extend("force", mappings, {
             i = {
-              ["<C-h>"] = R("telescope").extensions.hop.hop,
+              ["<C-h>"] = function() R("telescope").extensions.hop.hop() end,
               ["<C-space>"] = function(prompt_bufnr)
                 require("telescope").extensions.hop._hop_loop(
                   prompt_bufnr,
@@ -136,10 +136,10 @@ return {
             depth = 2,
             mappings = {
               i = {
-                ["<C-z>"] = fb_actions.toggle_hidden,
+                ["<C-z>"] = function() fb_actions.toggle_hidden() end,
               },
               n = {
-                z = fb_actions.toggle_hidden,
+                z = function() fb_actions.toggle_hidden() end,
               },
             },
           },

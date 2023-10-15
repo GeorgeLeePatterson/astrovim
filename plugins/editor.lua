@@ -1,7 +1,14 @@
 local ufo_config = require "user.plugins.config.ufo"
 
+-- Error executing lua callback: ...atterson/.local/share/nvim/lazy/alpha-nvim/lua/alpha.lua:621: Invalid window id: 1003
+-- stack traceback:
+-- 	[C]: in function 'nvim_win_get_width'
+-- 	...atterson/.local/share/nvim/lazy/alpha-nvim/lua/alpha.lua:621: in function 'draw'
+-- 	...atterson/.local/share/nvim/lazy/alpha-nvim/lua/alpha.lua:662: in function 'redraw'
+-- 	...atterson/.local/share/nvim/lazy/alpha-nvim/lua/alpha.lua:536: in function <...atterson/.local/share/nvim/lazy/alpha-nvim/lua/alpha.lua:536>
+
 return {
-  -- Layout
+  -- Editor layout and configuration
   {
     "folke/edgy.nvim",
     event = "VeryLazy",
@@ -36,13 +43,14 @@ return {
           filter = function(buf) return vim.b[buf].neo_tree_source == "filesystem" end,
           size = { height = 0.7 },
         },
-        {
-          title = "  GIT",
-          ft = "neo-tree",
-          filter = function(buf) return vim.b[buf].neo_tree_source == "git_status" end,
-          pinned = true,
-          open = "Neotree position=right git_status",
-        },
+        -- -- Disabled to free up real estate.
+        -- {
+        --   title = "  GIT",
+        --   ft = "neo-tree",
+        --   filter = function(buf) return vim.b[buf].neo_tree_source == "git_status" end,
+        --   pinned = true,
+        --   open = "Neotree position=right git_status",
+        -- },
         {
           title = "  BUFFERS",
           ft = "neo-tree",
@@ -65,6 +73,12 @@ return {
         "neo-tree",
       },
     },
+  },
+  {
+    "HiPhish/rainbow-delimiters.nvim",
+    dependencies = "nvim-treesitter/nvim-treesitter",
+    event = "User AstroFile",
+    -- config = function(_, opts) require "rainbow-delimiters.setup"(opts) end,
   },
   -- Symbols
   {
