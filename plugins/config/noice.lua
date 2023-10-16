@@ -44,8 +44,8 @@ M.config = function()
       bottom_search = false,
       command_palette = true,
       inc_rename = true,
-      -- lsp_doc_border = true,
       long_message_to_split = true,
+      -- lsp_doc_border = true,
     },
   }
 end

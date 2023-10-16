@@ -62,6 +62,7 @@ return {
           hide_gitignored = false,
           never_show = { ".DS_Store" },
         },
+        -- Not sure but I thik w/ edgy this is very important
         hijack_netrw_behavior = "open_default",
       },
       default_component_configs = {
@@ -69,7 +70,19 @@ return {
           highlight_opened_files = true,
         },
       },
-      window = { width = 30 },
+      -- Add some additional mappings for moving around
+      commands = {
+        use_flash = function()
+          local ok, flash = pcall(require, "flash")
+          if ok then flash.jump() end
+        end,
+      },
+      window = {
+        width = 30,
+        mappings = {
+          ["gs"] = "use_flash",
+        },
+      },
     },
   },
   { "glepnir/flybuf.nvim", cmd = "FlyBuf", config = function() require("flybuf").setup {} end },

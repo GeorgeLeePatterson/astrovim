@@ -1,94 +1,16 @@
 local ufo_config = require "user.plugins.config.ufo"
 
 return {
-  -- Editor layout and configuration
+  -- [[ Layout & Editor ]]
   {
     "folke/edgy.nvim",
-    event = "VimEnter",
-    opts = {
-      options = {
-        left = { size = 40 },
-        bottom = { size = 10 },
-        right = { size = 40 },
-        top = { size = 10 },
-      },
-      bottom = {
-        {
-          ft = "toggleterm",
-          title = "TERMINAL",
-          size = { height = 0.4 },
-          filter = function(_, win) return vim.api.nvim_win_get_config(win).relative == "" end,
-        },
-        {
-          ft = "noice",
-          title = "NOICE",
-          size = { height = 0.4 },
-          filter = function(_, win) return vim.api.nvim_win_get_config(win).relative == "" end,
-        },
-        { ft = "spectre_panel", title = "SPECTRE", size = { height = 0.4 } },
-        { ft = "Trouble", title = "TROUBLE" },
-        { ft = "qf", title = "QUICKFIX" },
-        {
-          ft = "help",
-          size = { height = 20 },
-          -- only show help buffers
-          filter = function(buf) return vim.bo[buf].buftype == "help" end,
-        },
-      },
-      left = {
-        {
-          title = "  FILE",
-          ft = "neo-tree",
-          filter = function(buf) return vim.b[buf].neo_tree_source == "filesystem" end,
-          open = "Neotree position=top filesystem",
-          -- open = function()
-          --   if package.loaded["neo-tree"] then vim.cmd [[Neotree source-filesystem close]] end
-          --   vim.cmd [[Neotree source=filesystem]]
-          -- end,
-          size = { height = 0.6 },
-        },
-        -- -- Disabled to free up real estate.
-        -- {
-        --   title = "  GIT",
-        --   ft = "neo-tree",
-        --   filter = function(buf) return vim.b[buf].neo_tree_source == "git_status" end,
-        --   pinned = true,
-        --   open = "Neotree position=right git_status",
-        -- },
-        {
-          title = "  BUFFERS",
-          ft = "neo-tree",
-          filter = function(buf) return vim.b[buf].neo_tree_source == "buffers" end,
-          pinned = true,
-          open = "Neotree position=right buffers",
-        },
-        {
-          title = "  OUTLINE",
-          ft = "Outline",
-          pinned = true,
-          open = "SymbolsOutline",
-        },
-        -- {
-        --   ft = "裂 DIAGNOSTICS",
-        --   filter = function(buf) return vim.b[buf].neo_tree_source == "diagnostics" end,
-        --   pinned = true,
-        --   open = "Neotree position=right diagnostics",
-        -- },
-        "neo-tree",
-      },
-      -- right = {
-      --   ft = "aerial",
-      --   title = "Aerial",
-      --   size = { width = 0.2 },
-      --   filter = function(_, win) return vim.api.nvim_win_get_config(win).relative == "" end,
-      -- },
-    },
+    event = "VeryLazy", -- "VimEnter",
+    opts = require "user.plugins.config.edgy",
   },
   {
     "HiPhish/rainbow-delimiters.nvim",
     dependencies = "nvim-treesitter/nvim-treesitter",
     event = "User AstroFile",
-    -- config = function(_, opts) require "rainbow-delimiters.setup"(opts) end,
   },
 
   -- [[ Symbols ]]
@@ -187,80 +109,25 @@ return {
   },
   {
     "toppair/peek.nvim",
-    event = { "BufRead", "BufNewFile" },
-    ft = { "markdown" },
     build = "deno task --quiet build:fast",
-    config = function()
-      require("peek").setup()
-      vim.api.nvim_create_user_command("PeekOpen", require("peek").open, {})
-      vim.api.nvim_create_user_command("PeekClose", require("peek").close, {})
-    end,
-  },
-
-  -- Searching
-  {
-    "ray-x/sad.nvim",
-    cmd = "Sad",
-    dependencies = {
-      { "ray-x/guihua.lua", build = "cd lua/fzy && make" },
-    },
     keys = {
       {
-        "<leader>ss",
-        function() vim.cmd(":Sad " .. vim.fn.input "Enter search pattern: ") end,
-        mode = { "n", "v", "s" },
-        desc = "Sad s&r (cursor)",
+        "<leader>vp",
+        ft = "markdown",
+        function()
+          local peek = require "peek"
+          if peek.is_open() then
+            peek.close()
+          else
+            peek.open()
+          end
+        end,
+        desc = "Peek (Markdown Preview)",
       },
     },
-    config = function() require("sad").setup {} end,
+    opts = { theme = "light" },
   },
-  {
-    "AckslD/muren.nvim",
-    cmd = { "MurenOpen", "MurenFresh", "MurenUnique" },
-    event = { "BufNewFile", "BufAdd" },
-    keys = {
-      {
-        "<leader>sn",
-        function() vim.cmd [[MurenOpen]] end,
-        mode = { "n", "v", "s" },
-        desc = "Open Muren search",
-      },
-    },
-    config = function()
-      require("muren").setup {
-        anchor = "bottom_right",
-      }
-    end,
-  },
-  {
-    "nvim-pack/nvim-spectre",
-    cmd = "Spectre",
-    keys = {
-      {
-        "<leader>so",
-        function() vim.cmd [[Spectre]] end,
-        mode = { "n", "v", "s" },
-        desc = "Start spectre search",
-      },
-    },
-    opts = function()
-      local prefix = "<leader>s"
-      return {
-        open_cmd = "new",
-        mapping = {
-          send_to_qf = { map = prefix .. "q" },
-          replace_cmd = { map = prefix .. "c" },
-          show_option_menu = { map = prefix .. "o" },
-          run_current_replace = { map = prefix .. "C" },
-          run_replace = { map = prefix .. "R" },
-          change_view_mode = { map = prefix .. "v" },
-          resume_last_search = { map = prefix .. "l" },
-        },
-      }
-    end,
-  },
-
-  -- Folding
+  -- [[ Folding ]]
   {
     "kevinhwang91/nvim-ufo",
     config = function(_, opts)

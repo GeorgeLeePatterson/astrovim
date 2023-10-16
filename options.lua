@@ -88,8 +88,8 @@ local options = {
 
 -- neovide specific
 if vim.g.neovide then
-  options.o.guifont = "JetBrainsMono Nerd Font,VictorMono Nerd Font"
-  options.g.neovide_scale_factor = 0.3
+  options.opt.guifont = "JetBrainsMono Nerd Font,VictorMono Nerd Font"
+  -- options.g.neovide_scale_factor = 0.3
 end
 
 -- If you need more control, you can use the function()...end notation

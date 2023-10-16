@@ -4,7 +4,6 @@ return {
     dependencies = {
       "nvim-lua/plenary.nvim",
       "nvim-telescope/telescope-live-grep-args.nvim",
-      "nvim-telescope/telescope-hop.nvim",
       "nvim-telescope/telescope-file-browser.nvim",
       { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
       "jvgrootveld/telescope-zoxide",
@@ -15,6 +14,26 @@ return {
       local fb_actions = require("telescope").extensions.file_browser.actions
       local lga_actions = require "telescope-live-grep-args.actions"
       local mappings = (opts.defaults or {}).mappings or {}
+
+      -- Use the awesome flash to move around
+      local function flash(prompt_bufnr)
+        if not require("astronvim.utils").is_available "flash.nvim" then return end
+        require("flash").jump {
+          pattern = "^",
+          label = { after = { 0, 0 } },
+          search = {
+            mode = "search",
+            exclude = {
+              function(win) return vim.bo[vim.api.nvim_win_get_buf(win)].filetype ~= "TelescopeResults" end,
+            },
+          },
+          action = function(match)
+            local picker = require("telescope.actions.state").get_current_picker(prompt_bufnr)
+            picker:set_selection(match.pos[1] - 1)
+          end,
+        }
+      end
+
       return require("astronvim.utils").extend_tbl(opts, {
         defaults = {
           file_ignore_patterns = {
@@ -82,53 +101,42 @@ return {
           results_title = "",
           selection_caret = "  ",
           winblend = 5,
-          scroll_strategy = "limit",
+          sorting_strategy = "descending",
           layout_config = {
-            width = 0.90,
-            height = 0.85,
             preview_cutoff = 5,
             horizontal = {
               preview_width = 0.6,
               prompt_position = "bottom",
             },
-            vertical = {
-              width = 0.9,
-              height = 0.95,
-              preview_height = 0.5,
-            },
-            flex = {
-              horizontal = {
-                preview_width = 0.9,
-              },
-            },
+            vertical = { preview_height = 0.5 },
+            flex = { horizontal = { preview_width = 0.9 } },
           },
           mappings = vim.tbl_deep_extend("force", mappings, {
-            i = {
-              ["<C-h>"] = function() R("telescope").extensions.hop.hop() end,
-              ["<C-space>"] = function(prompt_bufnr)
-                require("telescope").extensions.hop._hop_loop(
-                  prompt_bufnr,
-                  { callback = actions.toggle_selection, loop_callback = actions.send_selected_to_qflist }
-                )
-              end,
-            },
+            n = { s = flash },
+            i = { ["<c-s>"] = flash },
           }),
+          -- Removes spacing before matches in result pane
+          vimgrep_arguments = {
+            "rg",
+            "--color=never",
+            "--no-heading",
+            "--with-filename",
+            "--line-number",
+            "--column",
+            "--smart-case",
+            "--trim", -- add this value
+          },
         },
         extensions = {
           file_browser = {
             hijack_netrw = true,
             prompt_path = true,
             grouped = true,
-            files = false,
             hidden = { file_browser = true, folder_browser = false },
             depth = 2,
             mappings = {
-              i = {
-                ["<C-z>"] = function() fb_actions.toggle_hidden() end,
-              },
-              n = {
-                z = function() fb_actions.toggle_hidden() end,
-              },
+              i = { ["<C-z>"] = function() fb_actions.toggle_hidden() end },
+              n = { z = function() fb_actions.toggle_hidden() end },
             },
           },
           live_grep_args = {
@@ -156,6 +164,9 @@ return {
               i = { ["<c-d>"] = actions.delete_buffer },
               n = { ["d"] = actions.delete_buffer },
             },
+          },
+          file_browser = {
+            theme = "center",
           },
           find_files = {
             theme = "ivy",

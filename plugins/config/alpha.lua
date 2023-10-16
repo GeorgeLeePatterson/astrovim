@@ -17,12 +17,7 @@ local fix_session_name = require("user.plugins.config.resession").session_name_t
 function M.chdir(dir) -- , bufnr)
   vim.cmd([[chdir]] .. " " .. dir .. " " .. [[| tcd]] .. " " .. dir)
   local ok, _ = pcall(require("edgy").open, "left")
-  if ok then
-    vim.notify("Opened " .. dir)
-    vim.cmd [[]]
-    -- -- Close alpha, ignore errors
-    -- pcall(function() require("alpha").close { buf = bufnr, group = "alpha_temp" } end)
-  end
+  if ok then vim.notify("Opened " .. dir) end
 end
 
 -- Get directories
@@ -102,7 +97,6 @@ function M.get_session_buttons()
         local filename = fix_session_name(session) or ""
         if i > #sessions and filename ~= "" then
           filename = shorten_path(filename, cwd) or ""
-          dir_options["dir"] = "'dirsession'"
         else
           dir_options["dir"] = "nil"
         end
@@ -130,16 +124,13 @@ function M.get_session_buttons()
         file_button_el.opts.hl_shortcut = "Keyword"
         table.insert(sess_buttons, file_button_el)
       end
-
-      session_buttons = {
-        type = "group",
-        val = sess_buttons,
-        opts = {},
-      }
+      session_buttons = { type = "group", val = sess_buttons, opts = {} }
     end
   end
   return session_buttons
 end
+
+-- [[Different gradient style helpers]]
 
 function M.lineToStartGradient(lines)
   local out = {}
@@ -177,6 +168,7 @@ function M.lineToStartShiftGradient(lines)
   return out
 end
 
+-- Simple helper function to wrap dashboard header lines with hl
 function M.colored(lines, hl)
   local out = {}
   for _, line in ipairs(lines) do
@@ -185,6 +177,7 @@ function M.colored(lines, hl)
   return out
 end
 
+-- Generate random header, random gradient type, then return
 function M.headers()
   local _, name, cur_header = ascii_art.random()
   local color_style = random_gen { "cool", "robust", "efficient" }
@@ -241,6 +234,7 @@ end
 -- Keep track of changes
 local session_bts_idx = nil
 
+-- Main configuration of alpha dashboard
 function M.configure()
   local user_config = require "user.config"
   local opts = require "alpha.themes.theta"

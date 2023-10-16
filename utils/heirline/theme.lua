@@ -2,6 +2,8 @@ local heirline = require "heirline.utils"
 local util = require "user.utils.heirline.util"
 local get_hl = heirline.get_highlight
 
+-- Use horizon palettes to get some funky colors
+-- Palette used in commented at the bottom of the file
 local horizon_palette = require("horizon.palette-dark").palette
 local horizon_colors = {}
 for key, color in pairs(horizon_palette) do
@@ -61,11 +63,8 @@ local hl = {
   StatusLine = get_hl "Statusline",
   StatusLineDark = { bg = colors.dark },
   StatusLineDarkFg = { fg = colors.lightText },
-
   StatusLineDarker = { bg = colors.black },
-
   StatusLineAccent = { fg = colors.dark, bg = colors.status_accent },
-
   StatusLineLight = { bg = colors.background_alt },
   StatusLineLightFg = { fg = colors.darkText },
 

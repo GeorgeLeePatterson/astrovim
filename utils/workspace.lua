@@ -30,7 +30,6 @@ function M.z_get_scores()
     end
   end
   return z_scores
-  -- local selection = action_state.get_selected_entry()
 end
 
 function M.find_files_from_project_git_root()

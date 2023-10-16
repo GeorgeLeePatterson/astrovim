@@ -128,10 +128,7 @@ local FileIcon = function()
     filetype = false,
     filename = false,
     file_modified = false,
-    surround = {
-      separator = { "", "" },
-      color = "file_info_bg",
-    },
+    surround = { separator = { "", "" }, color = "file_info_bg" },
     condition = function() return astro_conditions.has_filetype(nil) and bo.buftype == "" end,
   }
 end
@@ -159,18 +156,14 @@ end
 local Diagnostics = function()
   return util.CalloutSection({
     ReadOnly,
-    astro_status.component.git_diff {
-      surround = false,
-    },
-    astro_status.component.diagnostics {
-      surround = false,
-    },
+    astro_status.component.git_diff { surround = false },
+    astro_status.component.diagnostics { surround = false },
     {
       provider = " ",
       condition = function(self) return not self.has_diagnostics and bo.buftype == "" end,
     },
     {
-      provider = "  ",
+      provider = " ",
       hl = function() return { fg = hl_colors["ForestgreenCustomFg"].fg } end,
       condition = function(self) return not self.has_diagnostics and bo.buftype == "" end,
     },

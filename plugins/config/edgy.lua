@@ -35,20 +35,8 @@ return {
       filter = function(buf) return vim.b[buf].neo_tree_source == "filesystem" end,
       pinned = true,
       open = "Neotree filesystem",
-      -- open = function()
-      --   if package.loaded["neo-tree"] then vim.cmd [[Neotree source-filesystem close]] end
-      --   vim.cmd [[Neotree source=filesystem]]
-      -- end,
       size = { height = 0.6 },
     },
-    -- -- Disabled to free up real estate.
-    -- {
-    --   title = "  GIT",
-    --   ft = "neo-tree",
-    --   filter = function(buf) return vim.b[buf].neo_tree_source == "git_status" end,
-    --   pinned = true,
-    --   open = "Neotree position=right git_status",
-    -- },
     {
       title = "  BUFFERS",
       ft = "neo-tree",
@@ -62,13 +50,21 @@ return {
       pinned = true,
       open = "SymbolsOutline",
     },
+    "neo-tree",
+    -- -- Disabled to free up real estate.
+    -- {
+    --   title = "  GIT",
+    --   ft = "neo-tree",
+    --   filter = function(buf) return vim.b[buf].neo_tree_source == "git_status" end,
+    --   pinned = true,
+    --   open = "Neotree position=right git_status",
+    -- },
     -- {
     --   ft = "裂 DIAGNOSTICS",
     --   filter = function(buf) return vim.b[buf].neo_tree_source == "diagnostics" end,
     --   pinned = true,
     --   open = "Neotree position=right diagnostics",
     -- },
-    "neo-tree",
   },
   -- right = {
   --   ft = "aerial",

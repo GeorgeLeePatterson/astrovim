@@ -3,6 +3,7 @@ local augroup = vim.api.nvim_create_augroup
 local autocmd = vim.api.nvim_create_autocmd
 
 -- -- Override resession autocmds to use tab scoped buffer
+-- -- Uncomment if using resession, highly recommended
 -- if is_available "resession.nvim" then
 --   autocmd("VimLeavePre", {
 --     desc = "Save session on close",
@@ -37,7 +38,6 @@ if is_available "neo-tree.nvim" then
           else
             vim.notify "Could not start edgy"
           end
-          -- require "neo-tree"
         end
       end
     end,

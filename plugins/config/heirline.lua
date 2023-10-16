@@ -5,7 +5,7 @@ return function(opts)
   return opts
 end
 
--- Reference: default heirline options
+-- Reference: default AstroNvim heirline options
 -- return {
 --   opts = {
 --     disable_winbar_cb = function(args)

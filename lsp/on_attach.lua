@@ -1,3 +1,5 @@
+-- Add any on_attach keymaps or whatever to LSPs.
+
 return function()
   -- -- Attach nvim-navic if installed
   -- if a_utils.is_available "nvim-navic" then
