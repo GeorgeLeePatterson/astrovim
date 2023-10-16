@@ -1,17 +1,10 @@
 local ufo_config = require "user.plugins.config.ufo"
 
--- Error executing lua callback: ...atterson/.local/share/nvim/lazy/alpha-nvim/lua/alpha.lua:621: Invalid window id: 1003
--- stack traceback:
--- 	[C]: in function 'nvim_win_get_width'
--- 	...atterson/.local/share/nvim/lazy/alpha-nvim/lua/alpha.lua:621: in function 'draw'
--- 	...atterson/.local/share/nvim/lazy/alpha-nvim/lua/alpha.lua:662: in function 'redraw'
--- 	...atterson/.local/share/nvim/lazy/alpha-nvim/lua/alpha.lua:536: in function <...atterson/.local/share/nvim/lazy/alpha-nvim/lua/alpha.lua:536>
-
 return {
   -- Editor layout and configuration
   {
     "folke/edgy.nvim",
-    event = "VeryLazy",
+    event = "VimEnter",
     opts = {
       options = {
         left = { size = 40 },
@@ -23,6 +16,12 @@ return {
         {
           ft = "toggleterm",
           title = "TERMINAL",
+          size = { height = 0.4 },
+          filter = function(_, win) return vim.api.nvim_win_get_config(win).relative == "" end,
+        },
+        {
+          ft = "noice",
+          title = "NOICE",
           size = { height = 0.4 },
           filter = function(_, win) return vim.api.nvim_win_get_config(win).relative == "" end,
         },
@@ -41,7 +40,12 @@ return {
           title = "  FILE",
           ft = "neo-tree",
           filter = function(buf) return vim.b[buf].neo_tree_source == "filesystem" end,
-          size = { height = 0.7 },
+          open = "Neotree position=top filesystem",
+          -- open = function()
+          --   if package.loaded["neo-tree"] then vim.cmd [[Neotree source-filesystem close]] end
+          --   vim.cmd [[Neotree source=filesystem]]
+          -- end,
+          size = { height = 0.6 },
         },
         -- -- Disabled to free up real estate.
         -- {
@@ -56,7 +60,7 @@ return {
           ft = "neo-tree",
           filter = function(buf) return vim.b[buf].neo_tree_source == "buffers" end,
           pinned = true,
-          open = "Neotree position=top buffers",
+          open = "Neotree position=right buffers",
         },
         {
           title = "  OUTLINE",
@@ -72,6 +76,12 @@ return {
         -- },
         "neo-tree",
       },
+      -- right = {
+      --   ft = "aerial",
+      --   title = "Aerial",
+      --   size = { width = 0.2 },
+      --   filter = function(_, win) return vim.api.nvim_win_get_config(win).relative == "" end,
+      -- },
     },
   },
   {
@@ -80,16 +90,16 @@ return {
     event = "User AstroFile",
     -- config = function(_, opts) require "rainbow-delimiters.setup"(opts) end,
   },
-  -- Symbols
+
+  -- [[ Symbols ]]
   {
     "simrat39/symbols-outline.nvim",
     cmd = "SymbolsOutline",
     keys = { { "<leader>vs", "<cmd>SymbolsOutline<cr>", desc = "Symbols Outline" } },
-    opts = {
-      position = "right",
-    },
+    config = function(_, opts) require("symbols-outline").setup(opts) end,
   },
-  -- Markdown
+
+  -- [[ Markdown ]]
   { "ellisonleao/glow.nvim", config = true, cmd = "Glow" },
   {
     "plasticboy/vim-markdown",
@@ -212,6 +222,8 @@ return {
       {
         "<leader>sn",
         function() vim.cmd [[MurenOpen]] end,
+        mode = { "n", "v", "s" },
+        desc = "Open Muren search",
       },
     },
     config = function()

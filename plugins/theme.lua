@@ -13,15 +13,6 @@ local _themes = {
         options = {
           dim_inactive = true,
           styles = common_styles,
-          inverse = {
-            search = true,
-            visual = true,
-          },
-          modules = {
-            telescope = {
-              TelescopeMatching = { link = "Substitute" },
-            },
-          },
         },
       },
     },

@@ -1,26 +1,92 @@
+---@diagnostic disable: cast-local-type
 local M = {}
 local ascii_art = require "user.ascii"
+local workspace = require "user.utils.workspace"
 
 --
 -- HELPERS
 --
+local dashboard = require "alpha.themes.dashboard"
 local astro_utils = require "astronvim.utils"
 local user_utils = require "user.utils"
 local is_available = astro_utils.is_available
-local insert_unique = astro_utils.list_insert_unique
 local shorten_path = user_utils.shorten_path
 local random_gen = user_utils.random_gen
 local fix_session_name = require("user.plugins.config.resession").session_name_to_path
 
+function M.chdir(dir) -- , bufnr)
+  vim.cmd([[chdir]] .. " " .. dir .. " " .. [[| tcd]] .. " " .. dir)
+  local ok, _ = pcall(require("edgy").open, "left")
+  if ok then
+    vim.notify("Opened " .. dir)
+    vim.cmd [[]]
+    -- -- Close alpha, ignore errors
+    -- pcall(function() require("alpha").close { buf = bufnr, group = "alpha_temp" } end)
+  end
+end
+
+-- Get directories
+function M.get_z_dirs_buttons()
+  local buttons = {}
+  local z_scores = workspace.z_get_scores() or {}
+  if #z_scores > 0 then
+    local cwd = vim.fn.getcwd()
+    -- Set dir options for load
+    local letters = { "q", "w", "a", "s", "d" } -- , "r", "i", "o" }
+    local colors = {
+      "DeeppinkCustomFg",
+      "MediumorchidCustomFg",
+      "HotpinkCustomFg",
+    }
+    local _buttons = {
+      { type = "text", val = "~ Z DIRS ~", opts = { hl = "Title", position = "center", priority = 2 } },
+      { type = "padding", val = 1 },
+    }
+    -- local cur_bufnr = vim.api.nvim_get_current_buf()
+    for index, entry in ipairs(z_scores) do
+      if index > #letters then break end
+      local display = letters[index]
+      -- local score = entry[1]
+      local dir = entry[2]
+      if dir then
+        local ico = "  "
+        if index == 1 then ico = "  " end
+        local filename = shorten_path(dir, cwd) or ""
+
+        filename = ico .. " " .. filename
+        local command = {
+          "<cmd>lua require('user.plugins.config.alpha').chdir(",
+          "'",
+          dir,
+          "'",
+          ")<CR>",
+        }
+        local hl = colors[index] or "Normal"
+        local file_button_el = dashboard.button(display, filename, table.concat(command))
+        file_button_el.opts.hl = {
+          { "Character", 0, #ico },
+          { hl, #ico - 2, #filename },
+        }
+        file_button_el.opts.hl_shortcut = "Keyword"
+        table.insert(_buttons, file_button_el)
+      end
+    end
+    buttons = {
+      type = "group",
+      val = _buttons,
+      opts = {},
+    }
+  end
+  return buttons
+end
+
 -- Get sessions
 function M.get_session_buttons()
-  local dashboard = require "alpha.themes.dashboard"
   local session_buttons = {}
   if is_available "resession.nvim" then
     local sessions = require("resession").list() or {}
-    local saved_session_count = #sessions
+    local all_sessions = astro_utils.list_insert_unique(sessions, require("resession").list() or {})
     local dir_options = { dir = "dirsession" }
-    sessions = insert_unique(sessions, require("resession").list(dir_options))
     -- Set dir options for load
     local letters = { "q", "w", "a", "s", "d", "r", "i", "o" }
     if #sessions > 0 then
@@ -30,15 +96,12 @@ function M.get_session_buttons()
         { type = "padding", val = 1 },
       }
       local cur_bufnr = vim.api.nvim_get_current_buf()
-      -- local group = vim.api.nvim_create_augroup("alpha_start", { clear = true })
-
-      for i, session in ipairs(sessions) do
+      for i, session in ipairs(all_sessions) do
         if i > #letters then break end
         local display = letters[i]
-        local filename = session
-        filename = fix_session_name(filename)
-        if i > saved_session_count then
-          filename = shorten_path(filename, cwd)
+        local filename = fix_session_name(session) or ""
+        if i > #sessions and filename ~= "" then
+          filename = shorten_path(filename, cwd) or ""
           dir_options["dir"] = "'dirsession'"
         else
           dir_options["dir"] = "nil"
@@ -179,7 +242,7 @@ end
 local session_bts_idx = nil
 
 function M.configure()
-  local dashboard = require "alpha.themes.dashboard"
+  local user_config = require "user.config"
   local opts = require "alpha.themes.theta"
   local config = opts.config
   config.layout[2] = M.header_color()
@@ -189,7 +252,12 @@ function M.configure()
   local mru = config.layout[4]
 
   -- Add session buttons if any
-  local session_buttons = M.get_session_buttons()
+  local session_buttons = {}
+  if user_config["use_resession"] then
+    session_buttons = M.get_session_buttons()
+  else
+    session_buttons = M.get_z_dirs_buttons()
+  end
 
   -- Button group at bottom
   local buttons = {
@@ -197,11 +265,9 @@ function M.configure()
     val = {
       { type = "text", val = "Quick links", opts = { hl = "SpecialComment", position = "center" } },
       { type = "padding", val = 1 },
-      dashboard.button("e", "  New file", "<cmd>ene<CR>"),
       dashboard.button("LDR f", "󰱼  Find file"),
       dashboard.button("LDR F", "󱎸  Find text"),
       dashboard.button("u", "󱓞  Update plugins", "<cmd>Lazy sync<CR>"),
-      dashboard.button("x", "󰅗  Quit", "<cmd>qa<CR>"),
     },
     position = "center",
   }

@@ -1,14 +1,3 @@
-local R = function(name) return require(name) end
-
-if pcall(require, "plenary") then
-  RELOAD = require("plenary.reload").reload_module
-
-  R = function(name)
-    RELOAD(name)
-    return require(name)
-  end
-end
-
 return {
   {
     "nvim-telescope/telescope.nvim",
@@ -18,7 +7,6 @@ return {
       "nvim-telescope/telescope-hop.nvim",
       "nvim-telescope/telescope-file-browser.nvim",
       { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
-      "jay-babu/project.nvim",
       "jvgrootveld/telescope-zoxide",
       { "tiagovla/scope.nvim" },
     },
@@ -198,7 +186,7 @@ return {
       local telescope = require "telescope"
       telescope.load_extension "live_grep_args"
       telescope.load_extension "file_browser"
-      telescope.load_extension "projects"
+      -- telescope.load_extension "projects"
       telescope.load_extension "noice"
       telescope.load_extension "zoxide"
       telescope.load_extension "scope"

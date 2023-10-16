@@ -78,7 +78,7 @@ local options = {
     -- Disabled for Noice plugin
     lsp_handlers_enabled = false, -- enable or disable default vim.lsp.handlers (hover and signature help)
     mapleader = " ", -- sets vim.g.mapleader
-    resession_enabled = true, -- enable experimental resession.nvim session management (will be default in AstroNvim v4)
+    -- resession_enabled = true, -- enable experimental resession.nvim session management (will be default in AstroNvim v4)
     ui_notifications_enabled = true, -- disable notifications when toggling UI elements
 
     -- Custom optons: Initialize variable, not strictly necessary, automatically set by autocmd

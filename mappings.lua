@@ -11,15 +11,6 @@ local is_available = utils.is_available
 
 local maps = {
   n = {
-    -- navigate buffer tabs with `H` and `L`
-    -- L = {
-    --   function() require("astronvim.utils.buffer").nav(vim.v.count > 0 and vim.v.count or 1) end,
-    --   desc = "Next buffer",
-    -- },
-    -- H = {
-    --   function() require("astronvim.utils.buffer").nav(-(vim.v.count > 0 and vim.v.count or 1)) end,
-    --   desc = "Previous buffer",
-    -- },
     ["<leader>fF"] = { ":Telescope file_browser<CR>", desc = "Open File Browser" },
     ["<leader>fz"] = { ":Telescope zoxide list<CR>", desc = "Open Zoxide List" },
 
@@ -69,6 +60,12 @@ local maps = {
     -- ADDITIONAL COMMANDS
     --
 
+    ["<leader>r"] = { name = "󰩨 Resize" },
+    ["<leader>rh"] = { function() vim.cmd [[vertical resize -10<cr>]] end, desc = "Resize -10 l/r" },
+    ["<leader>rl"] = { function() vim.cmd [[vertical resize +10<cr>]] end, desc = "Resize +10 l/r" },
+    ["<leader>rj"] = { function() vim.cmd [[horizontal resize -10<cr>]] end, desc = "Resize -10 u/d" },
+    ["<leader>rk"] = { function() vim.cmd [[horizontal resize +10<cr>]] end, desc = "Resize +10 u/d" },
+
     -- quick save
     ["<C-s>"] = { ":w!<cr>", desc = "Save File" }, -- change description but the same command
 
@@ -94,6 +91,7 @@ local maps = {
             local buf = vim.api.nvim_win_get_buf(wins[win])
             local usable = vim.api.nvim_get_option_value("filetype", { buf = buf }) ~= "neo-tree"
               and vim.api.nvim_get_option_value("filetype", { buf = buf }) ~= "notify"
+              and vim.api.nvim_get_option_value("buftype", { buf = buf }) == ""
             if usable then
               vim.fn.win_gotoid(wins[win]) -- go to non-neo-tree window to toggle alpha
               break

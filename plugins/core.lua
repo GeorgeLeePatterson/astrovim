@@ -96,6 +96,7 @@ return {
         "quickfix",
         "qf",
         "prompt",
+        -- "edgy",
       },
       ignored_buftypes = {
         "nofile",

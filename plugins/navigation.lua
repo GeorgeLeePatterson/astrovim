@@ -9,7 +9,11 @@ return {
     },
     config = function() require("alpha").setup(alpha_config.configure()) end,
   },
-  { "junegunn/fzf.vim", lazy = false },
+  {
+    "junegunn/fzf.vim",
+    dependencies = { "junegunn/fzf" },
+    lazy = false,
+  },
   {
     "nanotee/zoxide.vim",
     event = "VeryLazy",
@@ -19,6 +23,7 @@ return {
   },
   {
     "nvim-neo-tree/neo-tree.nvim",
+    branch = "main",
     dependencies = {
       "nvim-lua/plenary.nvim",
       "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
@@ -35,7 +40,7 @@ return {
             -- filter using buffer options
             bo = {
               -- if the file type is one of following, the window will be ignored
-              filetype = { "neo-tree", "neo-tree-popup", "notify", "alpha", "dashboard", "Trouble" },
+              filetype = { "neo-tree", "neo-tree-popup", "notify", "Trouble" },
 
               -- if the buffer type is one of following, the window will be ignored
               -- buftype = { "terminal" },
@@ -45,7 +50,7 @@ return {
       },
     },
     opts = {
-      open_files_do_not_replace_types = { "terminal", "trouble", "qf", "edgy", "notify" },
+      open_files_do_not_replace_types = { "terminal", "trouble", "qf", "notify" },
       filesystem = {
         follow_current_file = {
           enabled = true,
@@ -57,6 +62,7 @@ return {
           hide_gitignored = false,
           never_show = { ".DS_Store" },
         },
+        hijack_netrw_behavior = "open_default",
       },
       default_component_configs = {
         name = {

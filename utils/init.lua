@@ -212,7 +212,11 @@ function M.get_visual_selection()
   end
 end
 
--- Merge random functions
+-- Merge modules
 M = vim.tbl_extend("force", M, random)
+M = vim.tbl_extend("force", M, require "user.utils.workspace")
+
+-- Load autocmds
+require "user.utils.autocmds"
 
 return M
