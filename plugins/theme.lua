@@ -1,9 +1,4 @@
 local theme_config = require "user.plugins.config.theme"
-local common_styles = {
-  comments = "italic",
-  keywords = "bold",
-  types = "italic,bold",
-}
 
 local _themes = {
   {
@@ -12,27 +7,48 @@ local _themes = {
       opts = {
         options = {
           dim_inactive = true,
-          styles = common_styles,
+          styles = theme_config.common_styles,
         },
+        groups = {},
       },
     },
   },
   { "uloco/bluloco.nvim", { dependencies = { "rktjmp/lush.nvim" } } },
-  { "ramojus/mellifluous.nvim", { opts = { dim_inactive = true } } },
+  {
+    "ramojus/mellifluous.nvim",
+    {
+      opts = {
+        dim_inactive = true,
+        styles = {
+          comments = { italic = true },
+          keywords = { bold = true },
+          types = { italic = true, bold = true },
+        },
+      },
+    },
+  },
   { "nyoom-engineering/oxocarbon.nvim" },
   { "tiagovla/tokyodark.nvim" },
   { "ellisonleao/gruvbox.nvim" },
   { "marko-cerovac/material.nvim" },
   { "dasupradyumna/midnight.nvim" },
-  { "akinsho/horizon.nvim", { version = "*", lazy = false, priority = 1000 } },
+  { "akinsho/horizon.nvim", { version = "*" } },
   { "zootedb0t/citruszest.nvim" },
   { "loctvl842/monokai-pro.nvim" },
-  { "navarasu/onedark.nvim", {
-    priority = 1000,
-    opts = {
-      style = "darker",
+  {
+    "navarasu/onedark.nvim",
+    {
+      lazy = false,
+      priority = 1000,
+      config = function()
+        require("onedark").setup {
+          style = "darker",
+          toggle_style_key = "<leader>mt",
+          code_style = theme_config.common_styles,
+        }
+      end,
     },
-  } },
+  },
   { "folke/tokyonight.nvim", {
     opts = {
       style = "storm",
@@ -47,7 +63,7 @@ local _themes = {
       config = function()
         require("github-theme").setup {
           dim_inactive = true,
-          styles = common_styles,
+          styles = theme_config.common_styles,
         }
       end,
     },
@@ -56,7 +72,7 @@ local _themes = {
 
 -- Configure themes
 local themes = vim.tbl_map(function(o)
-  if not o or #o == 0 then return {} end
+  if not o then return {} end
   return theme_config.configure_theme(o[1], o[2] or {})
 end, _themes)
 

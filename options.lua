@@ -53,6 +53,7 @@ local options = {
     shell = "zsh",
     shiftwidth = 4,
     showmatch = true,
+    showtabline = 2,
     signcolumn = "auto", -- sets vim.opt.signcolumn to auto
     smartcase = true,
     smoothscroll = true,

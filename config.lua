@@ -2,8 +2,8 @@ return {
   defaults = {
     -- Only used if auto-dark-mode is enabled
     theme = {
-      light = "github_light",
-      dark = "horizon",
+      light = "dayfox",
+      dark = "gruvbox",
     },
     background = "dark",
     background_toggle = false,
@@ -25,12 +25,11 @@ return {
 
       -- -- More examples of some themes
       -- "mellifluous",
-      -- "gruvbox",
-      -- "horizon",
+      -- "tokyonight",
 
       -- Default themes. Keep, delete, add, whatever you want.
       "bluloco",
-      "nightfox",
+      ["nightfox"] = { "nightfox", "carbonfox" },
       "gruvbox",
     },
   },

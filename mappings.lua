@@ -6,7 +6,9 @@
 local utils = require "astronvim.utils"
 local telescope_themes = require "telescope.themes"
 local user_utils = require "user.utils"
+local buffer_utils = require "user.utils.buffer"
 local alpha_config = require "user.plugins.config.alpha"
+local theme_config = require "user.plugins.config.theme"
 local is_available = utils.is_available
 
 local maps = {
@@ -74,9 +76,16 @@ local maps = {
     ["<leader>c"] = {
       function()
         local bufs = vim.fn.getbufinfo { buflisted = true }
+        local alpha_available = require("astronvim.utils").is_available "alpha-nvim"
+        local is_alpha = vim.api.nvim_get_option_value("filetype", { scope = "local" }) ~= "alpha"
+        -- If alpha is the only window, don't close
+        if is_alpha and not bufs[2] then return end
+
+        -- Close window
         require("astronvim.utils.buffer").close(0)
-        if require("astronvim.utils").is_available "alpha-nvim" and not bufs[2] then
-          if not pcall(function() require("alpha").start(false) end) then vim.notify "Error opening dashboard" end
+
+        if alpha_available and not bufs[2] then
+          if not pcall(function() require("alpha").start(true) end) then vim.notify "Error opening dashboard" end
         end
       end,
       desc = "Close buffer",
@@ -86,19 +95,32 @@ local maps = {
     ["<leader>h"] = {
       function()
         local wins = vim.api.nvim_tabpage_list_wins(0)
+        local on_start = false
+        local alpha_opened = nil
         if #wins > 1 then
           for win = 1, #wins do
             local buf = vim.api.nvim_win_get_buf(wins[win])
-            local usable = vim.api.nvim_get_option_value("filetype", { buf = buf }) ~= "neo-tree"
+            local filetype = vim.api.nvim_get_option_value("filetype", { buf = buf })
+            local is_neo_tree = filetype == "neo-tree"
+            if filetype == "alpha" then alpha_opened = wins[win] end
+            local usable = not is_neo_tree
+              and buffer_utils.is_valid(buf)
               and vim.api.nvim_get_option_value("filetype", { buf = buf }) ~= "notify"
-              and vim.api.nvim_get_option_value("buftype", { buf = buf }) == ""
             if usable then
               vim.fn.win_gotoid(wins[win]) -- go to non-neo-tree window to toggle alpha
               break
             end
           end
+        else
+          local buf = vim.api.nvim_win_get_buf(wins[1])
+          if buf and vim.api.nvim_get_option_value("filetype", { buf = buf }) == "neo-tree" then on_start = true end
+          if buf and vim.api.nvim_get_option_value("filetype", { buf = buf }) == "alpha" then alpha_opened = wins[1] end
         end
-        require("alpha").start(false, alpha_config.configure())
+        if not alpha_opened then
+          require("alpha").start(on_start, alpha_config.configure())
+        else
+          vim.fn.win_gotoid(alpha_opened)
+        end
       end,
       desc = "Home Screen",
     },
@@ -115,60 +137,6 @@ local maps = {
       function() user_utils.set_background_and_theme "light" end,
       desc = "Light Mode",
     },
-    -- THEMES
-    ["<leader>m"] = { name = " Themes" },
-    ["<leader>m2"] = { function() vim.cmd [[colorscheme midnight]] end, desc = "Midnight" },
-    ["<leader>m3"] = { function() vim.cmd [[colorscheme onedark]] end, desc = "OneDark" },
-    ["<leader>m4"] = { function() vim.cmd [[colorscheme oxocarbon]] end, desc = "Oxocarbon" },
-    ["<leader>m5"] = { function() vim.cmd [[colorscheme Tokyodark]] end, desc = "TokyoDark" },
-    ["<leader>m6"] = { function() vim.cmd [[colorscheme gruvbox]] end, desc = "Gruvbox" },
-    ["<leader>m7"] = { function() vim.cmd [[colorscheme horizon]] end, desc = "Horizon" },
-    -- Monokai Variations
-    ["<leader>ma"] = { name = "Monokai" },
-    ["<leader>ma0"] = { function() vim.cmd [[colorscheme monokai-pro-default]] end, desc = "Default" },
-    ["<leader>ma1"] = { function() vim.cmd [[colorscheme monokai-pro-classic]] end, desc = "Classic" },
-    ["<leader>ma2"] = { function() vim.cmd [[colorscheme monokai-pro-machine]] end, desc = "Machine" },
-    ["<leader>ma3"] = { function() vim.cmd [[colorscheme monokai-pro-octagon]] end, desc = "Octagon" },
-    ["<leader>ma4"] = { function() vim.cmd [[colorscheme monokai-pro-spectrum]] end, desc = "Spectrum" },
-    ["<leader>ma5"] = { function() vim.cmd [[colorscheme monokai-pro-ristretto]] end, desc = "Ristretto" },
-    -- TokyoNight Variations
-    ["<leader>ms"] = { name = "TokyoNight" },
-    ["<leader>ms0"] = { function() vim.cmd [[colorscheme tokyonight]] end, desc = "Default" },
-    ["<leader>ms1"] = { function() vim.cmd [[colorscheme tokyonight-day]] end, desc = "Day" },
-    ["<leader>ms2"] = { function() vim.cmd [[colorscheme tokyonight-moon]] end, desc = "Moon" },
-    ["<leader>ms3"] = { function() vim.cmd [[colorscheme tokyonight-night]] end, desc = "NightNight" },
-    ["<leader>ms4"] = { function() vim.cmd [[colorscheme tokyonight-storm]] end, desc = "Storm" },
-    -- Catppuccin Variations
-    ["<leader>md"] = { name = "Catppuccin" },
-    ["<leader>md0"] = { function() vim.cmd [[colorscheme catppuccin-latte]] end, desc = "Latte" },
-    ["<leader>md1"] = { function() vim.cmd [[colorscheme catppuccin-frappe]] end, desc = "Frappe" },
-    ["<leader>md2"] = { function() vim.cmd [[colorscheme catppuccin-macchiato]] end, desc = "Macchiato" },
-    ["<leader>md3"] = { function() vim.cmd [[colorscheme catppuccin-mocha]] end, desc = "Mocha" },
-    -- Github Variations
-    ["<leader>mf"] = { name = "Github" },
-    ["<leader>mf0"] = { function() vim.cmd [[colorscheme github_dark]] end, desc = "Dark" },
-    ["<leader>mf1"] = {
-      function() vim.cmd [[colorscheme github_dark_dimmed]] end,
-      desc = "Dark Dimmed",
-    },
-    ["<leader>mf2"] = {
-      function() vim.cmd [[colorscheme github_dark_high_contrast]] end,
-      desc = "Dark High Contrast",
-    },
-    ["<leader>mf3"] = { function() vim.cmd [[colorscheme github_light]] end, desc = "Light" },
-    ["<leader>mf4"] = {
-      function() vim.cmd [[colorscheme github_light_high_contrast]] end,
-      desc = "Light High Contrast",
-    },
-    -- Nightfox
-    ["<leader>mj"] = { name = "Nightfox" },
-    ["<leader>mj0"] = { function() vim.cmd [[colorscheme nightfox]] end, desc = "Nightfox" },
-    ["<leader>mj1"] = { function() vim.cmd [[colorscheme dayfox]] end, desc = "Dayfox (light)" },
-    ["<leader>mj2"] = { function() vim.cmd [[colorscheme dawnfox]] end, desc = "Dawnfox (light)" },
-    ["<leader>mj3"] = { function() vim.cmd [[colorscheme duskfox]] end, desc = "Duskfox" },
-    ["<leader>mj4"] = { function() vim.cmd [[colorscheme nordfox]] end, desc = "Nordfox" },
-    ["<leader>mj5"] = { function() vim.cmd [[colorscheme terafox]] end, desc = "Terafox" },
-    ["<leader>mj6"] = { function() vim.cmd [[colorscheme carbonfox]] end, desc = "Carbonfox" },
 
     -- Spectre
     ["<leader>s"] = { name = "󰬲 Search & Replace" },
@@ -184,6 +152,9 @@ local maps = {
     -- ["<esc>"] = false,
   },
 }
+
+-- Themes
+maps = theme_config.mappings(maps)
 
 -- ZenMode
 maps.n["zZ"] = {

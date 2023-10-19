@@ -14,10 +14,14 @@ local shorten_path = user_utils.shorten_path
 local random_gen = user_utils.random_gen
 local fix_session_name = require("user.plugins.config.resession").session_name_to_path
 
-function M.chdir(dir) -- , bufnr)
+function M.chdir(dir, bufnr)
   vim.cmd([[chdir]] .. " " .. dir .. " " .. [[| tcd]] .. " " .. dir)
   local ok, _ = pcall(require("edgy").open, "left")
   if ok then vim.notify("Opened " .. dir) end
+
+  -- Close alpha, ignore errors
+  -- pcall(vim.api.nvim_del_augroup_by_name, "alpha_settings")
+  pcall(function() require("alpha").close { buf = bufnr, group = "alpha_settings" } end)
 end
 
 -- Get directories
@@ -37,7 +41,7 @@ function M.get_z_dirs_buttons()
       { type = "text", val = "~ Z DIRS ~", opts = { hl = "Title", position = "center", priority = 2 } },
       { type = "padding", val = 1 },
     }
-    -- local cur_bufnr = vim.api.nvim_get_current_buf()
+    local alpha_bufnr = vim.api.nvim_get_current_buf()
     for index, entry in ipairs(z_scores) do
       if index > #letters then break end
       local display = letters[index]
@@ -53,7 +57,8 @@ function M.get_z_dirs_buttons()
           "<cmd>lua require('user.plugins.config.alpha').chdir(",
           "'",
           dir,
-          "'",
+          "',",
+          alpha_bufnr,
           ")<CR>",
         }
         local hl = colors[index] or "Normal"

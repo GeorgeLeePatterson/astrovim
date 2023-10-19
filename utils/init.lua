@@ -36,13 +36,11 @@ function M.set_background_and_theme(bg, theme)
   local default_mode = user_config.defaults.background
   bg = bg or default_mode
 
-  if theme then
-    local default_theme = user_config.defaults.theme[bg]
-    theme = theme or default_theme
-    -- Change color scheme
-    vim.cmd.colorscheme(theme)
-    vim.notify("Changed theme to " .. theme, vim.log.levels.INFO)
-  end
+  local default_theme = user_config.defaults.theme[bg]
+  theme = theme or default_theme
+  -- Change color scheme
+  vim.cmd.colorscheme(theme)
+  vim.notify("Changed theme to " .. theme, vim.log.levels.INFO)
 
   -- Change background mode
   if cur_mode ~= bg then vim.o.background = bg end
@@ -133,18 +131,6 @@ function M.arr_has(arr, str)
 end
 
 --
--- Buffer functions
---
-
-M.find_buffer_by_name = function(name)
-  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-    local buf_name = vim.api.nvim_buf_get_name(buf)
-    if vim.endswith(buf_name, name) then return buf end
-  end
-  return -1
-end
-
---
 -- Utility functions
 --
 
@@ -215,6 +201,7 @@ end
 -- Merge modules
 M = vim.tbl_extend("force", M, random)
 M = vim.tbl_extend("force", M, require "user.utils.workspace")
+M = vim.tbl_extend("force", M, require "user.utils.buffer")
 
 -- Load autocmds
 require "user.utils.autocmds"

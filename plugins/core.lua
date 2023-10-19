@@ -90,6 +90,7 @@ return {
   -- see `~/.config/wezterm/keys.lua` for mappings
   {
     "mrjones2014/smart-splits.nvim",
+    enabled = not vim.g.neovide,
     opts = {
       ignored_filetypes = {
         "nofile",

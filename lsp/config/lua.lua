@@ -9,6 +9,10 @@ return {
   },
   diagnostics = {
     disable = { "incomplete-signature-doc", "trailing-space" },
+    globals = {
+      "vim",
+      "require",
+    },
     unusedLocalExclude = { "_*" },
   },
   doc = {
