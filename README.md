@@ -1,6 +1,25 @@
-# AstroNvim User Configuration Example
+# Neovim Custom Configuration (over AstroNvim)
 
-A user configuration template for [AstroNvim](https://github.com/AstroNvim/AstroNvim)
+My user configuration overrides for [AstroNvim](https://github.com/AstroNvim/AstroNvim)
+
+## 📸 Screenshots
+
+#### Dashboard
+
+![Dashboard](assets/dashboard.png)
+![Dashboard2](assets/dashboard2.png)
+
+#### Editor
+
+![Editor](assets/editor.png)
+
+#### Themes
+
+![Themes](assets/themes.png)
+
+#### Wezterm integration
+
+![Wezterm](assets/wezterm.png)
 
 ## 🛠️ Installation
 
