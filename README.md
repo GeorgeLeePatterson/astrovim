@@ -2,6 +2,8 @@
 
 My user configuration overrides for [AstroNvim](https://github.com/AstroNvim/AstroNvim)
 
+> NOTE: Still some bugs here and there, will clean those up as they come up.
+
 ## 📸 Screenshots
 
 #### Dashboard

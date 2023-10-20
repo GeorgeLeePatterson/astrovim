@@ -6,6 +6,11 @@ return {
       rainbow = {
         enabled = true,
       },
+      modes = {
+        treesitter_search = {
+          label = { rainbow = { enabled = true } },
+        },
+      },
     },
     keys = {
       { "s", function() require("flash").jump() end, mode = { "n", "o", "x" }, desc = "Flash" },
