@@ -7,6 +7,7 @@ return {
     },
     background = "dark",
     background_toggle = false,
+    -- Whether to turn zen on at startup
     zen = false,
   },
   ai = {
