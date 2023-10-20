@@ -23,6 +23,8 @@ My user configuration overrides for [AstroNvim](https://github.com/AstroNvim/Ast
 
 ## 🛠️ Installation
 
+> ❗️NOTE: You do not need to do any of the Installation instructions if you installed [my dots](https://github.com/GeorgeLeePatterson/dotfiles)
+
 #### Make a backup of your current nvim and shared folder
 
 ```shell
