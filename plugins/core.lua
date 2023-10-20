@@ -16,7 +16,7 @@ return {
         "pyright",
         "rust_analyzer",
         "taplo",
-        "tsserver",
+        -- "tsserver",
         "yamlls",
       })
     end,
