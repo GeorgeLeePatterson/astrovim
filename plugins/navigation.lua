@@ -90,6 +90,7 @@ return {
         },
       },
       source_selector = {
+        content_layout = "start",
         tabs_layout = "active",
       },
     },
