@@ -1,8 +1,24 @@
 return {
   options = {
-    left = { size = 40 },
+    left = {
+      size = function()
+        if vim.opt.columns:get() < 200 then
+          return 30
+        else
+          return 40
+        end
+      end,
+    },
     bottom = { size = 10 },
-    right = { size = 40 },
+    right = {
+      size = function()
+        if vim.opt.columns:get() < 200 then
+          return 30
+        else
+          return 40
+        end
+      end,
+    },
     top = { size = 10 },
   },
   bottom = {
