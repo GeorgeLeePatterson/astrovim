@@ -2,9 +2,6 @@
 local user_config = require "user.config"
 local user_utils = require "user.utils"
 
--- Lsp configurations
-local rust_analyzer_settings = require "user.lsp.config.rust"
-
 local load_capabilities = function()
   local ok, cmp_lsp = pcall(require, "cmp_nvim_lsp")
   if ok then cmp_lsp.default_capabilities() end
@@ -32,7 +29,7 @@ return {
 
   -- Diagnostics configuration (for vim.diagnostics.config({...})) when diagnostics are on
   diagnostics = {
-    virtual_text = false,
+    virtual_text = true,
     signs = true,
     underline = true,
   },
@@ -43,7 +40,6 @@ return {
         Lua = require "user.lsp.config.lua",
         capabilities = load_capabilities(),
       },
-      rust_analyzer = rust_analyzer_settings.config,
     },
     -- customize lsp formatting options
     formatting = {
@@ -70,9 +66,7 @@ return {
     servers = {
       -- "pyright"
     },
-    setup_handers = {
-      rust_analyzer = rust_analyzer_settings.setup_handlers,
-    },
+    setup_handers = {},
   },
 
   -- Configure require("lazy").setup() options

@@ -6,10 +6,10 @@
 local utils = require "astronvim.utils"
 local telescope_themes = require "telescope.themes"
 local user_utils = require "user.utils"
-local buffer_utils = require "user.utils.buffer"
 local alpha_config = require "user.plugins.config.alpha"
 local theme_config = require "user.plugins.config.theme"
 local is_available = utils.is_available
+-- local buffer_utils = require "user.utils.buffer"
 
 local maps = {
   n = {
@@ -45,12 +45,17 @@ local maps = {
     ["<leader>fr"] = { function() require("telescope.builtin").lsp_references() end, desc = "Show references" },
     ["<leader>fR"] = { function() require("telescope.builtin").registers() end, desc = "Find registers" },
 
-    -- NeoTree
-    ["<leader>e"] = { "<cmd>Neotree toggle<cr>", desc = "Toggle Explorer" },
+    -- [[ NeoTree ]]
+    -- ["<leader>e"] = { "<cmd>Neotree toggle<cr>", desc = "Toggle Explorer" },
     ["<leader>o"] = {
       function()
         if vim.bo.filetype == "neo-tree" then
-          vim.cmd.wincmd "p"
+          local ok, edgy = pcall(require, "edgy")
+          if ok then
+            edgy.goto_main()
+          else
+            vim.cmd.wincmd "p"
+          end
         else
           vim.cmd.Neotree "focus"
         end
@@ -94,39 +99,14 @@ local maps = {
     -- overwrite astronvim keymap if is_available "alpha-nvim" then
     ["<leader>h"] = {
       function()
-        local wins = vim.api.nvim_tabpage_list_wins(0)
-        local on_start = false
-        local alpha_opened = nil
-        if #wins > 1 then
-          for win = 1, #wins do
-            local buf = vim.api.nvim_win_get_buf(wins[win])
-            local filetype = vim.api.nvim_get_option_value("filetype", { buf = buf })
-            local is_neo_tree = filetype == "neo-tree"
-            if filetype == "alpha" then alpha_opened = wins[win] end
-            local usable = not is_neo_tree
-              and buffer_utils.is_valid(buf)
-              and vim.api.nvim_get_option_value("filetype", { buf = buf }) ~= "notify"
-            if usable then
-              vim.fn.win_gotoid(wins[win]) -- go to non-neo-tree window to toggle alpha
-              break
-            end
-          end
-        else
-          local buf = vim.api.nvim_win_get_buf(wins[1])
-          if buf and vim.api.nvim_get_option_value("filetype", { buf = buf }) == "neo-tree" then on_start = true end
-          if buf and vim.api.nvim_get_option_value("filetype", { buf = buf }) == "alpha" then alpha_opened = wins[1] end
-        end
-        if not alpha_opened then
-          require("alpha").start(on_start, alpha_config.configure())
-        else
-          vim.fn.win_gotoid(alpha_opened)
+        local ok, edgy = pcall(require, "edgy")
+        if ok then
+          edgy.goto_main()
+          require("alpha").start(false, alpha_config.configure())
         end
       end,
-      desc = "Home Screen",
+      desc = "Dashboard",
     },
-
-    -- Toggle lsp lines
-    ["<leader>le"] = { require("lsp_lines").toggle, desc = "Toggle Error Overlay" },
 
     -- Light/Dark mode
     ["<leader>m0"] = {
@@ -137,6 +117,9 @@ local maps = {
       function() user_utils.set_background_and_theme "light" end,
       desc = "Light Mode",
     },
+
+    -- Noice
+    ["<leader>N"] = { name = "󰍨 Noice" },
 
     -- Spectre
     ["<leader>s"] = { name = "󰬲 Search & Replace" },
@@ -169,6 +152,14 @@ maps.n["<leader>f?"] = {
   desc = "Open Rust docs",
 }
 
+-- [[ Telescope ]]
+maps.n["<leader>O"] = {
+  function()
+    require("telescope.builtin").oldfiles(telescope_themes.get_dropdown { initial_mode = "normal", winblend = 5 })
+  end,
+  desc = "Recent Files",
+}
+
 -- Sessions
 -- NOTE: Resession allows sending "dir" into `load` but it doesn't even use it when "listing" *smh*
 if is_available "resession.nvim" then
@@ -181,6 +172,11 @@ end
 -- Map buffer view to flubuf
 if is_available "flybuf.nvim" then
   maps.n["<leader>bb"] = { function() vim.cmd [[FlyBuf]] end, desc = "View Buffers" }
+end
+
+-- Toggle lsp lines
+if is_available "lsp_lines" then
+  maps.n["<leader>le"] = { require("lsp_lines").toggle, desc = "Toggle Error Overlay" }
 end
 
 -- Disable Heirline Buffers and Tabs

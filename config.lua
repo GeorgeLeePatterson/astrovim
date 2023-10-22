@@ -27,15 +27,15 @@ return {
       -- -- More examples of some themes
       -- "mellifluous",
       -- "tokyonight",
+      -- "bluloco",
+      -- "nightfox",
 
       -- Default themes. Keep, delete, add, whatever you want.
-      "bluloco",
-      ["nightfox"] = { "nightfox", "carbonfox" },
       "gruvbox",
     },
   },
   icons = {
-    diagnostics = { Error = "✘", Warn = "", Hint = "i", Info = "i" },
+    diagnostics = { Error = "✘ ", Warn = " ", Hint = " ", Info = " " },
     git = {
       Add = "+",
       Change = "~",

@@ -6,7 +6,7 @@ return {
     -- overrides `require("mason-lspconfig").setup(...)`
     opts = function(_, opts)
       -- add more things to the ensure_installed table protecting against community packs modifying it
-      opts.ensure_installed = require("astronvim.utils").list_insert_unique(opts.ensure_installed, {
+      opts.ensure_installed = require("user.utils").list_insert_unique(opts.ensure_installed, {
         "ansiblels",
         "cssls",
         "html",
@@ -16,7 +16,7 @@ return {
         "pyright",
         "rust_analyzer",
         "taplo",
-        -- "tsserver",
+        "tsserver",
         "yamlls",
       })
     end,
@@ -27,7 +27,7 @@ return {
     -- overrides `require("mason-null-ls").setup(...)`
     opts = function(_, opts)
       -- add more things to the ensure_installed table protecting against community packs modifying it
-      opts.ensure_installed = require("astronvim.utils").list_insert_unique(opts.ensure_installed, {
+      opts.ensure_installed = require("user.utils").list_insert_unique(opts.ensure_installed, {
         "eslint_d",
         "just",
         "prettier",
@@ -43,12 +43,13 @@ return {
     -- overrides `require("mason-nvim-dap").setup(...)`
     opts = function(_, opts)
       -- add more things to the ensure_installed table protecting against community packs modifying it
-      opts.ensure_installed = require("astronvim.utils").list_insert_unique(opts.ensure_installed, {
+      opts.ensure_installed = require("user.utils").list_insert_unique(opts.ensure_installed, {
         "bash",
         "js",
         "python",
-        "codelldb",
+        -- "codelldb",
       })
+      return opts
     end,
   },
   {
@@ -68,11 +69,11 @@ return {
       },
     },
     event = "User AstroFile",
-    opts = function()
+    opts = function(_, opts)
       local null_ls = require "null-ls"
-      return {
+      return vim.tbl_deep_extend("force", opts, {
         on_attach = require("astronvim.utils.lsp").on_attach,
-        sources = {
+        sources = require("user.utils").list_insert_unique(opts.sources, {
           null_ls.builtins.code_actions.eslint_d,
           null_ls.builtins.diagnostics.stylint,
           null_ls.builtins.diagnostics.tsc,
@@ -82,8 +83,8 @@ return {
           null_ls.builtins.formatting.prettier,
           null_ls.builtins.formatting.shfmt,
           null_ls.builtins.formatting.stylelint,
-        },
-      }
+        }),
+      })
     end,
   },
   -- This is integrated with wezterm.

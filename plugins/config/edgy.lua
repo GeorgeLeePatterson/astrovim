@@ -30,12 +30,19 @@ return {
   },
   left = {
     {
-      title = "  FILE",
+      title = "  FILES",
       ft = "neo-tree",
       filter = function(buf) return vim.b[buf].neo_tree_source == "filesystem" end,
       pinned = true,
       open = "Neotree filesystem",
       size = { height = 0.6 },
+    },
+    {
+      title = "  GIT",
+      ft = "neo-tree",
+      filter = function(buf) return vim.b[buf].neo_tree_source == "git_status" end,
+      pinned = true,
+      open = "Neotree position=right git_status",
     },
     {
       title = "  BUFFERS",
@@ -47,18 +54,11 @@ return {
     {
       title = "  OUTLINE",
       ft = "Outline",
-      pinned = true,
+      -- pinned = true,
       open = "SymbolsOutline",
     },
     "neo-tree",
     -- -- Disabled to free up real estate.
-    -- {
-    --   title = "  GIT",
-    --   ft = "neo-tree",
-    --   filter = function(buf) return vim.b[buf].neo_tree_source == "git_status" end,
-    --   pinned = true,
-    --   open = "Neotree position=right git_status",
-    -- },
     -- {
     --   ft = "裂 DIAGNOSTICS",
     --   filter = function(buf) return vim.b[buf].neo_tree_source == "diagnostics" end,

@@ -2,6 +2,7 @@
 local alpha_config = require "user.plugins.config.alpha"
 
 return {
+  -- [[ Dashboard ]]
   {
     "goolord/alpha-nvim",
     dependencies = {
@@ -9,6 +10,8 @@ return {
     },
     config = function() require("alpha").setup(alpha_config.configure()) end,
   },
+
+  -- [[ Search & Grep ]]
   {
     "junegunn/fzf.vim",
     dependencies = { "junegunn/fzf" },
@@ -21,6 +24,8 @@ return {
       "junegunn/fzf.vim",
     },
   },
+
+  -- [[ Neo-tree ]]
   {
     "nvim-neo-tree/neo-tree.nvim",
     branch = "main",
@@ -50,7 +55,7 @@ return {
       },
     },
     opts = {
-      open_files_do_not_replace_types = { "terminal", "trouble", "qf", "notify" },
+      open_files_do_not_replace_types = { "terminal", "Trouble", "qf", "notify", "Outline" },
       filesystem = {
         follow_current_file = {
           enabled = true,
@@ -62,7 +67,8 @@ return {
           hide_gitignored = false,
           never_show = { ".DS_Store" },
         },
-        -- Not sure but I thik w/ edgy this is very important
+        use_libuv_file_watcher = true,
+        -- Not sure but I think w/ edgy this is very important
         hijack_netrw_behavior = "open_default",
       },
       default_component_configs = {
@@ -82,6 +88,9 @@ return {
         mappings = {
           ["gs"] = "use_flash",
         },
+      },
+      source_selector = {
+        tabs_layout = "active",
       },
     },
   },

@@ -13,6 +13,7 @@ end
 
 return {
   {
+    -- Think about re-enabling after removing AstroNvim from setup
     "stevearc/resession.nvim",
     lazy = false,
     enabled = false,

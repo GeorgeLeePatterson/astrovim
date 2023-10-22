@@ -12,7 +12,7 @@ return {
     opts = function(_, opts)
       return vim.tbl_extend("force", opts, {
         auto_install = true,
-        ensure_installed = require("astronvim.utils").list_insert_unique(opts.ensure_installed, {
+        ensure_installed = require("user.utils").list_insert_unique(opts.ensure_installed, {
           "lua",
           "bash",
           "css",
@@ -21,17 +21,11 @@ return {
           "javascript",
           "json",
           "make",
-          "markdown",
-          "markdown_inline",
           "python",
           "regex",
-          "rust",
           "scss",
           "sql",
           "terraform",
-          "toml",
-          "tsx",
-          "typescript",
           "vim",
           "yaml",
         }),

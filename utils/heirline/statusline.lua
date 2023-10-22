@@ -157,17 +157,17 @@ local Diagnostics = function()
   return util.CalloutSection({
     ReadOnly,
     astro_status.component.git_diff { surround = false },
-    astro_status.component.diagnostics { surround = false },
     {
       provider = " ",
       condition = function(self) return not self.has_diagnostics and bo.buftype == "" end,
     },
+    astro_status.component.diagnostics { surround = false },
     {
       provider = " ",
       hl = function() return { fg = hl_colors["ForestgreenCustomFg"].fg } end,
       condition = function(self) return not self.has_diagnostics and bo.buftype == "" end,
     },
-    condition = astro_conditions.has_filetype,
+    -- condition = astro_conditions.has_filetype,
   }, {
     surround = {
       icons.powerline.left_filled .. icons.powerline.block,
