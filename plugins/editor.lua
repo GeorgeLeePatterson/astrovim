@@ -59,6 +59,9 @@ return {
       "jvgrootveld/telescope-zoxide",
       { "tiagovla/scope.nvim" },
     },
+    keys = {
+      { "<leader>M", function() vim.cmd [[Telescope notify]] end, desc = "Messages" },
+    },
     opts = telescope_config.opts,
     config = telescope_config.config,
   },

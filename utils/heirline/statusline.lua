@@ -159,19 +159,21 @@ local Diagnostics = function()
     astro_status.component.git_diff { surround = false },
     {
       provider = " ",
-      condition = function(self) return not self.has_diagnostics and bo.buftype == "" end,
+      condition = function() return astro_conditions.git_changed(0) and bo.buftype == "" end,
     },
+    theme.get_special_separator("slant_right", {
+      condition = function() return astro_conditions.git_changed(0) and bo.buftype == "" end,
+    }),
     astro_status.component.diagnostics { surround = false },
     {
-      provider = " ",
+      provider = "  ",
       hl = function() return { fg = hl_colors["ForestgreenCustomFg"].fg } end,
       condition = function(self) return not self.has_diagnostics and bo.buftype == "" end,
     },
-    -- condition = astro_conditions.has_filetype,
   }, {
     surround = {
       icons.powerline.left_filled .. icons.powerline.block,
-      icons.powerline.block .. icons.powerline.right_filled,
+      icons.powerline.block .. icons.powerline.slant_right, -- right_filled,
     },
     hl = function() return theme.get_callout_hl()["bg"] end,
   })
@@ -185,10 +187,13 @@ local Treesitter = function()
     },
     {
       surround = {
-        icons.powerline.left_filled .. icons.powerline.block,
+        -- util.separators.slant_left,
+        icons.powerline.slant_left .. icons.powerline.block,
+        -- icons.powerline.left_filled .. icons.powerline.block,
         icons.powerline.block .. icons.powerline.right_filled,
       },
       right = function(self) return theme.lsp_server_accent(self.lsp_names).bg end,
+      -- left = function() return theme.get_callout_hl()["fg"] end,
       hl = function() return theme.get_callout_hl()["bg"] end,
     }
   )

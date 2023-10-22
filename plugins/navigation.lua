@@ -55,7 +55,7 @@ return {
       },
     },
     opts = {
-      open_files_do_not_replace_types = { "terminal", "Trouble", "qf", "notify", "Outline" },
+      open_files_do_not_replace_types = { "terminal", "Trouble", "qf", "notify", "Outline", "edgy" },
       filesystem = {
         follow_current_file = {
           enabled = true,

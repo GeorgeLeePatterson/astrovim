@@ -47,6 +47,13 @@ util.icons = {
   pacman = "󰊠",
 }
 
+util.separators = {
+  slant_right = util.icons.powerline.slant_left_2 .. util.icons.powerline.slant_right .. " ",
+  slant_left = util.icons.powerline.slant_left .. util.icons.powerline.slant_right_2 .. " ",
+  diamond = util.icons.powerline.left_filled .. util.icons.powerline.right_filled .. " ",
+  none = "",
+}
+
 util.mode = setmetatable({
   ["n"] = "normal",
   ["no"] = "op",

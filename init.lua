@@ -34,6 +34,10 @@ return {
     underline = true,
   },
 
+  icons = {
+    GitDelete = "✘",
+  },
+
   lsp = {
     config = {
       lua_ls = {

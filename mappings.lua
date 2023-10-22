@@ -57,7 +57,7 @@ local maps = {
             vim.cmd.wincmd "p"
           end
         else
-          vim.cmd.Neotree "focus"
+          vim.cmd [[Neotree action=focus]]
         end
       end,
       desc = "Toggle Explorer Focus",
@@ -82,7 +82,8 @@ local maps = {
       function()
         local bufs = vim.fn.getbufinfo { buflisted = true }
         local alpha_available = require("astronvim.utils").is_available "alpha-nvim"
-        local is_alpha = vim.api.nvim_get_option_value("filetype", { scope = "local" }) ~= "alpha"
+        local is_alpha = vim.api.nvim_get_option_value("filetype", { scope = "local" }) == "alpha"
+
         -- If alpha is the only window, don't close
         if is_alpha and not bufs[2] then return end
 

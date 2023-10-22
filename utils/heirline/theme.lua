@@ -1,6 +1,7 @@
 local heirline = require "heirline.utils"
 local util = require "user.utils.heirline.util"
 local get_hl = heirline.get_highlight
+local icons = util.icons
 
 -- Use horizon palettes to get some funky colors
 -- Palette used in commented at the bottom of the file
@@ -45,6 +46,7 @@ do
   colors.dark = "#282828"
   colors.fg1 = "#f0dec2"
   colors.grey3 = "#b0a392"
+  colors.orange = "#CC5500"
   colors.status_accent = "#99c369"
 
   colors.onedark = {
@@ -127,21 +129,33 @@ M.get_callout_hl = function(fg)
   return { bg = highlight and highlight["bg"] or nil, fg = highlight and highlight["fg"] or nil }
 end
 
+-- Get different separator types
+-- @param string which separator to use
+-- @param table options for the provider
+M.get_special_separator = function(which, opts)
+  local default_hl = { fg = heirline.get_highlight("StatusLine").bg }
+  local sep = util.separators[which] or {}
+  return vim.tbl_deep_extend("force", {
+    provider = sep or "",
+    hl = default_hl,
+  }, opts)
+end
+
 -- Mode colors
 do
   local mode_colors = {
     normal = colors.gray,
     op = colors.blue,
     insert = colors.blue,
-    visual = colors.yellow,
-    visual_lines = colors.apricot,
-    visual_block = colors.apricot2,
+    visual = colors.orange,
+    visual_lines = colors.cranberry,
+    visual_block = colors.cranberry,
     replace = colors.red,
     v_replace = colors.red,
     enter = colors.orange,
     more = colors.orange,
     select = colors.red2,
-    command = colors.green,
+    command = colors.turquoise,
     shell = colors.purple,
     term = colors.purple,
     none = colors.orange,
