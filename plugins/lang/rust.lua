@@ -83,11 +83,14 @@ return {
   },
   {
     "simrat39/rust-tools.nvim",
-    ft = { "rust" },
+    lazy = false,
+    -- ft = { "rust" },
     init = function() astronvim.lsp.skip_setup = utils.list_insert_unique(astronvim.lsp.skip_setup, "rust_analyzer") end,
     opts = rust_opts,
     config = rust_config,
     dependencies = {
+      "neovim/nvim-lspconfig",
+      "nvim-lua/plenary.nvim",
       {
         "jay-babu/mason-nvim-dap.nvim",
         opts = function(_, opts) opts.ensure_installed = utils.list_insert_unique(opts.ensure_installed, "codelldb") end,
@@ -141,13 +144,6 @@ return {
             },
           },
         },
-      },
-      setup = {
-        rust_analyzer = function(_, opts)
-          local rust_tools_opts = require "user.lsp.config.rust"
-          rust_config(_, vim.tbl_deep_extend("force", rust_tools_opts or {}, { server = opts }))
-          return true
-        end,
       },
     },
   },

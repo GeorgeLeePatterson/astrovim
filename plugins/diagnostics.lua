@@ -1,4 +1,7 @@
+local user_config = require "user.config"
+
 return {
+  -- [[ Trouble ]]
   {
     "folke/trouble.nvim",
     cmd = "TroubleToggle",
@@ -17,18 +20,14 @@ return {
         desc = "Diagnostics (document)",
       },
     },
+    opts = {
+      auto_open = true,
+      auto_close = true,
+    },
     config = function(_, opts) require("trouble").setup(opts) end,
   },
-  -- {
-  --   "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
-  --   config = function()
-  --     vim.diagnostic.config {
-  --       virtual_text = false,
-  --     }
-  --     require("lsp_lines").setup()
-  --   end,
-  --   event = "LspAttach",
-  -- },
+
+  -- [[ Lspsaga ]]
   {
     "nvimdev/lspsaga.nvim",
     event = "LspAttach",
@@ -72,6 +71,8 @@ return {
       }
     end,
   },
+
+  -- [[ Actions-preview ]]
   {
     "aznhe21/actions-preview.nvim",
     event = "LspAttach",
@@ -79,20 +80,27 @@ return {
       "nvim-telescope/telescope.nvim",
       "MunifTanjim/nui.nvim",
     },
+    keys = {
+      {
+        "ga",
+        function() require("actions-preview").code_actions() end,
+        mode = { "v", "n" },
+        { desc = "Actions preview" },
+      },
+    },
     config = function(_, opts)
-      opts.telescope = {
-        sorting_strategy = "ascending",
-        layout_strategy = "vertical",
-        layout_config = {
-          width = 0.8,
-          height = 0.9,
-          prompt_position = "top",
-          preview_cutoff = 20,
-          preview_height = function(_, _, max_lines) return max_lines - 15 end,
-        },
-      }
+      -- Change layout depending on width of window
+      -- NOTE: Currently only set at startup, may make autocmd
+      local bp = user_config.ui.breakpoint
+      local columns = vim.opt.columns:get()
+      local ts_theme = require("telescope.themes").get_cursor()
+      if columns < bp then ts_theme = require("telescope.themes").get_ivy() end
+      opts.telescope = vim.tbl_deep_extend("force", ts_theme, {
+        initial_mode = "normal",
+        winblend = 5,
+      })
+
       require("actions-preview").setup(opts)
-      vim.keymap.set({ "v", "n" }, "gf", require("actions-preview").code_actions, { desc = "Actions preview" })
     end,
   },
   {
@@ -140,7 +148,14 @@ return {
     event = "VeryLazy",
     opts = {
       previewer_cmd = "glow",
-      after_open = function(bufnr) vim.keymap.set({ "n" }, "<Esc>", ":close<CR>", { buffer = bufnr, desc = "Close" }) end,
+      after_open = function(bufnr)
+        vim.keymap.set(
+          { "n" },
+          "<Esc>",
+          ":close<CR>",
+          { buffer = bufnr, desc = "Close" }
+        )
+      end,
     },
   },
   {

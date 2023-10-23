@@ -34,8 +34,17 @@ return {
       "gruvbox",
     },
   },
+  ui = {
+    -- Used throughout to change layouts of telescope and other plugins
+    breakpoint = 200,
+  },
   icons = {
-    diagnostics = { Error = "✘ ", Warn = " ", Hint = " ", Info = " " },
+    diagnostics = {
+      Error = "✘ ",
+      Warn = " ",
+      Hint = " ",
+      Info = " ",
+    },
     git = {
       Add = "+",
       Change = "~",

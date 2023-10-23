@@ -1,11 +1,8 @@
 return {
   { "AstroNvim/astrotheme", enabled = false },
-  -- use mason-lspconfig to configure LSP installations
   {
     "williamboman/mason-lspconfig.nvim",
-    -- overrides `require("mason-lspconfig").setup(...)`
     opts = function(_, opts)
-      -- add more things to the ensure_installed table protecting against community packs modifying it
       opts.ensure_installed = require("user.utils").list_insert_unique(opts.ensure_installed, {
         "ansiblels",
         "cssls",
@@ -21,34 +18,35 @@ return {
       })
     end,
   },
-  -- use mason-null-ls to configure Formatters/Linter installation for null-ls sources
-  {
-    "jay-babu/mason-null-ls.nvim",
-    -- overrides `require("mason-null-ls").setup(...)`
-    opts = function(_, opts)
-      -- add more things to the ensure_installed table protecting against community packs modifying it
-      opts.ensure_installed = require("user.utils").list_insert_unique(opts.ensure_installed, {
-        "eslint_d",
-        "just",
-        "prettier",
-        "stylelint",
-        "stylua",
-      })
-      opts.automatic_installation = true
-      return opts
-    end,
-  },
   {
     "jay-babu/mason-nvim-dap.nvim",
-    -- overrides `require("mason-nvim-dap").setup(...)`
     opts = function(_, opts)
-      -- add more things to the ensure_installed table protecting against community packs modifying it
       opts.ensure_installed = require("user.utils").list_insert_unique(opts.ensure_installed, {
         "bash",
         "js",
         "python",
-        -- "codelldb",
       })
+      return opts
+    end,
+  },
+
+  -- [[ Formatters / Linters]]
+  {
+    "jay-babu/mason-null-ls.nvim",
+    opts = function(_, opts)
+      -- add more things to the ensure_installed table protecting against community packs modifying it
+      opts.ensure_installed = require("user.utils").list_insert_unique(opts.ensure_installed, {
+        "black",
+        "eslint_d",
+        "isort",
+        "just",
+        "prettier",
+        "pylint",
+        "selene",
+        "stylelint",
+        "stylua",
+      })
+      opts.automatic_installation = true
       return opts
     end,
   },
@@ -65,7 +63,6 @@ return {
       {
         "jay-babu/mason-null-ls.nvim",
         cmd = { "NullLsInstall", "NullLsUninstall" },
-        opts = { handlers = {} },
       },
     },
     event = "User AstroFile",

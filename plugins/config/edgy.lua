@@ -51,7 +51,7 @@ return {
       filter = function(buf) return vim.b[buf].neo_tree_source == "filesystem" end,
       pinned = true,
       open = "Neotree filesystem",
-      size = { height = 0.6 },
+      size = { height = 0.5 },
     },
     {
       title = "  GIT",
@@ -70,8 +70,11 @@ return {
     {
       title = "  OUTLINE",
       ft = "Outline",
-      -- pinned = true,
-      open = "SymbolsOutline",
+      pinned = true,
+      open = function()
+        if pcall(require, "symbols-outline") then vim.cmd [[SymbolsOutlineOpen]] end
+      end,
+      size = { height = 0.4 },
     },
     "neo-tree",
     -- -- Disabled to free up real estate.

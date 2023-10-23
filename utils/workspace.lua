@@ -69,4 +69,34 @@ function M.live_grep_from_project_git_root()
   require("telescope.builtin").live_grep(opts)
 end
 
+--- A condition function if LSP is attached
+---@param bufnr table|integer a buffer number to check the condition for, a table with bufnr property, or nil to get the current buffer
+---@return boolean # whether or not LSP is attached
+-- @usage local heirline_component = { provider = "Example Provider", condition = require("astronvim.utils.status").condition.lsp_attached }
+function M.lsp_attached(bufnr)
+  if type(bufnr) == "table" then bufnr = bufnr.bufnr end
+  return next(vim.lsp.get_clients { bufnr = bufnr or 0 }) ~= nil
+end
+
+function M.toggle_lsp(bufnr, root_files)
+  if bufnr == nil then bufnr = vim.api.nvim_get_current_buf() end
+  if bufnr and type(bufnr) ~= "table" then bufnr = { bufnr = bufnr } end
+  local clients = vim.lsp.get_clients(bufnr)
+  if not vim.tbl_isempty(clients) then
+    vim.cmd "LspStop"
+  else
+    vim.cmd "LspStart"
+  end
+end
+
+function M.start_lsp(bufnr, lsp_name, root_files)
+  if bufnr and type(bufnr) ~= "table" then bufnr = { bufnr = bufnr } end
+  local clients = vim.lsp.get_clients(bufnr)
+
+  if vim.tbl_isempty(clients) then
+    lsp_name = lsp_name or ""
+    vim.cmd("LspStart " .. lsp_name)
+  end
+end
+
 return M

@@ -6,7 +6,6 @@ M.capabilities = require("cmp_nvim_lsp").default_capabilities()
 M.capabilities.textDocument.completion.completionItem.snippetSupport = true
 -- Add additional capabilities supported by UFO
 M.capabilities.textDocument.foldingRange = {
-  dynamicRegistration = false,
   lineFoldingOnly = true,
 }
 

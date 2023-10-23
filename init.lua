@@ -23,7 +23,8 @@ return {
 
   -- Set colorscheme to use
   colorscheme = (function()
-    local _, theme = user_utils.random_tbl_gen(user_config.colorscheme.favorite_themes)
+    local _, theme =
+      user_utils.random_tbl_gen(user_config.colorscheme.favorite_themes)
     return theme
   end)(),
 
@@ -79,7 +80,14 @@ return {
     performance = {
       rtp = {
         -- customize default disabled vim plugins
-        disabled_plugins = { "tohtml", "gzip", "matchit", "zipPlugin", "netrwPlugin", "tarPlugin" },
+        disabled_plugins = {
+          "tohtml",
+          "gzip",
+          "matchit",
+          "zipPlugin",
+          "netrwPlugin",
+          "tarPlugin",
+        },
       },
     },
   },
@@ -108,7 +116,9 @@ return {
       "user/overrides/astronvim",
     } do
       local status_ok, fault = pcall(require, source)
-      if not status_ok then vim.api.nvim_err_writeln("Failed to load " .. source .. "\n\n" .. fault) end
+      if not status_ok then
+        vim.api.nvim_err_writeln("Failed to load " .. source .. "\n\n" .. fault)
+      end
     end
   end,
 }
