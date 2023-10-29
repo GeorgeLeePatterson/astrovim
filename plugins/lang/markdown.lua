@@ -64,10 +64,9 @@ return {
       return vim.tbl_deep_extend("force", opts, {
         formatters_by_ft = {
           ["markdown"] = { "prettier", "vale" },
-          ["markdown.mdx"] = { "prettier", "vale" }
-        }
+          ["markdown.mdx"] = { "prettier", "vale" },
+        },
       })
-      return opts
     end,
   },
 
@@ -119,6 +118,15 @@ return {
         end,
       })
     end,
+  },
+
+  -- Markdown-preview
+  {
+    "iamcco/markdown-preview.nvim",
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    build = "cd app && yarn install",
+    init = function() vim.g.mkdp_filetypes = { "markdown" } end,
+    ft = { "markdown" },
   },
 
   -- Headlines

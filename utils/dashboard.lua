@@ -85,17 +85,12 @@ local mru_opts = {
   autocd = false,
 }
 
---- @param start number
---- @param cwd string? optional
---- @param items_number number? optional number of items to generate, default = 10
-M.mru = function(start, cwd, items_number, opts)
-  opts = opts or mru_opts
-  items_number = if_nil(items_number, 10)
-
-  local get_mru = function()
-    local oldfiles = {}
-    for _, v in pairs(vim.v.oldfiles) do
-      if #oldfiles == items_number then break end
+local function get_old_files(cwd, items_number, opts, skip)
+  skip = skip or {}
+  local oldfiles = {}
+  for _, v in pairs(vim.v.oldfiles) do
+    if #oldfiles == items_number then break end
+    if not vim.list_contains(skip, v) then
       local cwd_cond
       if not cwd then
         cwd_cond = true
@@ -107,6 +102,30 @@ M.mru = function(start, cwd, items_number, opts)
         oldfiles[#oldfiles + 1] = v
       end
     end
+  end
+  return oldfiles
+end
+
+--- @param start number
+--- @param cwd string? optional
+--- @param items_number number? optional number of items to generate, default = 10
+M.mru = function(start, cwd, items_number, opts)
+  opts = opts or mru_opts
+  items_number = if_nil(items_number, 10)
+
+  local get_mru = function()
+    local filtered_oldfiles = get_old_files(cwd, items_number, opts, {})
+
+    if #filtered_oldfiles < 10 then
+      local additional = 10 - #filtered_oldfiles
+      local more_oldfiles =
+        get_old_files(nil, additional, opts, filtered_oldfiles)
+      for _, v in ipairs(more_oldfiles) do
+        filtered_oldfiles[#filtered_oldfiles + 1] = v
+      end
+    end
+    local oldfiles = filtered_oldfiles
+
     local target_width = 35
 
     local tbl = {}
@@ -134,12 +153,11 @@ M.mru = function(start, cwd, items_number, opts)
               ext = parts[#parts] or ""
             end
 
-            local to_remove = #file_part - (target_width + #ext + #ell)
-            if to_remove > 0 then
+            local to_remove = target_width - #ext - #ell
+            if #file_part > to_remove then
               file_part = string.sub(file_part, 1, to_remove)
             end
             local filename = file_part .. ell .. ext
-            -- vim.notify("Fileparts: " .. file_part .. " ext = " .. ext .. " filename: " .. filename .. " to_remove: " .. vim.inspect(to_remove) .. " parts: " .. vim.inspect(parts))
             if #filename > 0 then short_fn = filename end
           end
         end

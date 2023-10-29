@@ -12,7 +12,6 @@ return {
         "qf",
         "prompt",
         "neo-tree",
-        -- "edgy",
       },
       ignored_buftypes = {},
       multiplexer_integration = "wezterm",
