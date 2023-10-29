@@ -1,5 +1,25 @@
 ---@diagnostic disable: missing-fields
 return {
+  -- Smart-splits
+  -- This is integrated with wezterm. See `~/.config/wezterm/keys.lua` for mappings
+  {
+    "mrjones2014/smart-splits.nvim",
+    enabled = not vim.g.neovide,
+    opts = {
+      ignored_filetypes = {
+        "nofile",
+        "quickfix",
+        "qf",
+        "prompt",
+        "neo-tree",
+        -- "edgy",
+      },
+      ignored_buftypes = {},
+      multiplexer_integration = "wezterm",
+    },
+  },
+
+  -- Wezterm
   "willothy/wezterm.nvim",
   cmd = "WeztermSpawn",
   event = "VeryLazy",

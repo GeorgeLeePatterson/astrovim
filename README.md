@@ -6,56 +6,58 @@ My user configuration overrides for [AstroNvim](https://github.com/AstroNvim/Ast
 
 ## 📸 Screenshots
 
-#### Dashboard
+### Dashboard
 
 ![Dashboard](assets/dashboard.png)
 ![Dashboard2](assets/dashboard2.png)
 
-#### Editor
+### Editor
 
 ![Editor](assets/editor.png)
 
-#### Themes
+### Themes
 
 ![Themes](assets/themes.png)
 
-#### Wezterm integration
+### Wezterm integration
 
 ![Wezterm](assets/wezterm.png)
 
 ## 🛠️ Installation
 
-> ❗️NOTE: You do not need to do any of the Installation instructions if you installed [my dots](https://github.com/GeorgeLeePatterson/dotfiles)
+> ❗️NOTE: Skip installation instructions if you installed [my dots](https://github.com/GeorgeLeePatterson/dotfiles)
 
-#### Make a backup of your current nvim and shared folder
+### Make a backup of your current nvim and shared folder
 
-```shell
+```bash
 mv ~/.config/nvim ~/.config/nvim.bak
 mv ~/.local/share/nvim ~/.local/share/nvim.bak
 ```
 
-#### Clone AstroNvim
+### Clone AstroNvim
 
-```shell
+```bash
 git clone https://github.com/AstroNvim/AstroNvim ~/.config/nvim
 ```
 
-#### Create a new user repository from this template
+### Create a new user repository from this template
 
-Press the "Use this template" button above to create a new repository to store your user configuration.
+Press the "Use this template" button to create a new repository to store your
+user configuration.
 
-You can also just clone this repository directly if you do not want to track your user configuration in GitHub.
+You can also just clone this repository directly if you do not want to
+track your user configuration in GitHub.
 
-#### Clone the repository
+### Clone the repository
 
-```shell
+```bash
 git clone https://github.com/<your_user>/<your_repository> ~/.config/nvim/lua/user
 ```
 
-#### Start Neovim
+### Start Neovim
 
-```shell
-$ nvim
+```bash
+nvim
 ```
 
 ## Plugins

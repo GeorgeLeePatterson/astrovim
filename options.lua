@@ -14,7 +14,8 @@ local formatoptions = function(o)
 end
 
 -- Persistent formatoptions
-local format_group = vim.api.nvim_create_augroup("FormatOptions", { clear = true })
+local format_group =
+  vim.api.nvim_create_augroup("FormatOptions", { clear = true })
 vim.api.nvim_create_autocmd({ "BufEnter" }, {
   pattern = "*",
   desc = "Always set formatoptions consistently",
@@ -25,7 +26,8 @@ vim.api.nvim_create_autocmd({ "BufEnter" }, {
 -- Cursorline highlighting control
 --  Only have it on in the active buffer
 opt.cursorline = true -- Highlight the current line
-local cursorline_group = vim.api.nvim_create_augroup("CursorLineControl", { clear = true })
+local cursorline_group =
+  vim.api.nvim_create_augroup("CursorLineControl", { clear = true })
 local set_cursorline = function(event, value, pattern)
   vim.api.nvim_create_autocmd(event, {
     group = cursorline_group,
@@ -54,12 +56,11 @@ local options = {
     shiftwidth = 4,
     showmatch = true,
     showtabline = 2,
-    signcolumn = "auto", -- sets vim.opt.signcolumn to auto
+    signcolumn = "yes",
     smartcase = true,
     smoothscroll = true,
     softtabstop = 4,
     spell = false, -- sets vim.opt.spell
-    splitkeep = "screen",
     tabstop = 4,
     termguicolors = true,
     updatetime = 200,
@@ -71,6 +72,7 @@ local options = {
     cmp_enabled = true, -- enable completion at start
     diagnostics_mode = 3, -- set the visibility of diagnostics in the UI (0=off, 1=only show in status line, 2=virtual text off, 3=all on)
     icons_enabled = true, -- disable icons in the UI (disable if no nerd font is available, requires :PackerSync after changing)
+    inlay_hints_enabled = true,
 
     -- Turn off warnings related to certain languages
     loaded_perl_provider = 0,
@@ -79,6 +81,7 @@ local options = {
     -- Disabled for Noice plugin
     lsp_handlers_enabled = false, -- enable or disable default vim.lsp.handlers (hover and signature help)
     mapleader = " ", -- sets vim.g.mapleader
+    max_file = { size = 1024 * 1024, lines = 10000 }, -- set global limits for large files
     -- resession_enabled = true, -- enable experimental resession.nvim session management (will be default in AstroNvim v4)
     ui_notifications_enabled = true, -- disable notifications when toggling UI elements
 

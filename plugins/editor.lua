@@ -1,8 +1,12 @@
+local user_config = require "user.config"
 local ufo_config = require "user.plugins.config.ufo"
 local telescope_config = require "user.plugins.config.telescope"
+local favorite = user_config.get_config "mappings.favorite"
 
 return {
   -- [[ Layout & Editor ]]
+
+  -- Edgy
   {
     "folke/edgy.nvim",
     event = "VeryLazy", -- "VimEnter",
@@ -14,17 +18,22 @@ return {
           local ok, symbols = pcall(require, "symbols-outline")
           if ok then pcall(symbols.close_outline) end
         end,
-        desc = "Edgy Toggle",
+        desc = favorite "Edgy Toggle",
       },
     },
+    -- -- This is recommended but actually makes it worse imo
+    -- init = function() vim.opt.splitkeep = "screen" end,
     opts = require "user.plugins.config.edgy",
   },
+
+  -- Rainbow-delimiters
   {
     "HiPhish/rainbow-delimiters.nvim",
     dependencies = "nvim-treesitter/nvim-treesitter",
     event = "User AstroFile",
   },
 
+  -- Zen
   {
     "folke/zen-mode.nvim",
     dependencies = {
@@ -46,6 +55,8 @@ return {
       if require("user.config").defaults.zen then zen.toggle(opts) end
     end,
   },
+
+  -- Mini.bufremove
   { "echasnovski/mini.bufremove" },
 
   -- [[ Telescope ]]
@@ -58,40 +69,35 @@ return {
       { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
       "jvgrootveld/telescope-zoxide",
       { "tiagovla/scope.nvim" },
+      {
+        "nvim-telescope/telescope-github.nvim",
+        config = function() require("telescope").load_extension "gh" end,
+      },
     },
     keys = {
-      { "<leader>M", function() vim.cmd [[Telescope notify]] end, desc = "Messages" },
+      {
+        "<leader>M",
+        function() vim.cmd [[Telescope notify]] end,
+        desc = "Messages",
+      },
     },
-    opts = telescope_config.opts,
-    config = telescope_config.config,
+    config = telescope_config,
   },
 
   -- [[ Symbols ]]
   {
     "simrat39/symbols-outline.nvim",
     cmd = "SymbolsOutline",
-    keys = { { "<leader>vs", "<cmd>SymbolsOutline<cr>", desc = "Symbols Outline" } },
+    keys = {
+      { "<leader>vs", "<cmd>SymbolsOutline<cr>", desc = "Symbols Outline" },
+    },
     opts = { position = "right" },
     config = true,
   },
 
   -- [[ Search ]]
-  {
-    "ray-x/sad.nvim",
-    cmd = "Sad",
-    dependencies = {
-      { "ray-x/guihua.lua", build = "cd lua/fzy && make" },
-    },
-    keys = {
-      {
-        "<leader>ss",
-        function() vim.cmd(":Sad " .. vim.fn.input "Enter search pattern: ") end,
-        mode = { "n", "v", "s" },
-        desc = "Sad s&r (cursor)",
-      },
-    },
-    config = function() require("sad").setup {} end,
-  },
+
+  -- Muren
   {
     "AckslD/muren.nvim",
     cmd = { "MurenOpen", "MurenFresh", "MurenUnique" },
@@ -110,6 +116,8 @@ return {
       }
     end,
   },
+
+  -- Spectre
   {
     "nvim-pack/nvim-spectre",
     cmd = "Spectre",
@@ -136,6 +144,16 @@ return {
         },
       }
     end,
+  },
+
+  -- Vim-illuminate
+  {
+    "RRethy/vim-illuminate",
+    event = "User AstroFile",
+    opts = {
+      large_file_cutoff = (vim.g.max_file or {})["lines"] or 10000,
+    },
+    config = function(_, opts) require("illuminate").configure(opts) end,
   },
 
   -- [[ Folding ]]

@@ -1,6 +1,7 @@
-local cmp_utils = require "user.plugins.config.cmp"
+local get_config = require("user.utils").get_plugin_config
 
 return {
+  -- [[ Nvim-cmp ]]
   {
     "hrsh7th/nvim-cmp",
     keys = { ":", "?", "/" },
@@ -19,10 +20,15 @@ return {
         config = function() require("copilot_cmp").setup() end,
       },
     },
-    opts = cmp_utils.opts,
-    config = cmp_utils.config,
+    config = get_config "cmp",
   },
+
+  -- LspKind
   { "onsails/lspkind.nvim" },
+
+  -- [[ AI ]]
+
+  -- Copilot
   {
     "zbirenbaum/copilot.lua",
     cmd = "Copilot",
@@ -51,8 +57,8 @@ return {
       }
     end,
   },
-  -- Pretty disapponted with tabnine, copilot is much better
-  -- TODO: remove this
+
+  -- Tabnine
   {
     "tzachar/cmp-tabnine",
     event = "VeryLazy",

@@ -2,11 +2,6 @@
 local user_config = require "user.config"
 local user_utils = require "user.utils"
 
-local load_capabilities = function()
-  local ok, cmp_lsp = pcall(require, "cmp_nvim_lsp")
-  if ok then cmp_lsp.default_capabilities() end
-end
-
 return {
   -- Configure AstroNvim updates
   updater = {
@@ -40,12 +35,7 @@ return {
   },
 
   lsp = {
-    config = {
-      lua_ls = {
-        Lua = require "user.lsp.config.lua",
-        capabilities = load_capabilities(),
-      },
-    },
+    config = {},
     -- customize lsp formatting options
     formatting = {
       -- control auto formatting on save

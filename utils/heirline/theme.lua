@@ -1,7 +1,6 @@
 local heirline = require "heirline.utils"
 local util = require "user.utils.heirline.util"
 local get_hl = heirline.get_highlight
-local icons = util.icons
 
 -- Use horizon palettes to get some funky colors
 -- Palette used in commented at the bottom of the file
@@ -126,7 +125,10 @@ M.get_callout_hl = function(fg)
   local highlight = hl[callout_hl]
   if fg then highlight["fg"] = hl[callout_hl .. "Fg"]["fg"] end
 
-  return { bg = highlight and highlight["bg"] or nil, fg = highlight and highlight["fg"] or nil }
+  return {
+    bg = highlight and highlight["bg"] or nil,
+    fg = highlight and highlight["fg"] or nil,
+  }
 end
 
 -- Get different separator types
@@ -210,7 +212,8 @@ local lsp_colors = {
   copilot = "#ff5170",
   none = colors.status_accent,
 }
-local lsp_rank = { rust_analyzer = 1, tsserver = 2, marksman = 3, lua_ls = 4, stylelua = 5 }
+local lsp_rank =
+  { rust_analyzer = 1, tsserver = 2, marksman = 3, lua_ls = 4, stylelua = 5 }
 M.lsp_colors = util.create_metatable(lsp_colors, {}, "none")
 
 local lsp_accents = {

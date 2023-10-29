@@ -4,31 +4,28 @@ return {
     "nvim-treesitter/nvim-treesitter",
     dependencies = {
       "rrethy/nvim-treesitter-textsubjects",
-      -- {
-      --   "IndianBoy42/tree-sitter-just",
-      --   config = function() require("tree-sitter-just").setup {} end,
-      -- },
+{
+    "chrisgrieser/nvim-various-textobjs",
+    opts = { useDefaultKeymaps = true },
+  }
     },
     opts = function(_, opts)
       return vim.tbl_extend("force", opts, {
         auto_install = true,
-        ensure_installed = require("user.utils").list_insert_unique(opts.ensure_installed, {
-          "lua",
-          "bash",
-          "css",
-          "hcl",
-          "html",
-          "javascript",
-          "json",
-          "make",
-          "python",
-          "regex",
-          "scss",
-          "sql",
-          "terraform",
-          "vim",
-          "yaml",
-        }),
+        ensure_installed = require("user.utils").list_insert_unique(
+          opts.ensure_installed,
+          {
+            "bash",
+            "hcl",
+            "json",
+            "make",
+            "regex",
+            "sql",
+            "terraform",
+            "vim",
+            "yaml",
+          }
+        ),
         textsubjects = {
           enable = true,
           prev_selection = ",",
@@ -37,6 +34,15 @@ return {
             [";"] = "textsubjects-container-outer",
             ["i;"] = "textsubjects-container-inner",
           },
+        },
+
+        highlight = {
+          disable = function(_lang, buf)
+            local max_filesize = 1024 * 1024 -- 1 MB
+            local ok, stats =
+              pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+            if ok and stats and stats.size > max_filesize then return true end
+          end,
         },
       })
     end,
@@ -52,10 +58,5 @@ return {
       }
       require("nvim-treesitter.configs").setup(opts)
     end,
-  },
-  {
-    "chrisgrieser/nvim-various-textobjs",
-    lazy = false,
-    opts = { useDefaultKeymaps = true },
   },
 }

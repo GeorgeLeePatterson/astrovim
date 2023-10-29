@@ -2,9 +2,26 @@
 
 local M = {}
 
+function M.chdir(dir, _bufnr)
+  vim.cmd([[chdir]] .. " " .. dir .. " " .. [[| tcd]] .. " " .. dir)
+  local ok, _ = pcall(require("edgy").open, "left")
+  if ok then vim.notify("Opened " .. dir) end
+
+  -- local is_alpha = vim.api.nvim_get_option_value(
+  --   "filetype",
+  --   { scope = "local" }
+  -- ) == "alpha"
+  -- if is_alpha then
+  --   -- local config = require "user.plugins.config.alpha"()
+  --   -- require("alpha").start(false, config)
+  --   -- vim.cmd [[AlphaRedraw]]
+  --   vim.cmd [[Alpha]]
+  -- end
+end
+
 function M.run_command(cmd, opts)
   opts = opts or {}
-  table.insert(opts, { text = true })
+  opts["text"] = true
   local output = vim.system(cmd, opts):wait() or {}
   if output and output["code"] == 0 then return output["stdout"] end
 end
@@ -12,7 +29,7 @@ end
 local z_scores = {}
 function M.z_get_scores()
   if z_scores and #z_scores > 0 then return z_scores end
-  local results = M.run_command { "zoxide", "query", "-l", "-s" }
+  local results = M.run_command({ "zoxide", "query", "-l", "-s" }, {})
 
   local count = 1
   for r in results:gmatch "[^\r\n]+" do
@@ -78,7 +95,7 @@ function M.lsp_attached(bufnr)
   return next(vim.lsp.get_clients { bufnr = bufnr or 0 }) ~= nil
 end
 
-function M.toggle_lsp(bufnr, root_files)
+function M.toggle_lsp(bufnr)
   if bufnr == nil then bufnr = vim.api.nvim_get_current_buf() end
   if bufnr and type(bufnr) ~= "table" then bufnr = { bufnr = bufnr } end
   local clients = vim.lsp.get_clients(bufnr)
@@ -89,7 +106,7 @@ function M.toggle_lsp(bufnr, root_files)
   end
 end
 
-function M.start_lsp(bufnr, lsp_name, root_files)
+function M.start_lsp(bufnr, lsp_name)
   if bufnr and type(bufnr) ~= "table" then bufnr = { bufnr = bufnr } end
   local clients = vim.lsp.get_clients(bufnr)
 

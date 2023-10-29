@@ -9,43 +9,96 @@ local user_utils = require "user.utils"
 local alpha_config = require "user.plugins.config.alpha"
 local theme_config = require "user.plugins.config.theme"
 local is_available = utils.is_available
--- local buffer_utils = require "user.utils.buffer"
+
+local user_config = require "user.config"
+local favorite = user_config.get_config "mappings.favorite"
+  or function(name) return name end
 
 local maps = {
   n = {
-    ["<leader>fF"] = { ":Telescope file_browser<CR>", desc = "Open File Browser" },
-    ["<leader>fz"] = { ":Telescope zoxide list<CR>", desc = "Open Zoxide List" },
+    -- [[ Convenience ]]
+    ["cd"] = {
+      function() require("user.utils.telescope").telescope_find_dir() end,
+      desc = "[c]hange [d]irectory",
+    },
 
-    -- mappings seen under group name "Buffer"
+    -- [[ Buffer ]]
+
+    ["<leader>b"] = { name = "Buffers" },
     ["<leader>bD"] = {
       function()
         require("astronvim.utils.status").heirline.buffer_picker(
           function(bufnr) require("astronvim.utils.buffer").close(bufnr) end
         )
       end,
-      desc = "Pick to close",
+      desc = "[D]elete buffer",
     },
-    -- tables with the `name` key will be registered with which-key if it's installed
-    -- this is useful for naming menus
-    ["<leader>b"] = { name = "Buffers" },
 
-    -- Telescope Overrides
+    -- [[ Telescope ]]
+
+    -- File/Folders
+    ["<leader>fF"] = {
+      function()
+        require("telescope").extensions.file_browser.file_browser {
+          files = false,
+          hijack_netrw = true,
+          grouped = true,
+          hidden = { file_browser = true, folder_browser = false },
+          prompt_path = true,
+          depth = 2,
+        }
+      end,
+      desc = "[F]older Browser",
+    },
+    ["<leader>fz"] = {
+      ":Telescope zoxide list<CR>",
+      desc = "[z]oxide List",
+    },
+
+    -- Find strings
+    ["<leader>fc"] = {
+      function() require("telescope.builtin").grep_string() end,
+      desc = "Find word under cursor",
+    },
+
+    -- lsp
     ["<leader>fi"] = {
       function() require("telescope.builtin").lsp_implementations() end,
-      desc = "Find implementations",
+      desc = favorite "Find [i]mplementations",
     },
     ["<leader>fd"] = {
-      function() require("telescope.builtin").diagnostics(telescope_themes.get_dropdown { bufnr = 0, winblend = 5 }) end,
-      desc = "Show current diagnostics",
+      function()
+        require("telescope.builtin").diagnostics(
+          telescope_themes.get_dropdown { bufnr = 0, winblend = 5 }
+        )
+      end,
+      desc = "[d]iagnostics",
     },
     ["<leader>fD"] = {
-      function() require("telescope.builtin").diagnostics(telescope_themes.get_ivy { winblend = 5 }) end,
-      desc = "Show all diagnostics",
+      function()
+        require("telescope.builtin").diagnostics(
+          telescope_themes.get_ivy { winblend = 5 }
+        )
+      end,
+      desc = favorite "[f]ind all [D]iagnostics",
     },
-    ["<leader>fr"] = { function() require("telescope.builtin").lsp_references() end, desc = "Show references" },
-    ["<leader>fR"] = { function() require("telescope.builtin").registers() end, desc = "Find registers" },
+    ["<leader>fr"] = {
+      function() require("telescope.builtin").lsp_references() end,
+      desc = favorite "[r]eferences",
+    },
+    ["<leader>fR"] = {
+      function() require("telescope.builtin").registers() end,
+      desc = "[R]egisters",
+    },
+
+    -- Fzf
+    ["<leader>fj"] = {
+      function() vim.cmd [[Jumps]] end,
+      desc = "[j]ump list",
+    },
 
     -- [[ NeoTree ]]
+
     -- ["<leader>e"] = { "<cmd>Neotree toggle<cr>", desc = "Toggle Explorer" },
     ["<leader>o"] = {
       function()
@@ -60,7 +113,7 @@ local maps = {
           vim.cmd [[Neotree action=focus]]
         end
       end,
-      desc = "Toggle Explorer Focus",
+      desc = favorite "T[o]ggle Explorer Focus",
     },
 
     --
@@ -68,45 +121,72 @@ local maps = {
     --
 
     ["<leader>r"] = { name = "󰩨 Resize" },
-    ["<leader>rh"] = { function() vim.cmd [[vertical resize -10<cr>]] end, desc = "Resize -10 l/r" },
-    ["<leader>rl"] = { function() vim.cmd [[vertical resize +10<cr>]] end, desc = "Resize +10 l/r" },
-    ["<leader>rj"] = { function() vim.cmd [[horizontal resize -10<cr>]] end, desc = "Resize -10 u/d" },
-    ["<leader>rk"] = { function() vim.cmd [[horizontal resize +10<cr>]] end, desc = "Resize +10 u/d" },
+    ["<leader>rh"] = {
+      function() vim.cmd [[vertical resize -10<cr>]] end,
+      desc = "Resize -10 [h]",
+    },
+    ["<leader>rl"] = {
+      function() vim.cmd [[vertical resize +10<cr>]] end,
+      desc = "Resize +10 [l]",
+    },
+    ["<leader>rj"] = {
+      function() vim.cmd [[horizontal resize -10<cr>]] end,
+      desc = "Resize -10 [j]",
+    },
+    ["<leader>rk"] = {
+      function() vim.cmd [[horizontal resize +10<cr>]] end,
+      desc = "Resize +10 [k]",
+    },
 
     -- quick save
-    ["<C-s>"] = { ":w!<cr>", desc = "Save File" }, -- change description but the same command
+    ["<C-s>"] = { ":w!<cr>", desc = "[s]ave File" }, -- change description but the same command
 
-    -- Alpha
-    -- open dashboard after closing all buffers
+    -- close
     ["<leader>c"] = {
       function()
-        local bufs = vim.fn.getbufinfo { buflisted = true }
-        local alpha_available = require("astronvim.utils").is_available "alpha-nvim"
-        local is_alpha = vim.api.nvim_get_option_value("filetype", { scope = "local" }) == "alpha"
+        -- local bufs = vim.fn.getbufinfo { buflisted = true }
+        local file_bufs = user_utils.get_file_bufs() or {}
+        local alpha_available, alpha = pcall(require, "alpha")
+        local is_alpha = vim.api.nvim_get_option_value(
+          "filetype",
+          { scope = "local" }
+        ) == "alpha"
 
         -- If alpha is the only window, don't close
-        if is_alpha and not bufs[2] then return end
+        if is_alpha and not file_bufs[1] then return end
+
+        -- Go to main window
+        local ok, edgy = pcall(require, "edgy")
+        if ok then edgy.goto_main() end
 
         -- Close window
         require("astronvim.utils.buffer").close(0)
 
-        if alpha_available and not bufs[2] then
-          if not pcall(function() require("alpha").start(true) end) then vim.notify "Error opening dashboard" end
+        if alpha_available and not is_alpha and not file_bufs[1] then
+          -- open dashboard after closing all buffers
+          alpha.start(false, alpha_config())
         end
       end,
-      desc = "Close buffer",
+      desc = "[c]lose buffer",
     },
 
     -- overwrite astronvim keymap if is_available "alpha-nvim" then
     ["<leader>h"] = {
       function()
+        local file_bufs = user_utils.get_file_bufs()
+        local is_alpha = vim.api.nvim_get_option_value(
+          "filetype",
+          { scope = "local" }
+        ) == "alpha"
+
+        if is_alpha and #file_bufs == 0 then return end
         local ok, edgy = pcall(require, "edgy")
-        if ok then
+        if ok and not is_alpha then
           edgy.goto_main()
-          require("alpha").start(false, alpha_config.configure())
+          require("alpha").start(false, alpha_config())
         end
       end,
-      desc = "Dashboard",
+      desc = "[h]ome",
     },
 
     -- Light/Dark mode
@@ -126,7 +206,7 @@ local maps = {
     ["<leader>s"] = { name = "󰬲 Search & Replace" },
 
     -- Lspsaga
-    ["<leader>v"] = { name = " View More" },
+    ["<leader>v"] = { name = favorite " View More" },
 
     -- Wezterm
     ["<leader>W"] = { name = " Wezterm" },
@@ -135,7 +215,28 @@ local maps = {
     -- setting a mapping to false will disable it
     -- ["<esc>"] = false,
   },
+  v = {
+    ["<leader>fc"] = {
+      function() require("user.utils.telescope").telescope_search_selection() end,
+      desc = "Find word under cursor",
+    },
+  },
 }
+
+local better_j = {
+  function() return vim.v.count > 0 and "j" or "gj" end,
+  noremap = true,
+  expr = true,
+  desc = "Better [j]",
+}
+local better_k = {
+  function() return vim.v.count > 0 and "k" or "gk" end,
+  noremap = true,
+  expr = true,
+  desc = "Better [k]",
+}
+maps.n = vim.tbl_extend("force", maps.n, { j = better_j, k = better_k })
+maps.x = vim.tbl_extend("force", maps.x or {}, { j = better_j, k = better_k })
 
 -- Themes
 maps = theme_config.mappings(maps)
@@ -143,41 +244,49 @@ maps = theme_config.mappings(maps)
 -- ZenMode
 maps.n["zZ"] = {
   function() require("zen-mode").toggle() end,
-  desc = "Zen Mode",
+  desc = favorite "[Z]en Mode",
 }
 -- Devdocs rust
 maps.n["<leader>f?"] = {
   function()
     if is_available "nvim-devdocs" then vim.cmd [[DevdocsOpenFloat rust]] end
   end,
-  desc = "Open Rust docs",
+  desc = "🦀 Rust docs",
 }
 
 -- [[ Telescope ]]
 maps.n["<leader>O"] = {
   function()
-    require("telescope.builtin").oldfiles(telescope_themes.get_dropdown { initial_mode = "normal", winblend = 5 })
+    require("telescope.builtin").oldfiles(
+      telescope_themes.get_dropdown { initial_mode = "normal", winblend = 5 }
+    )
   end,
-  desc = "Recent Files",
+  desc = favorite "[O]ld Files",
 }
 
--- Sessions
+-- [[ Sessions ]]
+
+-- Resession
 -- NOTE: Resession allows sending "dir" into `load` but it doesn't even use it when "listing" *smh*
 if is_available "resession.nvim" then
   maps.n["<leader>SF"] = {
-    function() require("resejssion").load(nil, { dir = "dirsession", reset = true }) end,
-    desc = "Load a DIR session",
+    function()
+      require("resejssion").load(nil, { dir = "dirsession", reset = true })
+    end,
+    desc = "[s]ession load [F]iles",
   }
 end
 
 -- Map buffer view to flubuf
 if is_available "flybuf.nvim" then
-  maps.n["<leader>bb"] = { function() vim.cmd [[FlyBuf]] end, desc = "View Buffers" }
+  maps.n["<leader>bb"] =
+    { function() vim.cmd [[FlyBuf]] end, desc = "[b]uffers" }
 end
 
 -- Toggle lsp lines
 if is_available "lsp_lines" then
-  maps.n["<leader>le"] = { require("lsp_lines").toggle, desc = "Toggle Error Overlay" }
+  maps.n["<leader>le"] =
+    { require("lsp_lines").toggle, desc = "Toggle [e]rror Overlay" }
 end
 
 -- Disable Heirline Buffers and Tabs
@@ -197,7 +306,7 @@ maps.n = vim.tbl_extend("force", maps.n, {
       end
     end,
 
-    desc = "Toggle Tabnine",
+    desc = "[t]oggle Tabnine",
   },
   ["<leader>Acd"] = {
     function()
@@ -208,7 +317,7 @@ maps.n = vim.tbl_extend("force", maps.n, {
       end
     end,
 
-    desc = "Disable Copilot",
+    desc = "[c]opilot [d]isable",
   },
 })
 

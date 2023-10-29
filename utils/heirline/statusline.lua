@@ -40,7 +40,13 @@ do
     end,
   })
   Space = setmetatable({ provider = " " }, {
-    __call = function(_, n, opts) return vim.tbl_deep_extend("force", { provider = string.rep(" ", n) }, opts or {}) end,
+    __call = function(_, n, opts)
+      return vim.tbl_deep_extend(
+        "force",
+        { provider = string.rep(" ", n) },
+        opts or {}
+      )
+    end,
   })
   local _ReadOnly = {
     condition = function() return not bo.modifiable or bo.readonly end,
@@ -79,24 +85,26 @@ do
           end,
         },
       },
-      util.IconProvider(icons.powerline.right_filled, { hl = { fg = hl.StatusLineDark.bg } }),
+      util.IconProvider(
+        icons.powerline.right_filled,
+        { hl = { fg = hl.StatusLineDark.bg } }
+      ),
     }
 
     local ActiveModeIndicator = {
       condition = function(self) return self.mode ~= "normal" end,
       -- hl = { bg = hl.StatusLine.bg },
-      heirline.surround(
-        { icons.powerline.block, icons.powerline.block .. icons.powerline.right_filled },
-        function(self) -- color
-          return hl.Mode[self.mode].bg
-        end,
-        {
-          { provider = icons.pacman },
-          Space,
-          { provider = function(self) return util.mode_label[self.mode] end },
-          hl = function(self) return hl.Mode[self.mode] end,
-        }
-      ),
+      heirline.surround({
+        icons.powerline.block,
+        icons.powerline.block .. icons.powerline.right_filled,
+      }, function(self) -- color
+        return hl.Mode[self.mode].bg
+      end, {
+        { provider = icons.pacman },
+        Space,
+        { provider = function(self) return util.mode_label[self.mode] end },
+        hl = function(self) return hl.Mode[self.mode] end,
+      }),
     }
 
     VimMode = {
@@ -129,7 +137,9 @@ local FileIcon = function()
     filename = false,
     file_modified = false,
     surround = { separator = { "", "" }, color = "file_info_bg" },
-    condition = function() return astro_conditions.has_filetype(nil) and bo.buftype == "" end,
+    condition = function()
+      return astro_conditions.has_filetype(nil) and bo.buftype == ""
+    end,
   }
 end
 
@@ -159,17 +169,24 @@ local Diagnostics = function()
     astro_status.component.git_diff { surround = false },
     {
       provider = " ",
-      condition = function() return astro_conditions.git_changed(0) and bo.buftype == "" end,
+      condition = function()
+        return astro_conditions.git_changed(0) and bo.buftype == ""
+      end,
     },
     theme.get_special_separator("slant_right", {
-      condition = function() return astro_conditions.git_changed(0) and bo.buftype == "" end,
+      condition = function()
+        return astro_conditions.git_changed(0) and bo.buftype == ""
+      end,
     }),
     astro_status.component.diagnostics { surround = false },
     {
       provider = "  ",
       hl = function() return { fg = hl_colors["ForestgreenCustomFg"].fg } end,
-      condition = function(self) return not self.has_diagnostics and bo.buftype == "" end,
+      condition = function(self)
+        return not self.has_diagnostics and bo.buftype == ""
+      end,
     },
+    update = { "DiagnosticChanged", "BufEnter" },
   }, {
     surround = {
       icons.powerline.left_filled .. icons.powerline.block,
@@ -225,11 +242,18 @@ M.StatusLines = {
     end
 
     self.lsp_names = names
-    self.errors = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
-    self.warnings = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
-    self.hints = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.HINT })
-    self.info = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.INFO })
-    self.has_diagnostics = self.errors > 0 or self.warnings > 0 or self.hints > 0 or self.info > 0
+    self.errors =
+      #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
+    self.warnings =
+      #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
+    self.hints =
+      #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.HINT })
+    self.info =
+      #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.INFO })
+    self.has_diagnostics = self.errors > 0
+      or self.warnings > 0
+      or self.hints > 0
+      or self.info > 0
   end,
   hl = { fg = "fg", bg = "bg" }, -- hl.StatusLine,
   {
@@ -266,7 +290,12 @@ M.StatusLines = {
       file_icon = false,
       surround = {
         separator = { " ", " " },
-        color = function(self) return theme.lsp_server_surround(self.lsp_names, { "main", "left", "right" }) end,
+        color = function(self)
+          return theme.lsp_server_surround(
+            self.lsp_names,
+            { "main", "left", "right" }
+          )
+        end,
       },
       hl = { fg = theme.get_callout_hl()["bg"] },
     },

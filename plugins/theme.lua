@@ -29,7 +29,15 @@ local _themes = {
   },
   { "nyoom-engineering/oxocarbon.nvim" },
   { "tiagovla/tokyodark.nvim" },
-  { "ellisonleao/gruvbox.nvim" },
+  {
+    "ellisonleao/gruvbox.nvim",
+    {
+      opts = {
+        italic = { comments = true },
+        overrides = { LspInlayHint = { italic = false } },
+      },
+    },
+  },
   { "marko-cerovac/material.nvim" },
   { "dasupradyumna/midnight.nvim" },
   { "akinsho/horizon.nvim", { version = "*" } },
@@ -49,12 +57,15 @@ local _themes = {
       end,
     },
   },
-  { "folke/tokyonight.nvim", {
-    opts = {
-      style = "storm",
-      light_style = "day",
+  {
+    "folke/tokyonight.nvim",
+    {
+      opts = {
+        style = "storm",
+        light_style = "day",
+      },
     },
-  } },
+  },
   {
     "projekt0n/github-nvim-theme",
     {
@@ -92,18 +103,21 @@ table.insert(themes, {
   name = "catppuccin",
   opts = {
     integrations = {
-      notify = true,
-      aerial = true,
       alpha = true,
+      aerial = true,
+      fidget = true,
+      flash = true,
+      headlines = true,
       indent_blankline = {
         enabled = true,
         colored_indent_levels = true,
       },
       lsp_saga = true,
+      lsp_trouble = true,
       neotree = true,
       noice = true,
-      navic = true,
-      lsp_trouble = true,
+      notify = true,
+      symbols_outline = true,
     },
   },
   priority = 1000,

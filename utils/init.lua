@@ -48,7 +48,9 @@ function M.set_background_and_theme(bg, theme)
 
   -- Reload bufferline
   if a_utils.is_available "bufferline" then
-    vim.schedule(function() require("bufferline").setup(user_config.bufferline) end)
+    vim.schedule(
+      function() require("bufferline").setup(user_config.bufferline) end
+    )
   end
 end
 
@@ -74,15 +76,23 @@ end
 --
 -- String helpers
 --
-function M.str_contains(haystack, needle) return string.find(haystack, needle, 1, true) ~= nil end
+function M.str_contains(haystack, needle)
+  return string.find(haystack, needle, 1, true) ~= nil
+end
 
 function M.str_startswith(str, start) return string.sub(str, 1, #start) == start end
 
-function M.str_endswith(str, ending) return ending == "" or string.sub(str, -#ending) == ending end
+function M.str_endswith(str, ending)
+  return ending == "" or string.sub(str, -#ending) == ending
+end
 
-function M.str_replace(original, old, new) return string.gsub(original, old, new) end
+function M.str_replace(original, old, new)
+  return string.gsub(original, old, new)
+end
 
-function M.str_insert(str, pos, text) return string.sub(str, 1, pos - 1) .. text .. string.sub(str, pos) end
+function M.str_insert(str, pos, text)
+  return string.sub(str, 1, pos - 1) .. text .. string.sub(str, pos)
+end
 
 function M.str_pad_len(str, total_len)
   if #str >= total_len then return str end
@@ -149,9 +159,16 @@ function M.list_insert_unique(lst, vals)
   return lst
 end
 
---
--- Utility functions
---
+-- [[ Utility functions ]]
+
+-- Table helpers
+function M.tbl_length(T)
+  local count = 0
+  for _ in pairs(T) do
+    count = count + 1
+  end
+  return count
+end
 
 -- File Helpers
 function M.shorten_path(path, cwd, target_width)
@@ -161,8 +178,10 @@ function M.shorten_path(path, cwd, target_width)
   local short_fn = vim.fn.fnamemodify(path, ":.")
   if cwd then short_fn = vim.fn.fnamemodify(path, ":~") end
   if #short_fn > target_width then
-    ---@diagnostic disable-next-line: param-type-mismatch
-    local short_fn_result, err = pcall(function() return plenary_path.new(short_fn):shorten(1, { -2, -1 }) end)
+    local short_fn_result, err = pcall(
+      ---@diagnostic disable-next-line: param-type-mismatch
+      function() return plenary_path.new(short_fn):shorten(1, { -2, -1 }) end
+    )
     if err then return short_fn end
     if #short_fn_result > target_width then
       local short_fn_final, err_final = pcall(
@@ -191,6 +210,8 @@ function M.git_root()
   return vim.fn.fnamemodify(git_path, ":h")
 end
 
+-- Command helpers
+
 function M.create_user_command(name, fn, opts)
   vim.api.nvim_create_user_command(name, function()
     if type(fn) == "function" then
@@ -201,19 +222,74 @@ function M.create_user_command(name, fn, opts)
   end, opts)
 end
 
+-- Cursor & Selection helpers
 function M.get_cursor()
   local cursor = vim.api.nvim_win_get_cursor(0)
   return { row = cursor[1], col = cursor[2] }
 end
 
-function M.get_visual_selection()
+function M.get_visual_selection_bounds()
   local vpos = vim.fn.getpos "v"
   local begin_pos = { row = vpos[2], col = vpos[3] - 1 }
   local end_pos = M.get_cursor()
-  if (begin_pos.row < end_pos.row) or ((begin_pos.row == end_pos.row) and (begin_pos.col <= end_pos.col)) then
+  if
+    (begin_pos.row < end_pos.row)
+    or ((begin_pos.row == end_pos.row) and (begin_pos.col <= end_pos.col))
+  then
     return { start = begin_pos, ["end"] = end_pos }
   else
     return { start = end_pos, ["end"] = begin_pos }
+  end
+end
+
+function M.get_visual_selection()
+  -- this will exit visual mode
+  -- use 'gv' to reselect the text
+  local _, csrow, cscol, cerow, cecol
+  local mode = vim.fn.mode()
+  if mode == "v" or mode == "V" or mode == "" then
+    -- if we are in visual mode use the live position
+    _, csrow, cscol, _ = unpack(vim.fn.getpos ".")
+    _, cerow, cecol, _ = unpack(vim.fn.getpos "v")
+    if mode == "V" then
+      -- visual line doesn't provide columns
+      cscol, cecol = 0, 999
+    end
+    -- exit visual mode
+    vim.api.nvim_feedkeys(
+      vim.api.nvim_replace_termcodes("<Esc>", true, false, true),
+      "n",
+      true
+    )
+  else
+    -- otherwise, use the last known visual position
+    _, csrow, cscol, _ = unpack(vim.fn.getpos "'<")
+    _, cerow, cecol, _ = unpack(vim.fn.getpos "'>")
+  end
+  -- swap vars if needed
+  if cerow < csrow then
+    csrow, cerow = cerow, csrow
+  end
+  if cecol < cscol then
+    cscol, cecol = cecol, cscol
+  end
+  local lines = vim.fn.getline(csrow, cerow)
+  -- local n = cerow-csrow+1
+  local n = M.tbl_length(lines)
+  if n <= 0 then return "" end
+  lines[n] = string.sub(lines[n], 1, cecol)
+  lines[1] = string.sub(lines[1], cscol)
+  return table.concat(lines, "\n")
+end
+
+-- Settings
+function M.get_plugin_config(module)
+  if not module or module == "" then return nil end
+  local ok, mod = pcall(require, "user.plugins.config." .. module)
+  if ok then
+    return mod
+  else
+    return nil
   end
 end
 

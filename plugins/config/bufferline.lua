@@ -1,5 +1,6 @@
 return {
   options = {
+    always_show_bufferline = true,
     -- stylua: ignore
     close_command = function(n) require("mini.bufremove").delete(n, false) end,
     -- stylua: ignore
@@ -14,6 +15,7 @@ return {
       },
     },
     themable = true,
+    -- not used
     indicator = {
       icon = " ",
       style = "icon",
@@ -28,6 +30,5 @@ return {
     show_tab_indicators = true,
     separator_style = "slope",
     diagnostics = "nvim_lsp",
-    always_show_bufferline = false,
   },
 }

@@ -3,9 +3,7 @@
 
 return {
   "AstroNvim/astrocommunity",
-  { import = "astrocommunity.pack.rust" },
   { import = "astrocommunity.editing-support.vim-move" },
   { import = "astrocommunity.motion/nvim-surround" },
-  { import = "astrocommunity.bars-and-lines.vim-illuminate" },
-  -- { import = "astrocommunity.diagnostics.lsp_lines-nvim" },
+  { "AstroNvim/astrotheme", enabled = false },
 }

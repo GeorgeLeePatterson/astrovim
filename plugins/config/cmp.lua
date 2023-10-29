@@ -1,41 +1,12 @@
 ---@diagnostic disable: missing-fields
-
-local icons = require("user.config").icons
+local user_config = require "user.config"
+local icons = user_config.icons
 local user_utils = require "user.utils"
 local longest_kind_type = user_utils.longest_line(vim.tbl_keys(icons.kinds))
 
 local M = {}
 
-M.default_kind_priority = {
-  TabNine = 15,
-  Copilot = 15,
-  Module = 14,
-  Field = 13,
-  Function = 12,
-  Method = 12,
-  Struct = 11,
-  Property = 11,
-  Constant = 10,
-  Enum = 10,
-  Interface = 10,
-  EnumMember = 10,
-  Event = 10,
-  Operator = 10,
-  Reference = 10,
-  Variable = 9,
-  File = 8,
-  Folder = 8,
-  Class = 5,
-  Color = 5,
-  Keyword = 2,
-  Constructor = 1,
-  Text = 1,
-  TypeParameter = 1,
-  Unit = 1,
-  Value = 1,
-  Snippet = 0,
-}
-
+-- Configure options using user config
 M.lsp_kind_opts = function(opts)
   opts = opts or {}
   opts.mode = opts.mode or "symbol_text"
@@ -46,6 +17,9 @@ M.lsp_kind_opts = function(opts)
   return opts
 end
 
+-- [[ Comparators ]]
+
+-- Duner and under lines
 M.under = function(entry1, entry2)
   local _, entry1_under = entry1.completion_item.label:find "^_+"
   local _, entry2_under = entry2.completion_item.label:find "^_+"
@@ -58,8 +32,14 @@ M.under = function(entry1, entry2)
   end
 end
 
+-- Kind priorities
 function M.lspkind_comparator(conf)
-  conf.kind_priority = vim.tbl_deep_extend("force", M.default_kind_priority, (conf or {}).kind_priority or {})
+  local default_kind_priority = user_config.cmp.kind_priority
+  conf.kind_priority = vim.tbl_deep_extend(
+    "force",
+    default_kind_priority,
+    (conf or {}).kind_priority or {}
+  )
   local lsp_types = require("cmp.types").lsp
   local compare = require "cmp.config.compare"
   return function(entry1, entry2)
@@ -80,14 +60,15 @@ function M.lspkind_comparator(conf)
   end
 end
 
--- Format suggestions
+-- [[ Suggestions format ]]
 
 -- Variation: Icon - Abbr - { KindType, Menu }
 -- @returns col_offset, formatting
 function M.format_ico_first()
   local format = function(entry, vim_item)
     local default_lsp_kind_opts = M.lsp_kind_opts { maxwidth = 30 }
-    local parts = require("lspkind").cmp_format(default_lsp_kind_opts)(entry, vim_item)
+    local parts =
+      require("lspkind").cmp_format(default_lsp_kind_opts)(entry, vim_item)
     local original_menu = parts.menu
 
     -- split `kind` to separate icon and actual `type`
@@ -98,8 +79,12 @@ function M.format_ico_first()
     local kind_type = (strings[2] or "")
     if entry.source.name == "cmp_tabnine" then
       local detail = (entry.completion_item.labelDetails or {}).detail
-      if detail and detail:find ".*%%.*" then kind_type = kind_type .. " " .. detail end
-      if (entry.completion_item.data or {}).multiline then kind_type = kind_type .. " " .. "[ml]" end
+      if detail and detail:find ".*%%.*" then
+        kind_type = kind_type .. " " .. detail
+      end
+      if (entry.completion_item.data or {}).multiline then
+        kind_type = kind_type .. " " .. "[ml]"
+      end
     end
 
     -- Combine Kind `type` and Menu
@@ -123,13 +108,16 @@ end
 function M.format_abbr_first()
   local format = function(entry, vim_item)
     local default_lsp_kind_opts = M.lsp_kind_opts {}
-    local parts = require("lspkind").cmp_format(default_lsp_kind_opts)(entry, vim_item)
+    local parts =
+      require("lspkind").cmp_format(default_lsp_kind_opts)(entry, vim_item)
     local kind = parts.kind
 
     if entry.source.name == "cmp_tabnine" then
       local detail = (entry.completion_item.labelDetails or {}).detail
       if detail and detail:find ".*%%.*" then kind = kind .. " " .. detail end
-      if (entry.completion_item.data or {}).multiline then kind = kind .. " " .. "[ml]" end
+      if (entry.completion_item.data or {}).multiline then
+        kind = kind .. " " .. "[ml]"
+      end
     end
 
     local longest_w_tn = longest_kind_type + 2
@@ -144,17 +132,22 @@ function M.format_abbr_first()
   }
 end
 
-function M.opts(_, o)
+local options = function(o)
   -- Highlight groups for extras
   vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
   vim.api.nvim_set_hl(0, "CmpItemKindTabNine", { fg = "#6CC644" })
   vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg = "#ff5170" })
 
   local has_words_before = function()
-    if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then return false end
-    unpack = unpack or table.unpack
+    if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then
+      return false
+    end
     local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-    return col ~= 0 and vim.api.nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]:match "^%s*$" == nil
+    return col ~= 0
+      and vim.api
+          .nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]
+          :match "^%s*$"
+        == nil
   end
 
   local cmp = require "cmp"
@@ -163,7 +156,7 @@ function M.opts(_, o)
 
   local col_offset, formatter = M.format_abbr_first()
 
-  local opts = vim.tbl_deep_extend("force", o, {
+  return vim.tbl_deep_extend("force", o, {
     -- Sources
     sources = cmp.config.sources {
       { name = "copilot", priority = 1000 },
@@ -177,7 +170,10 @@ function M.opts(_, o)
           get_bufnrs = function() -- from all buffers (less than 1MB)
             local bufs = {}
             for _, bufn in ipairs(vim.api.nvim_list_bufs()) do
-              local buf_size = vim.api.nvim_buf_get_offset(bufn, vim.api.nvim_buf_line_count(bufn))
+              local buf_size = vim.api.nvim_buf_get_offset(
+                bufn,
+                vim.api.nvim_buf_line_count(bufn)
+              )
               if buf_size < 1024 * 1024 then table.insert(bufs, bufn) end
             end
             return bufs
@@ -246,7 +242,10 @@ function M.opts(_, o)
       ["<Tab>"] = cmp.mapping(function(fallback)
         if cmp.visible() and has_words_before() then
           cmp.select_next_item()
-        elseif require("user.config").ai.copilot and require("copilot.suggestion").is_visible() then
+        elseif
+          require("user.config").ai.copilot
+          and require("copilot.suggestion").is_visible()
+        then
           require("copilot.suggestion").accept()
         elseif luasnip.expand_or_locally_jumpable() then
           luasnip.expand_or_jump()
@@ -272,19 +271,20 @@ function M.opts(_, o)
     experimental = {
       ghost_text = true,
     },
-  })
-  return opts
+  }) or {}
 end
 
-function M.config(_, opts)
+return function(_, opts)
   local cmp = require "cmp"
-  cmp.setup(opts)
+
+  -- Grab local options above
+  cmp.setup(options(opts))
 
   -- configure `cmp-cmdline` as described in their repo: https://github.com/hrsh7th/cmp-cmdline#setup
   cmp.setup.cmdline("/", {
     mapping = cmp.mapping.preset.cmdline(),
     window = { completion = cmp.config.window.bordered { col_offset = 0 } },
-    formatting = { fields = { "abbr" } },
+    -- formatting = { fields = { "abbr" } },
     sources = cmp.config.sources {
       { name = "buffer" },
     },
@@ -292,9 +292,10 @@ function M.config(_, opts)
   cmp.setup.cmdline(":", {
     mapping = cmp.mapping.preset.cmdline(),
     window = { completion = cmp.config.window.bordered { col_offset = 0 } },
-    formatting = { fields = { "abbr" } },
+    -- formatting = { fields = { "abbr" } },
     sources = cmp.config.sources({
       { name = "path" },
+      { name = "nvim_lua", keyword_length = 1 },
     }, {
       {
         name = "cmdline",
@@ -309,5 +310,3 @@ function M.config(_, opts)
   local cmp_autopairs = require "nvim-autopairs.completion.cmp"
   cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
 end
-
-return M

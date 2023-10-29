@@ -8,14 +8,13 @@ return {
     dependencies = {
       "nvim-tree/nvim-web-devicons",
     },
-    config = function() require("alpha").setup(alpha_config.configure()) end,
+    config = function() require("alpha").setup(alpha_config {}) end,
   },
 
   -- [[ Search & Grep ]]
   {
     "junegunn/fzf.vim",
     dependencies = { "junegunn/fzf" },
-    lazy = false,
   },
   {
     "nanotee/zoxide.vim",
@@ -55,7 +54,15 @@ return {
       },
     },
     opts = {
-      open_files_do_not_replace_types = { "terminal", "Trouble", "qf", "notify", "Outline", "edgy" },
+      open_files_do_not_replace_types = {
+        "terminal",
+        "Trouble",
+        "qf",
+        "notify",
+        "Outline",
+        "edgy",
+        "help",
+      },
       filesystem = {
         follow_current_file = {
           enabled = true,
@@ -86,7 +93,7 @@ return {
       window = {
         width = 30,
         mappings = {
-          ["gs"] = "use_flash",
+          ["J"] = "use_flash",
         },
       },
       source_selector = {
@@ -95,7 +102,11 @@ return {
       },
     },
   },
-  { "glepnir/flybuf.nvim", cmd = "FlyBuf", config = function() require("flybuf").setup {} end },
+  {
+    "glepnir/flybuf.nvim",
+    cmd = "FlyBuf",
+    config = function() require("flybuf").setup {} end,
+  },
   {
     "kevinhwang91/nvim-bqf",
     dependencies = {

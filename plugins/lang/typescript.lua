@@ -1,20 +1,129 @@
 return {
-  -- add typescript to treesitter
+  -- [[ LSP ]]
+  {
+    "williamboman/mason-lspconfig.nvim",
+    opts = function(_, opts)
+      opts.ensure_installed =
+        require("user.utils").list_insert_unique(opts.ensure_installed, {
+          "cssls",
+          "html",
+          "tsserver",
+        })
+      return opts
+    end,
+  },
+  -- [[ Treesitter ]]
   {
     "nvim-treesitter/nvim-treesitter",
     opts = function(_, opts)
-      if type(opts.ensure_installed) == "table" then
-        vim.list_extend(opts.ensure_installed, { "typescript", "tsx" })
-      end
+      opts.ensure_installed =
+        require("user.utils").list_insert_unique(opts.ensure_installed, {
+          "css",
+          "html",
+          "javascript",
+          "scss",
+          "typescript",
+          "tsx",
+        })
+      return opts
     end,
   },
 
-  -- tsc checker
+  -- [[ Linting / Formatting ]]
+
+  -- Conform
+  {
+    "stevearc/conform.nvim",
+    optional = true,
+    opts = function(_, opts)
+      return vim.tbl_deep_extend("force", opts, {
+        formatters_by_ft = {
+          ["javascript"] = { "prettier" },
+          ["javascriptreact"] = { "prettier" },
+          ["typescript"] = { "prettier" },
+          ["typescriptreact"] = { "prettier" },
+          ["vue"] = { "prettier" },
+          ["css"] = { "prettier" },
+          ["scss"] = { "prettier" },
+          ["less"] = { "prettier" },
+          ["html"] = { "prettier" },
+          ["graphql"] = { "prettier" },
+        },
+      })
+    end,
+  },
+
+  -- Tsc
   {
     "dmmulroy/tsc.nvim",
     cmd = "TSC",
     keys = {},
     config = function(_, opts) require("tsc").setup(opts) end,
+  },
+
+  -- Mason-null-ls
+  {
+    "jay-babu/mason-null-ls.nvim",
+    optional = true,
+    opts = function(_, opts)
+      opts.ensure_installed =
+        require("user.utils").list_insert_unique(opts.ensure_installed, {
+          "eslint_d",
+          "prettier",
+          "stylelint",
+        })
+      return opts
+    end,
+  },
+
+  -- None-ls
+  {
+    "nvimtools/none-ls.nvim",
+    optional = true,
+    opts = function(_, opts)
+      local null_ls = require "null-ls"
+      return vim.tbl_deep_extend("force", opts, {
+        on_attach = require("astronvim.utils.lsp").on_attach,
+        sources = require("user.utils").list_insert_unique(opts.sources, {
+          null_ls.builtins.code_actions.eslint_d,
+          null_ls.builtins.diagnostics.eslint_d,
+          null_ls.builtins.diagnostics.stylelint,
+          null_ls.builtins.diagnostics.tsc,
+          null_ls.builtins.formatting.prettier,
+          null_ls.builtins.formatting.stylelint,
+
+          -- -- Transition to this usage:
+          -- null_ls.builtins.formatting.prettier.with({
+          -- 	condition = function()
+          -- 		return vim.fn.executable("prettier") > 0 or vim.fn.executable("./node_modules/.bin/prettier") > 0
+          -- 	end,
+          -- }),
+          -- null_ls.builtins.diagnostics.eslint.with({
+          -- 	condition = function()
+          -- 		vim.o.fixendofline = true -- Error: [prettier/prettier] Insert `⏎`
+          -- 		return vim.fn.executable("eslint") > 0 or vim.fn.executable("./node_modules/.bin/eslint") > 0
+          -- 	end,
+          -- }),
+        }),
+      })
+    end,
+  },
+
+  -- Nvim-lint
+  {
+    "mfussenegger/nvim-lint",
+    optional = true,
+    opts = function(_, opts)
+      return vim.tbl_deep_extend("force", opts, {
+        linters_by_ft = {
+          javascript = { "eslint_d" },
+          typescript = { "eslint_d" },
+          javascriptreact = { "eslint_d" },
+          typescriptreact = { "eslint_d" },
+          svelte = { "eslint_d" },
+        },
+      })
+    end,
   },
 
   -- correctly setup lspconfig

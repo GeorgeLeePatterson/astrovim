@@ -2,7 +2,10 @@ local utils = require "user.utils"
 
 local rust_opts = function()
   local adapter
-  local success, package = pcall(function() return require("mason-registry").get_package "codelldb" end)
+
+  local success, package = pcall(
+    function() return require("mason-registry").get_package "codelldb" end
+  )
   if success then
     local package_path = package:get_install_path()
     local codelldb_path = package_path .. "/codelldb"
@@ -17,7 +20,10 @@ local rust_opts = function()
       -- The liblldb extension is .so for linux and .dylib for macOS
       liblldb_path = liblldb_path .. (this_os == "Linux" and ".so" or ".dylib")
     end
-    adapter = require("rust-tools.dap").get_codelldb_adapter(codelldb_path, liblldb_path)
+    adapter = require("rust-tools.dap").get_codelldb_adapter(
+      codelldb_path,
+      liblldb_path
+    )
   else
     ---@diagnostic disable-next-line: missing-parameter
     adapter = require("rust-tools.dap").get_codelldb_adapter()
@@ -38,6 +44,10 @@ local rust_opts = function()
           augroup END
         ]]
       end,
+      inlay_hints = {
+        auto = true,
+        highlight = "LspInlayHint",
+      },
     },
   }
 end
@@ -46,7 +56,8 @@ local rust_config = function(_, o)
   o = o or {}
   local server = o["server"] or {}
   local on_attach = server["on_attach"]
-  local capabilities = server["capabilities"] or require("user.plugins.config.lsp").capabilities
+  local capabilities = server["capabilities"]
+    or require("user.plugins.config.lsp").capabilities
 
   o.server = vim.tbl_deep_extend("force", server, {
     on_attach = function(client, bufnr)
@@ -70,22 +81,60 @@ local rust_config = function(_, o)
     capabilities = capabilities,
   })
   require("rust-tools").setup(o)
+
+  -- Keymaps
+  vim.keymap.set(
+    { "n" },
+    "K",
+    "<cmd>RustHoverActions<cr>",
+    { desc = "Hover Actions (Rust)" }
+  )
+  vim.keymap.set(
+    { "n" },
+    "<leader>dr",
+    "<cmd>RustDebuggables<cr>",
+    { desc = "Run Debuggables (Rust)" }
+  )
 end
 
 return {
+  -- [[ LSP ]
+
+  -- Mason-lspconfig
+  {
+    "williamboman/mason-lspconfig.nvim",
+    opts = function(_, opts)
+      opts.ensure_installed = utils.list_insert_unique(opts.ensure_installed, {
+        "rust_analyzer",
+        "taplo",
+      })
+    end,
+  },
+
+  -- [[ Treesitter ]]
   {
     "nvim-treesitter/nvim-treesitter",
     opts = function(_, opts)
       if opts.ensure_installed ~= "all" then
-        opts.ensure_installed = utils.list_insert_unique(opts.ensure_installed, "rust")
+        opts.ensure_installed =
+          utils.list_insert_unique(opts.ensure_installed, {
+            "rust",
+            "toml",
+          })
       end
     end,
   },
+
+  -- [[ Tools]]
+
+  -- Rust-tools
   {
     "simrat39/rust-tools.nvim",
-    lazy = false,
-    -- ft = { "rust" },
-    init = function() astronvim.lsp.skip_setup = utils.list_insert_unique(astronvim.lsp.skip_setup, "rust_analyzer") end,
+    ft = { "rust" },
+    init = function()
+      astronvim.lsp.skip_setup =
+        utils.list_insert_unique(astronvim.lsp.skip_setup, "rust_analyzer")
+    end,
     opts = rust_opts,
     config = rust_config,
     dependencies = {
@@ -93,14 +142,15 @@ return {
       "nvim-lua/plenary.nvim",
       {
         "jay-babu/mason-nvim-dap.nvim",
-        opts = function(_, opts) opts.ensure_installed = utils.list_insert_unique(opts.ensure_installed, "codelldb") end,
+        opts = function(_, opts)
+          opts.ensure_installed =
+            utils.list_insert_unique(opts.ensure_installed, "codelldb")
+        end,
       },
     },
   },
-  {
-    "williamboman/mason-lspconfig.nvim",
-    opts = function(_, opts) opts.ensure_installed = utils.list_insert_unique(opts.ensure_installed, "rust_analyzer") end,
-  },
+
+  -- Crates
   {
     "Saecki/crates.nvim",
     event = { "BufRead Cargo.toml" },
@@ -109,6 +159,7 @@ return {
         group = vim.api.nvim_create_augroup("CmpSourceCargo", { clear = true }),
         pattern = "Cargo.toml",
         callback = function()
+          ---@diagnostic disable-next-line: missing-fields
           require("cmp").setup.buffer { sources = { { name = "crates" } } }
           require "crates"
         end,
@@ -134,7 +185,10 @@ return {
             {
               "K",
               function()
-                if vim.fn.expand "%:t" == "Cargo.toml" and require("crates").popup_available() then
+                if
+                  vim.fn.expand "%:t" == "Cargo.toml"
+                  and require("crates").popup_available()
+                then
                   require("crates").show_popup()
                 else
                   vim.lsp.buf.hover()
@@ -146,5 +200,21 @@ return {
         },
       },
     },
+  },
+
+  -- [[ Linting / Formatting ]]
+
+  -- Nvim-lint
+  {
+    "mfussenegger/nvim-lint",
+    optional = true,
+    opts = function(_, opts)
+      opts = vim.tbl_deep_extend("force", opts, {
+        linters_by_ft = {
+          rust = { "clippy" },
+        },
+      })
+      return opts
+    end,
   },
 }

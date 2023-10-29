@@ -1,14 +1,81 @@
 -- Setup autocmds to be run on load
 
-local augroup = vim.api.nvim_create_augroup
-local autocmd = vim.api.nvim_create_autocmd
+local ag = vim.api.nvim_create_augroup
+local au = vim.api.nvim_create_autocmd
+
+-- [[ Buffers ]]
+
+local function toggle_buf_large(bufnr, is_large)
+  bufnr = bufnr or 0
+  local ibl_ok, ibl = pcall(require, "ibl")
+  if is_large and ibl_ok then
+    vim.notify "Disabling global features for large file"
+    ibl.setup_buffer(bufnr, { enabled = false })
+  end
+end
+
+local buf_large = ag("buf_large", { clear = true })
+au({ "BufRead" }, {
+  group = buf_large,
+  pattern = "*",
+  desc = "Turn off large buffer local settings",
+  callback = function(args)
+    local ok, stats = pcall(
+      vim.loop.fs_stat,
+      vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf())
+    )
+    local large = (
+      ok
+      and stats
+      and stats.size > (vim.g.max_file.size or (1024 * 1024))
+    )
+
+    if large then
+      vim.notify "Disabling local features for large file"
+      vim.cmd "syntax clear"
+      vim.cmd "setlocal nornu"
+      vim.opt_local.foldmethod = "manual"
+      vim.opt_local.spell = false
+    end
+    toggle_buf_large(args.buf, large)
+  end,
+})
+
+au({ "BufEnter" }, {
+  group = buf_large,
+  pattern = "*",
+  desc = "Toggle large buffer global settings",
+  callback = function(args)
+    local ok, stats = pcall(
+      vim.loop.fs_stat,
+      vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf())
+    )
+    local large = (
+      ok
+      and stats
+      and stats.size > (vim.g.max_file.size or (1024 * 1024))
+    )
+    toggle_buf_large(args.buf, large)
+  end,
+})
+
+-- [[ Options ]]
 
 -- Some autocmds or plugins may modify this. I don't want it modified.
-local last_status_group = augroup("last_status_group", { clear = true })
-autocmd("OptionSet", {
+local last_status_group = ag("last_status_group", { clear = true })
+au("OptionSet", {
   desc = "Last status changed",
   group = last_status_group,
   callback = function()
     if vim.opt.laststatus:get() ~= 3 then vim.opt.laststatus = 3 end
   end,
 })
+
+-- -- Set inlay hints to never be italic, comments to always be
+-- vim.cmd [[
+-- augroup custom_highlights
+--   autocmd!
+--   au ColorScheme * :hi LspInlayHint gui=italic cterm=italic
+--   au ColorScheme * :hi Comment gui=italic cterm=italic
+-- augroup END
+-- ]]

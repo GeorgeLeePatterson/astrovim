@@ -1,6 +1,48 @@
 local user_config = require "user.config"
+local favorite = user_config.get_config "mappings.favorite"
+  or function(name) return name end
 
 return {
+  -- [[ Editing ]]
+
+  -- Undotree
+  {
+    "jiaoshijie/undotree",
+    dependencies = "nvim-lua/plenary.nvim",
+    config = true,
+    keys = { -- load the plugin only when using it's keybinding:
+      {
+        "<leader>U",
+        "<cmd>lua require('undotree').toggle()<cr>",
+        desc = "[U]ndo tree",
+      },
+    },
+    opts = {
+      float_diff = true, -- using float window previews diff, set this `true` will disable layout option
+      layout = "left_bottom", -- "left_bottom", "left_left_bottom"
+      ignore_filetype = {
+        "Undotree",
+        "UndotreeDiff",
+        "qf",
+        "TelescopePrompt",
+        "spectre_panel",
+        "tsplayground",
+      },
+      window = {
+        winblend = 30,
+      },
+      keymaps = {
+        ["j"] = "move_next",
+        ["k"] = "move_prev",
+        ["J"] = "move_change_next",
+        ["K"] = "move_change_prev",
+        ["<cr>"] = "action_enter",
+        ["p"] = "enter_diffbuf",
+        ["q"] = "quit",
+      },
+    },
+  },
+
   -- [[ Trouble ]]
   {
     "folke/trouble.nvim",
@@ -11,18 +53,24 @@ return {
         "<leader>ve",
         function() require("trouble").open "document_diagnostics" end,
         mode = { "n" },
-        desc = "Diagnostics (document)",
+        desc = "Troubl[e] document",
       },
       {
         "<leader>gR",
         function() require("trouble").open "lsp_references" end,
         mode = { "n" },
-        desc = "Diagnostics (document)",
+        desc = "Trouble [R]eferences",
       },
     },
     opts = {
       auto_open = true,
       auto_close = true,
+      include_declaration = {
+        "lsp_references",
+        "lsp_implementations",
+        "lsp_definitions",
+        "document_diagnostics",
+      }, -- for the given modes, include the declaration of the current symbol in the results
     },
     config = function(_, opts) require("trouble").setup(opts) end,
   },
@@ -40,19 +88,19 @@ return {
         "<leader>vci",
         function() vim.cmd [[Lspsaga incoming_calls]] end,
         mode = { "n" },
-        desc = "Incoming calls",
+        desc = favorite "[c]alls [i]ncoming",
       },
       {
         "<leader>vco",
         function() vim.cmd [[Lspsaga outgoing_calls]] end,
         mode = { "n" },
-        desc = "Outgoing calls",
+        desc = favorite "[c]alls [o]utgoing",
       },
       {
         "<leader>vd",
         function() vim.cmd [[Lspsaga peek_definition]] end,
         mode = { "n" },
-        desc = "Definition",
+        desc = "[d]efinition",
       },
     },
     config = function()
@@ -85,7 +133,7 @@ return {
         "ga",
         function() require("actions-preview").code_actions() end,
         mode = { "v", "n" },
-        { desc = "Actions preview" },
+        desc = "[a]ctions",
       },
     },
     config = function(_, opts)
@@ -94,6 +142,7 @@ return {
       local bp = user_config.ui.breakpoint
       local columns = vim.opt.columns:get()
       local ts_theme = require("telescope.themes").get_cursor()
+
       if columns < bp then ts_theme = require("telescope.themes").get_ivy() end
       opts.telescope = vim.tbl_deep_extend("force", ts_theme, {
         initial_mode = "normal",
@@ -112,25 +161,25 @@ return {
         "gR",
         function() vim.cmd [[Glance references]] end,
         mode = { "n" },
-        desc = "Glance references",
+        desc = favorite "Glance references",
       },
       {
         "gD",
         function() vim.cmd [[Glance definitions]] end,
         mode = { "n" },
-        desc = "Glance definitions",
+        desc = favorite "Glance definitions",
       },
       {
         "gT",
         function() vim.cmd [[Glance type_definitions]] end,
         mode = { "n" },
-        desc = "Glance type definitions",
+        desc = favorite "Glance type definitions",
       },
       {
         "gI",
         function() vim.cmd [[Glance implementations]] end,
         mode = { "n" },
-        desc = "Glance implementations",
+        desc = favorite "Glance implementations",
       },
     },
     opts = {

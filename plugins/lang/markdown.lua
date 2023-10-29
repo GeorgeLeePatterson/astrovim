@@ -1,13 +1,47 @@
 return {
-  -- [[ LSP / Linting / Formatting ]]
+  -- [[ LSP ]]
+  {
+    "williamboman/mason-lspconfig.nvim",
+    opts = function(_, opts)
+      opts.ensure_installed =
+        require("user.utils").list_insert_unique(opts.ensure_installed, {
+          "marksman",
+        })
+      return opts
+    end,
+  },
+
+  -- [[ Treesitter ]]
   {
     "nvim-treesitter/nvim-treesitter",
     opts = function(_, opts)
-      if type(opts.ensure_installed) == "table" then
-        vim.list_extend(opts.ensure_installed, { "markdown", "markdown_inline" })
-      end
+      opts.ensure_installed =
+        require("user.utils").list_insert_unique(opts.ensure_installed, {
+          "markdown",
+          "markdown_inline",
+        })
+      return opts
     end,
   },
+
+  -- [[ Linting / Formatting ]]
+
+  -- Mason-null-ls
+  {
+    "jay-babu/mason-null-ls.nvim",
+    optional = true,
+    opts = function(_, opts)
+      opts.ensure_installed =
+        require("user.utils").list_insert_unique(opts.ensure_installed, {
+          "prettier",
+          "markdownlint",
+          "vale",
+        })
+      return opts
+    end,
+  },
+
+  -- None-ls
   {
     "nvimtools/none-ls.nvim",
     optional = true,
@@ -15,26 +49,42 @@ return {
       local nls = require "null-ls"
       opts.sources = vim.list_extend(opts.sources or {}, {
         nls.builtins.diagnostics.markdownlint,
+        nls.builtins.diagnostics.vale,
       })
+      return opts
     end,
   },
+
+  -- Conform
+  {
+    "stevearc/conform.nvim",
+    optional = true,
+    opts = function(_, opts)
+      opts = opts or {}
+      return vim.tbl_deep_extend("force", opts, {
+        formatters_by_ft = {
+          ["markdown"] = { "prettier", "vale" },
+          ["markdown.mdx"] = { "prettier", "vale" }
+        }
+      })
+      return opts
+    end,
+  },
+
+  -- Nvim-lint
   {
     "mfussenegger/nvim-lint",
     optional = true,
-    opts = {
-      linters_by_ft = {
-        markdown = { "markdownlint" },
-      },
-    },
+    opts = function(_, opts)
+      return vim.tbl_deep_extend("force", opts, {
+        linters_by_ft = {
+          markdown = { "markdownlint", "vale" },
+        },
+      })
+    end,
   },
-  {
-    "neovim/nvim-lspconfig",
-    opts = {
-      servers = {
-        marksman = {},
-      },
-    },
-  },
+
+  -- Vim-markdown
   {
     "plasticboy/vim-markdown",
     dependencies = "godlygeek/tabular",
@@ -59,10 +109,19 @@ return {
       vim.api.nvim_create_autocmd("Filetype", {
         group = "VimMarkdown",
         pattern = { "markdown" },
-        callback = function() vim.keymap.set("x", "<C-Enter>", ":<C-U>TableFormat<CR>", { silent = true }) end,
+        callback = function()
+          vim.keymap.set(
+            "x",
+            "<C-Enter>",
+            ":<C-U>TableFormat<CR>",
+            { silent = true }
+          )
+        end,
       })
     end,
   },
+
+  -- Headlines
   {
     "lukas-reineke/headlines.nvim",
     dependencies = "nvim-treesitter/nvim-treesitter",
@@ -110,12 +169,36 @@ return {
         },
       }
 
-      vim.api.nvim_set_hl(0, "Headline1", { fg = "#cb7676", bg = "#402626", italic = false })
-      vim.api.nvim_set_hl(0, "Headline2", { fg = "#c99076", bg = "#66493c", italic = false })
-      vim.api.nvim_set_hl(0, "Headline3", { fg = "#80a665", bg = "#3d4f2f", italic = false })
-      vim.api.nvim_set_hl(0, "Headline4", { fg = "#4c9a91", bg = "#224541", italic = false })
-      vim.api.nvim_set_hl(0, "Headline5", { fg = "#6893bf", bg = "#2b3d4f", italic = false })
-      vim.api.nvim_set_hl(0, "Headline6", { fg = "#d3869b", bg = "#6b454f", italic = false })
+      vim.api.nvim_set_hl(
+        0,
+        "Headline1",
+        { fg = "#cb7676", bg = "#402626", italic = false }
+      )
+      vim.api.nvim_set_hl(
+        0,
+        "Headline2",
+        { fg = "#c99076", bg = "#66493c", italic = false }
+      )
+      vim.api.nvim_set_hl(
+        0,
+        "Headline3",
+        { fg = "#80a665", bg = "#3d4f2f", italic = false }
+      )
+      vim.api.nvim_set_hl(
+        0,
+        "Headline4",
+        { fg = "#4c9a91", bg = "#224541", italic = false }
+      )
+      vim.api.nvim_set_hl(
+        0,
+        "Headline5",
+        { fg = "#6893bf", bg = "#2b3d4f", italic = false }
+      )
+      vim.api.nvim_set_hl(
+        0,
+        "Headline6",
+        { fg = "#d3869b", bg = "#6b454f", italic = false }
+      )
       vim.api.nvim_set_hl(0, "CodeBlock", { bg = "#444444" })
     end,
   },
