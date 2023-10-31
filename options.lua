@@ -85,8 +85,20 @@ local options = {
     -- resession_enabled = true, -- enable experimental resession.nvim session management (will be default in AstroNvim v4)
     ui_notifications_enabled = true, -- disable notifications when toggling UI elements
 
+    -- [[ Themes and colorschemes ]]
     -- Custom optons: Initialize variable, not strictly necessary, automatically set by autocmd
     colorscheme_bg = "dark",
+
+    -- Gruvbox-material
+    gruvbox_material_background = "hard",
+    gruvbox_material_foreground = "original",
+    gruvbox_material_enable_bold = 1,
+    gruvbox_material_enable_italic = 1,
+    gruvbox_material_sign_column_background = "grey",
+    gruvbox_material_ui_contrast = "high",
+    gruvbox_material_diagnostic_text_highlight = 1,
+    gruvbox_material_diagnostic_virtual_text = "colored",
+    gruvbox_material_statusline_style = "mix",
   },
 }
 

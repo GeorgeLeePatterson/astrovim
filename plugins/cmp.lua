@@ -13,7 +13,6 @@ return {
       "hrsh7th/cmp-cmdline",
       "hrsh7th/cmp-emoji",
       "neovim/nvim-lspconfig",
-      "simrat39/rust-tools.nvim",
       {
         "zbirenbaum/copilot-cmp",
         dependencies = { "zbirenbaum/copilot.lua" },

@@ -1,28 +1,33 @@
 local M = {}
 
 local is_available = require("astronvim.utils").is_available
-local augroup = vim.api.nvim_create_augroup
-local autocmd = vim.api.nvim_create_autocmd
+local remove_au = vim.api.nvim_clear_autocmds
+-- local augroup = vim.api.nvim_create_augroup
+-- local autocmd = vim.api.nvim_create_autocmd
 
 -- Neo tree with edgy
 if is_available "neo-tree.nvim" then
-  autocmd("BufEnter", {
-    desc = "Open Neo-Tree on startup with directory",
-    group = augroup("neotree_start", { clear = true }),
-    callback = function()
-      if package.loaded["neo-tree"] then
-        vim.api.nvim_del_augroup_by_name "neotree_start"
-      else
-        local stats = (vim.uv or vim.loop).fs_stat(vim.api.nvim_buf_get_name(0)) -- TODO: REMOVE vim.loop WHEN DROPPING SUPPORT FOR Neovim v0.9
-        if stats and stats.type == "directory" then
-          vim.api.nvim_del_augroup_by_name "neotree_start"
-          local ok, edgy = pcall(require, "folke/edgy.nvim")
-          if ok then edgy.setup(require "user.plugins.config.edgy") end
-        end
-      end
-    end,
-  })
+  remove_au { group = "neotree_start" }
+  -- autocmd("BufEnter", {
+  --   desc = "Open Neo-Tree on startup with directory",
+  --   group = augroup("neotree_start", { clear = true }),
+  --   callback = function()
+  --     if package.loaded["neo-tree"] then
+  --       vim.api.nvim_del_augroup_by_name "neotree_start"
+  --     else
+  --       local stats = (vim.uv or vim.loop).fs_stat(vim.api.nvim_buf_get_name(0)) -- TODO: REMOVE vim.loop WHEN DROPPING SUPPORT FOR Neovim v0.9
+  --       if stats and stats.type == "directory" then
+  --         vim.api.nvim_del_augroup_by_name "neotree_start"
+  --         local ok, edgy = pcall(require, "folke/edgy.nvim")
+  --         if ok then edgy.setup(require "user.plugins.config.edgy") end
+  --       end
+  --     end
+  --   end,
+  -- })
 end
+
+-- Quit if only neo-tree
+remove_au { group = "auto_quit" }
 
 -- Disable autocmd for alpha. No statusline would be ideal, but it's buggy
 -- pcall(vim.api.nvim_del_augroup_by_name, "alpha_settings")

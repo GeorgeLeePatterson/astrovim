@@ -35,7 +35,7 @@ return {
     "rebelot/heirline.nvim",
     dependencies = {
       "akinsho/horizon.nvim",
-      "sainnhe/gruvbox-material",
+      { "sainnhe/gruvbox-material", lazy = false },
       "neovim/nvim-lspconfig",
       "nvim-tree/nvim-web-devicons",
     },

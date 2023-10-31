@@ -97,7 +97,6 @@ nvim
 - [nvim-ts-context-commentstring](https://github.com/JoosepAlviste/nvim-ts-context-commentstring)
 - [nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons)
 - [oxocarbon.nvim](https://github.com/shaunsingh/oxocarbon.nvim)
-- [peek.nvim](https://github.com/toppair/peek.nvim)
 - [plenary.nvim](https://github.com/nvim-lua/plenary.nvim)
 - [rust-tools.nvim](https://github.com/simrat39/rust-tools.nvim)
 - [SchemaStore.nvim](https://github.com/b0o/SchemaStore.nvim)

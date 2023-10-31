@@ -30,6 +30,11 @@ local _themes = {
   { "nyoom-engineering/oxocarbon.nvim" },
   { "tiagovla/tokyodark.nvim" },
   {
+    "sainnhe/gruvbox-material",
+    lazy = false,
+  },
+
+  {
     "ellisonleao/gruvbox.nvim",
     {
       opts = {

@@ -101,6 +101,7 @@ M.mappings = function(mappings)
     { function() vim.cmd [[colorscheme oxocarbon]] end, desc = "Oxocarbon" },
     { function() vim.cmd [[colorscheme Tokyodark]] end, desc = "TokyoDark" },
     { function() vim.cmd [[colorscheme gruvbox]] end, desc = "Gruvbox" },
+    { function() vim.cmd [[colorscheme gruvbox-material]] end, desc = "Gruvbox Material" },
     -- { function() vim.cmd [[colorscheme horizon]] end, desc = "Horizon" }, -- Currently bug with light theme.
   }
 

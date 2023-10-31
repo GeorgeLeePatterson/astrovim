@@ -213,25 +213,4 @@ return {
 
   -- [[ Tools ]]
   { "ellisonleao/glow.nvim", config = true, cmd = "Glow" },
-  {
-    "toppair/peek.nvim",
-    cmd = "Peek",
-    build = "deno task --quiet build:fast",
-    keys = {
-      {
-        "<leader>vp",
-        ft = "markdown",
-        function()
-          local peek = require "peek"
-          if peek.is_open() then
-            peek.close()
-          else
-            peek.open()
-          end
-        end,
-        desc = "Peek (Markdown Preview)",
-      },
-    },
-    opts = { theme = "light" },
-  },
 }

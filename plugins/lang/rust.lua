@@ -1,6 +1,6 @@
 local utils = require "user.utils"
 
-local rust_opts = function()
+local rust_config = function()
   local adapter
 
   local success, package = pcall(
@@ -36,13 +36,13 @@ local rust_opts = function()
     dap = { adapter = adapter },
     tools = {
       on_initialized = function()
-        vim.cmd [[
-          augroup RustLSP
-            autocmd CursorHold                      *.rs silent! lua vim.lsp.buf.document_highlight()
-            autocmd CursorMoved,InsertEnter         *.rs silent! lua vim.lsp.buf.clear_references()
-            autocmd BufEnter,CursorHold,InsertLeave *.rs silent! lua vim.lsp.codelens.refresh()
-          augroup END
-        ]]
+        -- vim.cmd [[
+        --   augroup RustLSP
+        --     autocmd CursorHold                      *.rs silent! lua vim.lsp.buf.document_highlight()
+        --     autocmd InsertEnter                     *.rs silent! lua vim.lsp.buf.clear_references()
+        --     autocmd BufEnter,CursorHold,InsertLeave *.rs silent! lua vim.lsp.codelens.refresh()
+        --   augroup END
+        -- ]]
       end,
       inlay_hints = {
         auto = true,
@@ -52,48 +52,27 @@ local rust_opts = function()
   }
 end
 
-local rust_config = function(_, o)
-  o = o or {}
-  local server = o["server"] or {}
-  local on_attach = server["on_attach"]
-  local capabilities = server["capabilities"]
-    or require("user.plugins.config.lsp").capabilities
-
-  o.server = vim.tbl_deep_extend("force", server, {
-    on_attach = function(client, bufnr)
-      pcall(on_attach, client, bufnr)
-      local rt_ok, rt = pcall(require, "rust-tools")
-      if rt_ok then
-        vim.keymap.set(
-          "n",
-          "<C-space>",
-          rt.hover_actions.hover_actions,
-          { buffer = bufnr, desc = "🦀 Rust hover actions" }
-        )
-        vim.keymap.set(
-          "n",
-          "<leader>a",
-          rt.code_action_group.code_action_group,
-          { buffer = bufnr, desc = "🦀 Rust code actions" }
-        )
-      end
-    end,
-    capabilities = capabilities,
-  })
-  require("rust-tools").setup(o)
+local rust_tools_setup = function(_, opts)
+  require("rust-tools").setup(opts)
 
   -- Keymaps
   vim.keymap.set(
     { "n" },
+    "<leader>a",
+    "<cmd>RustCodeAction<cr>",
+    { desc = "🦀 Rust code [a]ctions" }
+  )
+  vim.keymap.set(
+    { "n" },
     "K",
     "<cmd>RustHoverActions<cr>",
-    { desc = "Hover Actions (Rust)" }
+    { desc = "🦀 Hover Actions (Rust)" }
   )
   vim.keymap.set(
     { "n" },
     "<leader>dr",
     "<cmd>RustDebuggables<cr>",
-    { desc = "Run Debuggables (Rust)" }
+    { desc = "🦀 Run Debuggables (Rust)" }
   )
 end
 
@@ -130,13 +109,6 @@ return {
   -- Rust-tools
   {
     "simrat39/rust-tools.nvim",
-    ft = { "rust" },
-    init = function()
-      astronvim.lsp.skip_setup =
-        utils.list_insert_unique(astronvim.lsp.skip_setup, "rust_analyzer")
-    end,
-    opts = rust_opts,
-    config = rust_config,
     dependencies = {
       "neovim/nvim-lspconfig",
       "nvim-lua/plenary.nvim",
@@ -148,6 +120,13 @@ return {
         end,
       },
     },
+    ft = { "rust" },
+    init = function()
+      astronvim.lsp.skip_setup =
+        utils.list_insert_unique(astronvim.lsp.skip_setup, "rust_analyzer")
+    end,
+    opts = rust_config,
+    config = rust_tools_setup,
   },
 
   -- Crates
@@ -178,8 +157,7 @@ return {
     "neovim/nvim-lspconfig",
     opts = {
       servers = {
-        -- Ensure mason installs the server
-        rust_analyzer = require "user.lsp.config.rust",
+        -- rust_analyzer = rust_analyzer_config(),
         taplo = {
           keys = {
             {
@@ -198,6 +176,9 @@ return {
             },
           },
         },
+      },
+      setup = {
+        -- rust_analyzer = rust_tools_setup,
       },
     },
   },

@@ -12,14 +12,8 @@ return function(opts)
           command = "clippy",
           extraArgs = { "--no-deps" },
         },
-
-        procMacro = {
-          enable = true,
-          ignored = {
-            ["async-trait"] = { "async_trait" },
-            ["napi-derive"] = { "napi" },
-            ["async-recursion"] = { "async_recursion" },
-          },
+        completion = {
+          fullFunctionSignatures = { enable = true },
         },
         diagnostics = {
           experimental = true,
@@ -31,6 +25,11 @@ return function(opts)
             },
           },
         },
+        inlayHints = {
+          bindingModeHints = { enable = true },
+          closureCaptureHints = { enable = true },
+          discriminantHints = { enable = true },
+        },
         lens = {
           references = {
             adt = { enable = true },
@@ -38,6 +37,17 @@ return function(opts)
             method = { enable = true },
             trait = { enable = true },
           },
+        },
+        procMacro = {
+          enable = true,
+          ignored = {
+            ["async-trait"] = { "async_trait" },
+            ["napi-derive"] = { "napi" },
+            ["async-recursion"] = { "async_recursion" },
+          },
+        },
+        typing = {
+          autoClosingAngleBrackets = { enable = true },
         },
       },
     },

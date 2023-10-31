@@ -50,7 +50,8 @@ local config = {
       -- "nightfox",
 
       -- Default themes. Keep, delete, add, whatever you want.
-      "gruvbox",
+      -- "gruvbox",
+      "gruvbox-material"
     },
   },
 

@@ -36,6 +36,8 @@ return {
 
   lsp = {
     config = {},
+    skip_setup = { "rust_analyzer" },
+
     -- customize lsp formatting options
     formatting = {
       -- control auto formatting on save
