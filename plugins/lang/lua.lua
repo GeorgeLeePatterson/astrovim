@@ -28,7 +28,7 @@ return {
 
   -- Mason-null-ls
   {
-    "jababu/mason-null-ls.nvim",
+    "jay-babu/mason-null-ls.nvim",
     opts = function(_, opts)
       local install = { "stylua" }
       install = require("user.utils").list_insert_unique(install, linters or {})
