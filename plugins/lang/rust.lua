@@ -87,6 +87,7 @@ return {
         "rust_analyzer",
         "taplo",
       })
+      return opts
     end,
   },
 
@@ -101,6 +102,7 @@ return {
             "toml",
           })
       end
+      return opts
     end,
   },
 
@@ -117,6 +119,7 @@ return {
         opts = function(_, opts)
           opts.ensure_installed =
             utils.list_insert_unique(opts.ensure_installed, "codelldb")
+          return opts
         end,
       },
     },
@@ -188,12 +191,9 @@ return {
   -- Nvim-lint
   {
     "mfussenegger/nvim-lint",
-    optional = true,
     opts = function(_, opts)
-      opts = vim.tbl_deep_extend("force", opts, {
-        linters_by_ft = {
+      opts.linters_by_ft = vim.tbl_deep_extend("force", opts.linters_by_ft, {
           rust = { "clippy" },
-        },
       })
       return opts
     end,

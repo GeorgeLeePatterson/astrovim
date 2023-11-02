@@ -142,13 +142,11 @@ local plugins = {
         desc = "Lint file",
       },
     },
-    opts = function(_, opts)
-      return vim.tbl_deep_extend("force", opts, {
-        linters_by_ft = {
-          ["json"] = { "jsonlint" },
-        },
-      })
-    end,
+    opts = {
+      linters_by_ft = {
+        ["json"] = { "jsonlint" },
+      },
+    },
     config = function()
       local lint = require "lint"
       local lint_augroup = vim.api.nvim_create_augroup("lint", { clear = true })

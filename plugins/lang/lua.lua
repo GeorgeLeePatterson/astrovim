@@ -1,6 +1,4 @@
-local user_config = require "user.config"
-
-local linters = (user_config.linters or {})["lua"]
+local linters = require("user.config").get_config "linters.lua"
 
 return {
   -- [[ LSP ]]
@@ -11,6 +9,7 @@ return {
         require("user.utils").list_insert_unique(opts.ensure_installed, {
           "lua_ls",
         })
+      return opts
     end,
   },
 
@@ -42,19 +41,18 @@ return {
   -- None-ls
   {
     "nvimtools/none-ls.nvim",
-    optional = true,
     opts = function(_, opts)
       local nls = require "null-ls"
       opts.sources = vim.list_extend(opts.sources or {}, {
         nls.builtins.diagnostics.selene,
       })
+      return opts
     end,
   },
 
   -- Conform
   {
     "stevearc/conform.nvim",
-    optional = true,
     opts = function(_, opts)
       opts = opts or {}
       opts.formatters_by_ft =
@@ -68,7 +66,6 @@ return {
   -- Nvim-lint
   {
     "mfussenegger/nvim-lint",
-    optional = true,
     opts = function(_, opts)
       opts = opts or {}
       opts.linters_by_ft = vim.tbl_deep_extend("force", opts.linters_by_ft, {

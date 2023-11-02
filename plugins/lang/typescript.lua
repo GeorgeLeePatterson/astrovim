@@ -34,7 +34,6 @@ return {
   -- Conform
   {
     "stevearc/conform.nvim",
-    optional = true,
     opts = function(_, opts)
       return vim.tbl_deep_extend("force", opts, {
         formatters_by_ft = {
@@ -64,7 +63,6 @@ return {
   -- Mason-null-ls
   {
     "jay-babu/mason-null-ls.nvim",
-    optional = true,
     opts = function(_, opts)
       opts.ensure_installed =
         require("user.utils").list_insert_unique(opts.ensure_installed, {
@@ -79,7 +77,6 @@ return {
   -- None-ls
   {
     "nvimtools/none-ls.nvim",
-    optional = true,
     opts = function(_, opts)
       local null_ls = require "null-ls"
       return vim.tbl_deep_extend("force", opts, {
@@ -112,7 +109,6 @@ return {
   -- Nvim-lint
   {
     "mfussenegger/nvim-lint",
-    optional = true,
     opts = function(_, opts)
       return vim.tbl_deep_extend("force", opts, {
         linters_by_ft = {
