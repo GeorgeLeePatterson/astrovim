@@ -51,7 +51,8 @@ local config = {
 
       -- Default themes. Keep, delete, add, whatever you want.
       -- "gruvbox",
-      "gruvbox-material"
+      -- "gruvbox-material"
+      "gruvbox-baby",
     },
   },
 

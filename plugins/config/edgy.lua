@@ -26,13 +26,17 @@ return {
       ft = "toggleterm",
       title = "TERMINAL",
       size = { height = 0.4 },
-      filter = function(_, win) return vim.api.nvim_win_get_config(win).relative == "" end,
+      filter = function(_, win)
+        return vim.api.nvim_win_get_config(win).relative == ""
+      end,
     },
     {
       ft = "noice",
       title = "NOICE",
       size = { height = 0.4 },
-      filter = function(_, win) return vim.api.nvim_win_get_config(win).relative == "" end,
+      filter = function(_, win)
+        return vim.api.nvim_win_get_config(win).relative == ""
+      end,
     },
     { ft = "spectre_panel", title = "SPECTRE", size = { height = 0.4 } },
     { ft = "Trouble", title = "TROUBLE" },
@@ -72,11 +76,13 @@ return {
       ft = "Outline",
       pinned = true,
       open = function()
-        if pcall(require, "symbols-outline") then vim.cmd [[SymbolsOutlineOpen]] end
+        if pcall(require, "symbols-outline") then
+          vim.cmd [[SymbolsOutlineOpen]]
+        end
       end,
       size = { height = 0.4 },
     },
-    "neo-tree",
+    -- "neo-tree",
     -- -- Disabled to free up real estate.
     -- {
     --   ft = "裂 DIAGNOSTICS",

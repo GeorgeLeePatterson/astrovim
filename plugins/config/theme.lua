@@ -28,7 +28,9 @@ M.configure_theme = function(theme, opts)
     name = opts["name"]
   else
     local name_parts = user_utils.str_split(theme, "[\\/]+")
-    if #name_parts > 0 then name = user_utils.str_replace(name_parts[#name_parts], "%.nvim", "") end
+    if #name_parts > 0 then
+      name = user_utils.str_replace(name_parts[#name_parts], "%.nvim", "")
+    end
   end
 
   if vim.list_contains(fave_theme_mds, name) then
@@ -89,7 +91,10 @@ M.mappings = function(mappings)
   local onedark_load = function(variant, opts)
     opts = opts or {}
     opts.style = variant or "dark"
-    onedark.setup(vim.tbl_deep_extend("force", M.theme_opts.onedark, opts) or M.theme_opts.onedark)
+    onedark.setup(
+      vim.tbl_deep_extend("force", M.theme_opts.onedark, opts)
+        or M.theme_opts.onedark
+    )
     onedark.load()
   end
 
@@ -101,7 +106,14 @@ M.mappings = function(mappings)
     { function() vim.cmd [[colorscheme oxocarbon]] end, desc = "Oxocarbon" },
     { function() vim.cmd [[colorscheme Tokyodark]] end, desc = "TokyoDark" },
     { function() vim.cmd [[colorscheme gruvbox]] end, desc = "Gruvbox" },
-    { function() vim.cmd [[colorscheme gruvbox-material]] end, desc = "Gruvbox Material" },
+    {
+      function() vim.cmd [[colorscheme gruvbox-material]] end,
+      desc = "Gruvbox Material",
+    },
+    {
+      function() vim.cmd [[colorscheme gruvbox-baby]] end,
+      desc = "Gruvbox Baby",
+    },
     -- { function() vim.cmd [[colorscheme horizon]] end, desc = "Horizon" }, -- Currently bug with light theme.
   }
 
@@ -112,28 +124,76 @@ M.mappings = function(mappings)
   mappings["n"] = vim.tbl_deep_extend("force", mappings["n"], {
     -- Monokai
     ["<leader>ma"] = { name = "Monokai" },
-    ["<leader>ma0"] = { function() vim.cmd [[colorscheme monokai-pro-default]] end, desc = "Default" },
-    ["<leader>ma1"] = { function() vim.cmd [[colorscheme monokai-pro-classic]] end, desc = "Classic" },
-    ["<leader>ma2"] = { function() vim.cmd [[colorscheme monokai-pro-machine]] end, desc = "Machine" },
-    ["<leader>ma3"] = { function() vim.cmd [[colorscheme monokai-pro-octagon]] end, desc = "Octagon" },
-    ["<leader>ma4"] = { function() vim.cmd [[colorscheme monokai-pro-spectrum]] end, desc = "Spectrum" },
-    ["<leader>ma5"] = { function() vim.cmd [[colorscheme monokai-pro-ristretto]] end, desc = "Ristretto" },
+    ["<leader>ma0"] = {
+      function() vim.cmd [[colorscheme monokai-pro-default]] end,
+      desc = "Default",
+    },
+    ["<leader>ma1"] = {
+      function() vim.cmd [[colorscheme monokai-pro-classic]] end,
+      desc = "Classic",
+    },
+    ["<leader>ma2"] = {
+      function() vim.cmd [[colorscheme monokai-pro-machine]] end,
+      desc = "Machine",
+    },
+    ["<leader>ma3"] = {
+      function() vim.cmd [[colorscheme monokai-pro-octagon]] end,
+      desc = "Octagon",
+    },
+    ["<leader>ma4"] = {
+      function() vim.cmd [[colorscheme monokai-pro-spectrum]] end,
+      desc = "Spectrum",
+    },
+    ["<leader>ma5"] = {
+      function() vim.cmd [[colorscheme monokai-pro-ristretto]] end,
+      desc = "Ristretto",
+    },
     -- TokyoNight
     ["<leader>ms"] = { name = "TokyoNight" },
-    ["<leader>ms0"] = { function() vim.cmd [[colorscheme tokyonight]] end, desc = "Default" },
-    ["<leader>ms1"] = { function() vim.cmd [[colorscheme tokyonight-day]] end, desc = "Day" },
-    ["<leader>ms2"] = { function() vim.cmd [[colorscheme tokyonight-moon]] end, desc = "Moon" },
-    ["<leader>ms3"] = { function() vim.cmd [[colorscheme tokyonight-night]] end, desc = "NightNight" },
-    ["<leader>ms4"] = { function() vim.cmd [[colorscheme tokyonight-storm]] end, desc = "Storm" },
+    ["<leader>ms0"] = {
+      function() vim.cmd [[colorscheme tokyonight]] end,
+      desc = "Default",
+    },
+    ["<leader>ms1"] = {
+      function() vim.cmd [[colorscheme tokyonight-day]] end,
+      desc = "Day",
+    },
+    ["<leader>ms2"] = {
+      function() vim.cmd [[colorscheme tokyonight-moon]] end,
+      desc = "Moon",
+    },
+    ["<leader>ms3"] = {
+      function() vim.cmd [[colorscheme tokyonight-night]] end,
+      desc = "NightNight",
+    },
+    ["<leader>ms4"] = {
+      function() vim.cmd [[colorscheme tokyonight-storm]] end,
+      desc = "Storm",
+    },
     -- Catppuccin
     ["<leader>md"] = { name = "Catppuccin" },
-    ["<leader>md0"] = { function() vim.cmd [[colorscheme catppuccin-latte]] end, desc = "Latte" },
-    ["<leader>md1"] = { function() vim.cmd [[colorscheme catppuccin-frappe]] end, desc = "Frappe" },
-    ["<leader>md2"] = { function() vim.cmd [[colorscheme catppuccin-macchiato]] end, desc = "Macchiato" },
-    ["<leader>md3"] = { function() vim.cmd [[colorscheme catppuccin-mocha]] end, desc = "Mocha" },
+    ["<leader>md0"] = {
+      function() vim.cmd [[colorscheme catppuccin-latte]] end,
+      desc = "Latte",
+    },
+    ["<leader>md1"] = {
+      function() vim.cmd [[colorscheme catppuccin-frappe]] end,
+      desc = "Frappe",
+    },
+    ["<leader>md2"] = {
+      function() vim.cmd [[colorscheme catppuccin-macchiato]] end,
+      desc = "Macchiato",
+    },
+    ["<leader>md3"] = {
+      function() vim.cmd [[colorscheme catppuccin-mocha]] end,
+      desc = "Mocha",
+    },
     -- Github
     ["<leader>mf"] = { name = "Github" },
-    ["<leader>mf0"] = { function() vim.cmd [[colorscheme github_dark]] end, desc = "Dark" },
+    ["<leader>mf0"] = {
+      function() vim.cmd [[colorscheme github_dark]] end,
+      desc = "Dark",
+    },
     ["<leader>mf1"] = {
       function() vim.cmd [[colorscheme github_dark_dimmed]] end,
       desc = "Dark Dimmed",
@@ -142,28 +202,64 @@ M.mappings = function(mappings)
       function() vim.cmd [[colorscheme github_dark_high_contrast]] end,
       desc = "Dark High Contrast",
     },
-    ["<leader>mf3"] = { function() vim.cmd [[colorscheme github_light]] end, desc = "Light" },
+    ["<leader>mf3"] = {
+      function() vim.cmd [[colorscheme github_light]] end,
+      desc = "Light",
+    },
     ["<leader>mf4"] = {
       function() vim.cmd [[colorscheme github_light_high_contrast]] end,
       desc = "Light High Contrast",
     },
     -- Nightfox
     ["<leader>mj"] = { name = "Nightfox" },
-    ["<leader>mj0"] = { function() vim.cmd [[colorscheme nightfox]] end, desc = "Nightfox" },
-    ["<leader>mj1"] = { function() vim.cmd [[colorscheme dayfox]] end, desc = "Dayfox (light)" },
-    ["<leader>mj2"] = { function() vim.cmd [[colorscheme dawnfox]] end, desc = "Dawnfox (light)" },
-    ["<leader>mj3"] = { function() vim.cmd [[colorscheme duskfox]] end, desc = "Duskfox" },
-    ["<leader>mj4"] = { function() vim.cmd [[colorscheme nordfox]] end, desc = "Nordfox" },
-    ["<leader>mj5"] = { function() vim.cmd [[colorscheme terafox]] end, desc = "Terafox" },
-    ["<leader>mj6"] = { function() vim.cmd [[colorscheme carbonfox]] end, desc = "Carbonfox" },
+    ["<leader>mj0"] = {
+      function() vim.cmd [[colorscheme nightfox]] end,
+      desc = "Nightfox",
+    },
+    ["<leader>mj1"] = {
+      function() vim.cmd [[colorscheme dayfox]] end,
+      desc = "Dayfox (light)",
+    },
+    ["<leader>mj2"] = {
+      function() vim.cmd [[colorscheme dawnfox]] end,
+      desc = "Dawnfox (light)",
+    },
+    ["<leader>mj3"] = {
+      function() vim.cmd [[colorscheme duskfox]] end,
+      desc = "Duskfox",
+    },
+    ["<leader>mj4"] = {
+      function() vim.cmd [[colorscheme nordfox]] end,
+      desc = "Nordfox",
+    },
+    ["<leader>mj5"] = {
+      function() vim.cmd [[colorscheme terafox]] end,
+      desc = "Terafox",
+    },
+    ["<leader>mj6"] = {
+      function() vim.cmd [[colorscheme carbonfox]] end,
+      desc = "Carbonfox",
+    },
     -- Bluloco
     ["<leader>mk"] = { name = "Bluloco" },
-    ["<leader>mk0"] = { function() vim.cmd [[colorscheme bluloco]] end, desc = "Bluloco" },
-    ["<leader>mk1"] = { function() vim.cmd [[colorscheme bluloco-dark]] end, desc = "Bluloco (dark)" },
-    ["<leader>mk2"] = { function() vim.cmd [[colorscheme bluloco-light]] end, desc = "Bluloco (light)" },
+    ["<leader>mk0"] = {
+      function() vim.cmd [[colorscheme bluloco]] end,
+      desc = "Bluloco",
+    },
+    ["<leader>mk1"] = {
+      function() vim.cmd [[colorscheme bluloco-dark]] end,
+      desc = "Bluloco (dark)",
+    },
+    ["<leader>mk2"] = {
+      function() vim.cmd [[colorscheme bluloco-light]] end,
+      desc = "Bluloco (light)",
+    },
     -- OneDark
     ["<leader>ml"] = { name = "OneDark" },
-    ["<leader>ml0"] = { function() onedark_load "dark" end, desc = "Default (dark)" },
+    ["<leader>ml0"] = {
+      function() onedark_load "dark" end,
+      desc = "Default (dark)",
+    },
     ["<leader>ml1"] = { function() onedark_load "darker" end, desc = "Darker" },
     ["<leader>ml2"] = { function() onedark_load "cool" end, desc = "Cool" },
     ["<leader>ml3"] = { function() onedark_load "deep" end, desc = "Deep" },
@@ -173,7 +269,10 @@ M.mappings = function(mappings)
     ["<leader>mlt"] = { function() onedark.toggle() end, desc = "Toggle" },
     -- Mellifluous
     ["<leader>m;"] = { name = "Mellifluous" },
-    ["<leader>m;0"] = { function() vim.cmd [[colorscheme mellifluous]] end, desc = "Default" },
+    ["<leader>m;0"] = {
+      function() vim.cmd [[colorscheme mellifluous]] end,
+      desc = "Default",
+    },
   })
   return mappings
 end

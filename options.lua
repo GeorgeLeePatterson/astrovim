@@ -1,4 +1,4 @@
-local opt = vim.opt
+-- local opt = vim.opt
 
 local formatoptions = function(o)
   o.formatoptions = o.formatoptions
@@ -23,21 +23,21 @@ vim.api.nvim_create_autocmd({ "BufEnter" }, {
   callback = function() formatoptions(vim.opt_local) end,
 })
 
--- Cursorline highlighting control
---  Only have it on in the active buffer
-opt.cursorline = true -- Highlight the current line
-local cursorline_group =
-  vim.api.nvim_create_augroup("CursorLineControl", { clear = true })
-local set_cursorline = function(event, value, pattern)
-  vim.api.nvim_create_autocmd(event, {
-    group = cursorline_group,
-    pattern = pattern,
-    callback = function() vim.opt_local.cursorline = value end,
-  })
-end
-set_cursorline("WinLeave", false)
-set_cursorline("WinEnter", true)
-set_cursorline("FileType", false, "TelescopePrompt")
+-- -- Cursorline highlighting control
+-- --  Only have it on in the active buffer
+-- opt.cursorline = true -- Highlight the current line
+-- local cursorline_group =
+--   vim.api.nvim_create_augroup("CursorLineControl", { clear = true })
+-- local set_cursorline = function(event, value, pattern)
+--   vim.api.nvim_create_autocmd(event, {
+--     group = cursorline_group,
+--     pattern = pattern,
+--     callback = function() vim.opt_local.cursorline = value end,
+--   })
+-- end
+-- set_cursorline("WinLeave", false)
+-- set_cursorline("WinEnter", true)
+-- set_cursorline("FileType", false, "TelescopePrompt")
 
 -- Additional options
 local options = {
@@ -45,6 +45,7 @@ local options = {
     autoindent = true,
     background = require("user.config").defaults.background,
     completeopt = { "menu", "menuone", "preview", "noselect", "noinsert" },
+    cursorline = true,
     -- guifont = { "VictorMono Nerd Font", ":h14" },
     expandtab = true,
     formatoptions = formatoptions(vim.opt),
@@ -99,6 +100,10 @@ local options = {
     gruvbox_material_diagnostic_text_highlight = 1,
     gruvbox_material_diagnostic_virtual_text = "colored",
     gruvbox_material_statusline_style = "mix",
+
+    -- Gruvbox Baby
+    gruvbox_baby_background_color = "dark",
+    gruvbox_baby_telescope_theme = 1,
   },
 }
 

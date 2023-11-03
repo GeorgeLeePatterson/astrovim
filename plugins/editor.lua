@@ -104,7 +104,7 @@ return {
     event = { "BufNewFile", "BufAdd" },
     keys = {
       {
-        "<leader>sn",
+        "<leader>sr",
         function() vim.cmd [[MurenOpen]] end,
         mode = { "n", "v", "s" },
         desc = "Open Muren search",
@@ -123,7 +123,7 @@ return {
     cmd = "Spectre",
     keys = {
       {
-        "<leader>so",
+        "<leader>ss",
         function() vim.cmd [[Spectre]] end,
         mode = { "n", "v", "s" },
         desc = "Start spectre search",

@@ -59,6 +59,47 @@ au({ "BufEnter" }, {
   end,
 })
 
+-- [[ Plugins ]]
+
+-- Rainbow-delimiters
+local rb_au_group = ag("rb_au_group", { clear = true })
+au({ "LspAttach" }, {
+  group = rb_au_group,
+  pattern = "*",
+  desc = "Refresh rainbow delimiters when lsp attaches",
+  callback = function(args)
+    local ok, rb = pcall(require, "rainbow-delimiters")
+    if ok then pcall(function() rb.enable(args.buf) end) end
+  end,
+})
+
+-- Telescope
+local telescope_au = ag("telescope_au", { clear = true })
+-- vim.cmd "autocmd User TelescopePreviewerLoaded setlocal number"
+au({ "User" }, {
+  group = telescope_au,
+  pattern = "TelescopePreviewerLoaded",
+  desc = "Set telescope preview to use line numbers",
+  callback = function() vim.opt_local.number = true end,
+})
+
+-- Edgy
+-- Attempt to fix tabclose bug
+local edgy_au = ag("edgy_au", { clear = true })
+au({ "TabLeave" }, {
+  group = edgy_au,
+  pattern = "*",
+  desc = "Close edgy when tabcloses (bugfix)",
+  callback = function()
+    local ok, edgy = pcall(require, "edgy")
+    if ok then
+      if pcall(function() edgy.close() end) then
+        pcall(function() edgy.close() end)
+      end
+    end
+  end,
+})
+
 -- [[ Options ]]
 
 -- Some autocmds or plugins may modify this. I don't want it modified.

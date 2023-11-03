@@ -29,6 +29,11 @@ local options = function(opts)
 
   return vim.tbl_deep_extend("force", opts, {
     defaults = {
+      borderchars = {
+        prompt = { "─", " ", " ", " ", "─", "─", " ", " " },
+        results = { " " },
+        preview = { " " },
+      },
       file_ignore_patterns = {
         "target/debug/*",
         "target/release/*",

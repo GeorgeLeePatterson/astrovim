@@ -33,7 +33,11 @@ local _themes = {
     "sainnhe/gruvbox-material",
     lazy = false,
   },
-
+  {
+    "luisiacc/gruvbox-baby",
+    lazy = false,
+    branch = "main",
+  },
   {
     "ellisonleao/gruvbox.nvim",
     {
