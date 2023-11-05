@@ -1,6 +1,6 @@
 local utils = require "user.utils"
 
-local rust_config = function()
+local rust_opts = function()
   local adapter
 
   local success, package = pcall(
@@ -35,19 +35,19 @@ local rust_config = function()
     server = server,
     dap = { adapter = adapter },
     tools = {
-      on_initialized = function()
-        -- vim.cmd [[
-        --   augroup RustLSP
-        --     autocmd CursorHold                      *.rs silent! lua vim.lsp.buf.document_highlight()
-        --     autocmd InsertEnter                     *.rs silent! lua vim.lsp.buf.clear_references()
-        --     autocmd BufEnter,CursorHold,InsertLeave *.rs silent! lua vim.lsp.codelens.refresh()
-        --   augroup END
-        -- ]]
-      end,
       inlay_hints = {
         auto = true,
         highlight = "LspInlayHint",
       },
+      on_initialized = function()
+        vim.api.nvim_create_autocmd(
+          { "BufWritePost", "BufEnter", "InsertLeave" },
+          {
+            pattern = { "*.rs" },
+            callback = function() vim.lsp.codelens.refresh() end,
+          }
+        )
+      end,
     },
   }
 end
@@ -77,20 +77,6 @@ local rust_tools_setup = function(_, opts)
 end
 
 return {
-  -- [[ LSP ]
-
-  -- Mason-lspconfig
-  {
-    "williamboman/mason-lspconfig.nvim",
-    opts = function(_, opts)
-      opts.ensure_installed = utils.list_insert_unique(opts.ensure_installed, {
-        "rust_analyzer",
-        "taplo",
-      })
-      return opts
-    end,
-  },
-
   -- [[ Treesitter ]]
   {
     "nvim-treesitter/nvim-treesitter",
@@ -106,7 +92,27 @@ return {
     end,
   },
 
-  -- [[ Tools]]
+  -- [[ LSP ]
+
+  -- Mason-lspconfig
+  {
+    "williamboman/mason-lspconfig.nvim",
+    opts = function(_, opts)
+      opts.ensure_installed = utils.list_insert_unique(opts.ensure_installed, {
+        "rust_analyzer",
+        "taplo",
+      })
+      return opts
+    end,
+  },
+  {
+    "jay-babu/mason-nvim-dap.nvim",
+    opts = function(_, opts)
+      opts.ensure_installed =
+        utils.list_insert_unique(opts.ensure_installed, "codelldb")
+      return opts
+    end,
+  },
 
   -- Rust-tools
   {
@@ -128,31 +134,8 @@ return {
       astronvim.lsp.skip_setup =
         utils.list_insert_unique(astronvim.lsp.skip_setup, "rust_analyzer")
     end,
-    opts = rust_config,
+    opts = rust_opts,
     config = rust_tools_setup,
-  },
-
-  -- Crates
-  {
-    "Saecki/crates.nvim",
-    event = { "BufRead Cargo.toml" },
-    init = function()
-      vim.api.nvim_create_autocmd("BufRead", {
-        group = vim.api.nvim_create_augroup("CmpSourceCargo", { clear = true }),
-        pattern = "Cargo.toml",
-        callback = function()
-          ---@diagnostic disable-next-line: missing-fields
-          require("cmp").setup.buffer { sources = { { name = "crates" } } }
-          require "crates"
-        end,
-      })
-    end,
-    opts = {
-      null_ls = {
-        enabled = true,
-        name = "crates.nvim",
-      },
-    },
   },
 
   -- Correctly setup lspconfig for Rust 🚀
@@ -160,7 +143,6 @@ return {
     "neovim/nvim-lspconfig",
     opts = {
       servers = {
-        -- rust_analyzer = rust_analyzer_config(),
         taplo = {
           keys = {
             {
@@ -180,8 +162,29 @@ return {
           },
         },
       },
-      setup = {
-        -- rust_analyzer = rust_tools_setup,
+    },
+  },
+
+  -- Crates
+  {
+    "Saecki/crates.nvim",
+    event = { "BufRead Cargo.toml" },
+    init = function()
+      vim.api.nvim_create_autocmd("BufRead", {
+        group = vim.api.nvim_create_augroup("CmpSourceCargo", { clear = true }),
+        pattern = "Cargo.toml",
+        callback = function()
+          ---@diagnostic disable-next-line: missing-fields
+          require("cmp").setup.buffer { sources = { { name = "crates" } } }
+          require "crates"
+        end,
+      })
+    end,
+    opts = {
+      src = { cmp = { enabled = true } },
+      null_ls = {
+        enabled = true,
+        name = "crates.nvim",
       },
     },
   },
@@ -193,7 +196,7 @@ return {
     "mfussenegger/nvim-lint",
     opts = function(_, opts)
       opts.linters_by_ft = vim.tbl_deep_extend("force", opts.linters_by_ft, {
-          rust = { "clippy" },
+        rust = { "clippy" },
       })
       return opts
     end,

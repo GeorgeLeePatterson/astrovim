@@ -91,12 +91,6 @@ local maps = {
       desc = "[R]egisters",
     },
 
-    -- Fzf
-    ["<leader>fj"] = {
-      function() vim.cmd [[Jumps]] end,
-      desc = "[j]ump list",
-    },
-
     -- [[ NeoTree ]]
 
     -- ["<leader>e"] = { "<cmd>Neotree toggle<cr>", desc = "Toggle Explorer" },
@@ -198,18 +192,6 @@ local maps = {
       function() user_utils.set_background_and_theme "light" end,
       desc = "Light Mode",
     },
-
-    -- Noice
-    ["<leader>N"] = { name = "󰍨 Noice" },
-
-    -- Spectre
-    ["<leader>s"] = { name = "󰬲 Search & Replace" },
-
-    -- Lspsaga
-    ["<leader>v"] = { name = favorite " View More" },
-
-    -- Wezterm
-    ["<leader>W"] = { name = " Wezterm" },
   },
   t = {
     -- setting a mapping to false will disable it
@@ -222,6 +204,38 @@ local maps = {
     },
   },
 }
+
+-- [[ Add addition sections ]]
+
+local add_description = function(mapping, key, desc, mod)
+  mapping = mapping or {}
+  if mod ~= nil then
+    if not is_available(mod) then return end
+  end
+  mapping[key] = { name = desc }
+  return mapping
+end
+
+-- Fzf
+maps.n = add_description(maps.n, "<leader>j", favorite "󰑯 Fzf")
+maps.v = add_description(maps.v, "<leader>j", favorite "󰑯 Fzf")
+
+-- Noice
+maps.n = add_description(maps.n, "<leader>N", "󰍨 Noice")
+maps.v = add_description(maps.v, "<leader>N", "󰍨 Noice")
+
+-- Spectre
+maps.n = add_description(maps.n, "<leader>s", "󰬲 Search & Replace")
+maps.v = add_description(maps.v, "<leader>s", "󰬲 Search & Replace")
+
+-- Lspsaga
+maps.n = add_description(maps.n, "<leader>v", favorite " View More")
+maps.v = add_description(maps.v, "<leader>v", favorite " View More")
+
+-- Wezterm
+maps.n = add_description(maps.n, "<leader>W", favorite " Wezterm")
+
+-- [[ Better J & K ]]
 
 local better_j = {
   function() return vim.v.count > 0 and "j" or "gj" end,
@@ -238,15 +252,15 @@ local better_k = {
 maps.n = vim.tbl_extend("force", maps.n, { j = better_j, k = better_k })
 maps.x = vim.tbl_extend("force", maps.x or {}, { j = better_j, k = better_k })
 
--- Themes
+-- [[ Themes ]]
 maps = theme_config.mappings(maps)
 
--- ZenMode
+-- [[ ZenMode ]]
 maps.n["zZ"] = {
   function() require("zen-mode").toggle() end,
   desc = favorite "[Z]en Mode",
 }
--- Devdocs rust
+-- [[ Devdocs ]]
 maps.n["<leader>f?"] = {
   function()
     if is_available "nvim-devdocs" then vim.cmd [[DevdocsOpenFloat rust]] end

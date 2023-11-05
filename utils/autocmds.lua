@@ -1,5 +1,3 @@
--- Setup autocmds to be run on load
-
 local ag = vim.api.nvim_create_augroup
 local au = vim.api.nvim_create_autocmd
 

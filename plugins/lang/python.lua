@@ -5,7 +5,7 @@ return {
     opts = function(_, opts)
       opts.ensure_installed =
         require("user.utils").list_insert_unique(opts.ensure_installed, {
-          "pyright",
+          "ruff_lsp",
         })
       return opts
     end,
@@ -17,7 +17,7 @@ return {
     opts = function(_, opts)
       opts.ensure_installed = require("user.utils").list_insert_unique(
         opts.ensure_installed,
-        { "python" }
+        { "python", "requirements", "toml" }
       )
       return opts
     end,
@@ -29,50 +29,31 @@ return {
   {
     "jay-babu/mason-null-ls.nvim",
     opts = function(_, opts)
-      -- add more things to the ensure_installed table protecting against community packs modifying it
       opts.ensure_installed =
         require("user.utils").list_insert_unique(opts.ensure_installed, {
-          "black",
-          "isort",
-          "pylint",
+          "ruff",
         })
       return opts
     end,
   },
 
-  -- None-ls
-  {
-    "nvimtools/none-ls.nvim",
-    opts = function(_, opts)
-      -- local nls = require "null-ls"
-      opts.sources = vim.list_extend(opts.sources or {}, {
-        -- TODO
-      })
-      return opts
-    end,
-  },
+  -- [[ DAP ]]
 
-  -- Conform
-  {
-    "stevearc/conform.nvim",
-    opts = function(_, opts)
-      return vim.tbl_deep_extend("force", opts, {
-        formatters_by_ft = {
-          ["python"] = { "isort", "black" },
-        },
-      })
-    end,
-  },
-
-  -- Nvim-lint
-  {
-    "mfussenegger/nvim-lint",
-    opts = function(_, opts)
-      return vim.tbl_deep_extend("force", opts, {
-        linters_by_ft = {
-          python = { "pylint" },
-        },
-      })
-    end,
-  },
+  -- {
+  -- 	'mfussenegger/nvim-dap',
+  -- 	optional = true,
+  -- 	dependencies = {
+  -- 		'mfussenegger/nvim-dap-python',
+  -- 		-- stylua: ignore
+  -- 		keys = {
+  -- 			{ '<leader>dPt', function() require('dap-python').test_method() end, desc = 'Debug Method' },
+  -- 			{ '<leader>dPc', function() require('dap-python').test_class() end, desc = 'Debug Class' },
+  -- 		},
+  -- 		config = function()
+  -- 			local path =
+  -- 				require('mason-registry').get_package('debugpy'):get_install_path()
+  -- 			require('dap-python').setup(path .. '/venv/bin/python')
+  -- 		end,
+  -- 	},
+  -- },
 }

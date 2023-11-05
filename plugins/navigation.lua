@@ -1,6 +1,9 @@
 ---@diagnostic disable: missing-parameter
 local alpha_config = require "user.plugins.config.alpha"
 
+local user_config = require "user.config"
+local favorite = user_config.get_config "mappings.favorite"
+
 return {
   -- [[ Dashboard ]]
   {
@@ -15,6 +18,53 @@ return {
   {
     "junegunn/fzf.vim",
     dependencies = { "junegunn/fzf" },
+  },
+  {
+    "ibhagwan/fzf-lua",
+    cmd = { "FzfLua" },
+    event = { "VeryLazy" },
+    keys = {
+      {
+        "<Leader>jf",
+        function() vim.cmd "FzfLua files" end,
+        mode = { "n", "v" },
+        desc = "[f]iles",
+      },
+      {
+        "<Leader>js",
+        function() vim.cmd "FzfLua live_grep" end,
+        mode = { "n", "v" },
+        desc = "[s]earch",
+      },
+      {
+        "<Leader>jm",
+        function() vim.cmd "FzfLua marks" end,
+        mode = { "n", "v" },
+        desc = "[m]arks",
+      },
+      {
+        "<Leader>jb",
+        function() vim.cmd "FzfLua buffers" end,
+        mode = { "n", "v" },
+        desc = "[b]uffers",
+      },
+      {
+        "<Leader>jv",
+        function() vim.cmd "FzfLua grep_visual" end,
+        mode = { "n", "v" },
+        desc = favorite "grep [v]isual",
+      },
+      {
+        "<Leader>jj",
+        function() vim.cmd [[FzfLua jumps]] end,
+        mode = { "n", "v" },
+        desc = "[j]ump list",
+      },
+    },
+    config = function(...)
+      local ok, conf = pcall(require, "user.plugins.config.fzf-lua")
+      if ok then conf(...) end
+    end,
   },
   {
     "nanotee/zoxide.vim",

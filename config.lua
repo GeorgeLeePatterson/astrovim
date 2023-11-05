@@ -19,6 +19,7 @@ local config = {
     "python",
     "rust",
     "typescript",
+    "terraform",
   },
 
   -- [[ Linters / Formatters ]]

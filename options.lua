@@ -104,12 +104,17 @@ local options = {
     -- Gruvbox Baby
     gruvbox_baby_background_color = "dark",
     gruvbox_baby_telescope_theme = 1,
+    gruvbox_baby_highlights = {
+      LspCodeLens = { link = "LspInlayHint" },
+    },
   },
 }
 
 -- neovide specific
 if vim.g.neovide then
   options.opt.guifont = "JetBrainsMono Nerd Font,VictorMono Nerd Font"
+  options.g.neovide_input_macos_alt_is_meta = true
+  options.g.neovide_cursor_vfx_mode = "railgun"
   -- options.g.neovide_scale_factor = 0.3
 end
 

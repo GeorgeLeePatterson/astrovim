@@ -34,7 +34,6 @@ return {
         require("user.utils").list_insert_unique(opts.ensure_installed, {
           "prettier",
           "markdownlint",
-          "vale",
         })
       return opts
     end,
@@ -47,7 +46,6 @@ return {
       local nls = require "null-ls"
       opts.sources = vim.list_extend(opts.sources or {}, {
         nls.builtins.diagnostics.markdownlint,
-        nls.builtins.diagnostics.vale,
       })
       return opts
     end,
@@ -60,8 +58,8 @@ return {
       opts = opts or {}
       return vim.tbl_deep_extend("force", opts, {
         formatters_by_ft = {
-          ["markdown"] = { "prettier", "vale" },
-          ["markdown.mdx"] = { "prettier", "vale" },
+          ["markdown"] = { "prettier" },
+          ["markdown.mdx"] = { "prettier" },
         },
       })
     end,
@@ -73,7 +71,7 @@ return {
     opts = function(_, opts)
       return vim.tbl_deep_extend("force", opts, {
         linters_by_ft = {
-          markdown = { "markdownlint", "vale" },
+          markdown = { "markdownlint" },
         },
       })
     end,
