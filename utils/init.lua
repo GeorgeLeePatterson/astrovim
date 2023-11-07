@@ -57,10 +57,11 @@ end
 --
 -- Highlight helpers
 --
-function M.set_hl(hl_name, opts, hl_def)
+function M.set_hl(hl_name, opts, hl_def, keep)
   hl_def = hl_def or {}
   for k, v in pairs(opts) do
-    hl_def[k] = v
+    local should_keep = keep and hl_def[k]
+    if not should_keep then hl_def[k] = v end
   end
   vim.api.nvim_set_hl(0, hl_name, hl_def)
 end
@@ -68,9 +69,33 @@ end
 -- Due to the way different colorschemes configure different highlights group,
 -- there is no universal way to add gui options to all the desired components.
 -- Findout the final highlight group being linked to and update gui option.
-function M.mod_hl(hl_name, opts)
+function M.mod_hl(hl_name, opts, keep)
   local is_ok, hl_def = pcall(vim.api.nvim_get_hl_by_name, hl_name, true)
-  if is_ok then M.set_hl(hl_name, opts, hl_def) end
+  if is_ok then M.set_hl(hl_name, opts, hl_def, keep) end
+end
+
+--- Get highlight properties for a given highlight name
+---@param name string The highlight group name
+---@param fallback? table The fallback highlight properties
+---@return table properties # the highlight group properties
+function M.get_hlgroup(name, fallback)
+  if vim.fn.hlexists(name) == 1 then
+    local hl
+    if vim.api.nvim_get_hl then -- check for new neovim 0.9 API
+      hl = vim.api.nvim_get_hl(0, { name = name, link = false })
+      if not hl.fg then hl.fg = "NONE" end
+      if not hl.bg then hl.bg = "NONE" end
+    else
+      hl = vim.api.nvim_get_hl_by_name(name, vim.o.termguicolors)
+      if not hl.foreground then hl.foreground = "NONE" end
+      if not hl.background then hl.background = "NONE" end
+      hl.fg, hl.bg = hl.foreground, hl.background
+      hl.ctermfg, hl.ctermbg = hl.fg, hl.bg
+      hl.sp = hl.special
+    end
+    return hl
+  end
+  return fallback or {}
 end
 
 --

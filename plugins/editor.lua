@@ -159,9 +159,7 @@ return {
   -- [[ Folding ]]
   {
     "kevinhwang91/nvim-ufo",
-    config = function(_, opts)
-      opts.fold_virt_text_handler = ufo_config.handler
-      require("ufo").setup(opts)
-    end,
+    opts = ufo_config,
+    config = function(_, opts) require("ufo").setup(opts) end,
   },
 }

@@ -7,6 +7,7 @@ local config = {
     },
     background = "dark",
     background_toggle = false,
+    search_hl = { fg = "#E95678" },
     -- Whether to turn zen on at startup
     zen = false,
   },

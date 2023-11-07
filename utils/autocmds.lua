@@ -1,3 +1,7 @@
+local M = {}
+
+local get_config = require("user.config").get_config
+
 local ag = vim.api.nvim_create_augroup
 local au = vim.api.nvim_create_autocmd
 
@@ -57,6 +61,23 @@ au({ "BufEnter" }, {
   end,
 })
 
+-- [[ Colorscheme ]]
+local search_hl = get_config "defaults.search_hl"
+local colorscheme_au_group = ag("colorscheme_au_group", { clear = true })
+
+if search_hl then
+  au({ "Colorscheme" }, {
+    desc = "Updates search and incsearch hi on colorscheme",
+    group = colorscheme_au_group,
+    callback = function()
+	  local utils = require "user.utils"
+
+      utils.mod_hl("Search", search_hl, true)
+      utils.mod_hl("IncSearch", search_hl, true)
+    end,
+  })
+end
+
 -- [[ Plugins ]]
 
 -- Rainbow-delimiters
@@ -110,6 +131,31 @@ au("OptionSet", {
   end,
 })
 
+-- Create autocommand to bind keymaps
+--
+-- @param group
+-- @param event
+-- @param pattern
+-- @param keymap_opts - list of keymap options { mode, lhs, rhs, opts }
+M.create_buffer_keymap = function(group, event, pattern, keymap_opts)
+  if not keymap_opts or type(keymap_opts) ~= "table" or #keymap_opts == 0 then
+    return
+  end
+
+  local keymap = vim.keymap.set
+  au(event, {
+    group = ag(group, { clear = true }),
+    pattern = pattern,
+    callback = function(args)
+      vim.tbl_map(function(k)
+        local opts = k.opts or {}
+        opts["buffer"] = args.buf
+        keymap(k.mode, k.lhs, k.rhs, opts)
+      end, keymap_opts)
+    end,
+  })
+end
+
 -- -- Set inlay hints to never be italic, comments to always be
 -- vim.cmd [[
 -- augroup custom_highlights
@@ -118,3 +164,5 @@ au("OptionSet", {
 --   au ColorScheme * :hi Comment gui=italic cterm=italic
 -- augroup END
 -- ]]
+
+return M

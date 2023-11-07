@@ -225,13 +225,13 @@ return {
       -- create the highlight groups in the highlight setup hook, so they are reset
       -- every time the colorscheme changes
       hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
-        vim.api.nvim_set_hl(0, "RainbowRed", { fg = "#ff1757" })
-        vim.api.nvim_set_hl(0, "RainbowYellow", { fg = "#CC5500" })
-        vim.api.nvim_set_hl(0, "RainbowBlue", { fg = "#61AFEF" })
-        vim.api.nvim_set_hl(0, "RainbowOrange", { fg = "#f2594b" })
-        vim.api.nvim_set_hl(0, "RainbowGreen", { fg = "#64af9c" })
-        vim.api.nvim_set_hl(0, "RainbowViolet", { fg = "#C678DD" })
-        vim.api.nvim_set_hl(0, "RainbowCyan", { fg = "#56B6C2" })
+        vim.api.nvim_set_hl(0, "RainbowRed", { fg = "#61AFEF" })
+        vim.api.nvim_set_hl(0, "RainbowYellow", { fg = "#C678DD" })
+        vim.api.nvim_set_hl(0, "RainbowBlue", { fg = "#98c369" })
+        vim.api.nvim_set_hl(0, "RainbowOrange", { fg = "#ffff70" })
+        vim.api.nvim_set_hl(0, "RainbowGreen", { fg = "#56B6C2" })
+        vim.api.nvim_set_hl(0, "RainbowViolet", { fg = "#ff1757" })
+        vim.api.nvim_set_hl(0, "RainbowCyan", { fg = "#64af9c" })
       end)
 
       vim.g.rainbow_delimiters = { highlight = highlight }
@@ -248,5 +248,28 @@ return {
         hooks.builtin.scope_highlight_from_extmark
       )
     end,
+  },
+
+  -- Nvchad-colorizer
+  {
+    "NvChad/nvim-colorizer.lua",
+    event = "User AstroFile",
+    cmd = {
+      "ColorizerToggle",
+      "ColorizerAttachToBuffer",
+      "ColorizerDetachFromBuffer",
+      "ColorizerReloadAllBuffers",
+    },
+    opts = {
+      user_default_options = {
+        names = true,
+      },
+      filetypes = {
+        "*",
+        cmp_docs = { always_update = true },
+        cmp_menu = { always_update = true },
+      },
+    },
+    config = function(_, opts) require("colorizer").setup(opts) end,
   },
 }

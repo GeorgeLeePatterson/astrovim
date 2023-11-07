@@ -1,6 +1,4 @@
-local M = {}
-
-function M.handler(virtText, lnum, endLnum, width, truncate)
+local handler = function(virtText, lnum, endLnum, width, truncate)
   local newVirtText = {}
   local suffix = (" ... 󰁂 %d "):format(endLnum - lnum)
   local sufWidth = vim.fn.strdisplaywidth(suffix)
@@ -17,7 +15,9 @@ function M.handler(virtText, lnum, endLnum, width, truncate)
       table.insert(newVirtText, { chunkText, hlGroup })
       chunkWidth = vim.fn.strdisplaywidth(chunkText)
       -- str width returned from truncate() may less than 2nd argument, need padding
-      if curWidth + chunkWidth < targetWidth then suffix = suffix .. (" "):rep(targetWidth - curWidth - chunkWidth) end
+      if curWidth + chunkWidth < targetWidth then
+        suffix = suffix .. (" "):rep(targetWidth - curWidth - chunkWidth)
+      end
       break
     end
     curWidth = curWidth + chunkWidth
@@ -26,4 +26,8 @@ function M.handler(virtText, lnum, endLnum, width, truncate)
   return newVirtText
 end
 
-return M
+return function()
+  return {
+    fold_virt_text_handler = handler,
+  }
+end

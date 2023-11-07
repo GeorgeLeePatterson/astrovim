@@ -35,7 +35,7 @@ M.configure_theme = function(theme, opts)
 
   if vim.list_contains(fave_theme_mds, name) then
     o["lazy"] = false
-    o["priority"] = 1000
+    o["priority"] = 10000
   end
 
   return o

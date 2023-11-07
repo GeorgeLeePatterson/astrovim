@@ -8,6 +8,8 @@ return {
         shade = 9,
       },
       modes = {
+        char = { jump_labels = true },
+        search = { enabled = false },
         treesitter_search = {
           label = { rainbow = { enabled = true } },
         },
