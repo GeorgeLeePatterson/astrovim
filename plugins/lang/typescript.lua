@@ -6,12 +6,38 @@ return {
       opts.ensure_installed =
         require("user.utils").list_insert_unique(opts.ensure_installed, {
           "cssls",
+          "cssmodules_ls",
+          "eslint",
           "html",
           "tsserver",
         })
       return opts
     end,
   },
+
+  -- Typescript-tools
+  {
+    "pmizio/typescript-tools.nvim",
+    dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
+    opts = {
+      capabilities = require("cmp_nvim_lsp").update_capabilities(
+        vim.lsp.protocol.make_client_capabilities()
+      ),
+      on_attach = function(client, bufnr)
+        require("astronvim.utils.lsp").on_attach(client, bufnr)
+        client.resolved_capabilities.document_formatting = false
+      end,
+
+      settings = {
+        expose_as_code_action = { "all" },
+        tsserver_plugins = {
+          "@styled/typescript-styled-plugin",
+        },
+      },
+    },
+    config = function(_, opts) require("typescript-tools").setup(opts) end,
+  },
+
   -- [[ Treesitter ]]
   {
     "nvim-treesitter/nvim-treesitter",
@@ -31,27 +57,6 @@ return {
 
   -- [[ Linting / Formatting ]]
 
-  -- Conform
-  {
-    "stevearc/conform.nvim",
-    opts = function(_, opts)
-      return vim.tbl_deep_extend("force", opts, {
-        formatters_by_ft = {
-          ["javascript"] = { "prettier" },
-          ["javascriptreact"] = { "prettier" },
-          ["typescript"] = { "prettier" },
-          ["typescriptreact"] = { "prettier" },
-          ["vue"] = { "prettier" },
-          ["css"] = { "prettier" },
-          ["scss"] = { "prettier" },
-          ["less"] = { "prettier" },
-          ["html"] = { "prettier" },
-          ["graphql"] = { "prettier" },
-        },
-      })
-    end,
-  },
-
   -- Tsc
   {
     "dmmulroy/tsc.nvim",
@@ -66,8 +71,6 @@ return {
     opts = function(_, opts)
       opts.ensure_installed =
         require("user.utils").list_insert_unique(opts.ensure_installed, {
-          "eslint_d",
-          "prettier",
           "stylelint",
         })
       return opts
@@ -82,42 +85,9 @@ return {
       return vim.tbl_deep_extend("force", opts, {
         on_attach = require("astronvim.utils.lsp").on_attach,
         sources = require("user.utils").list_insert_unique(opts.sources, {
-          null_ls.builtins.code_actions.eslint_d,
-          null_ls.builtins.diagnostics.eslint_d,
           null_ls.builtins.diagnostics.stylelint,
-          null_ls.builtins.diagnostics.tsc,
-          null_ls.builtins.formatting.prettier,
           null_ls.builtins.formatting.stylelint,
-
-          -- -- Transition to this usage:
-          -- null_ls.builtins.formatting.prettier.with({
-          -- 	condition = function()
-          -- 		return vim.fn.executable("prettier") > 0 or vim.fn.executable("./node_modules/.bin/prettier") > 0
-          -- 	end,
-          -- }),
-          -- null_ls.builtins.diagnostics.eslint.with({
-          -- 	condition = function()
-          -- 		vim.o.fixendofline = true -- Error: [prettier/prettier] Insert `⏎`
-          -- 		return vim.fn.executable("eslint") > 0 or vim.fn.executable("./node_modules/.bin/eslint") > 0
-          -- 	end,
-          -- }),
         }),
-      })
-    end,
-  },
-
-  -- Nvim-lint
-  {
-    "mfussenegger/nvim-lint",
-    opts = function(_, opts)
-      return vim.tbl_deep_extend("force", opts, {
-        linters_by_ft = {
-          javascript = { "eslint_d" },
-          typescript = { "eslint_d" },
-          javascriptreact = { "eslint_d" },
-          typescriptreact = { "eslint_d" },
-          svelte = { "eslint_d" },
-        },
       })
     end,
   },
@@ -161,6 +131,7 @@ return {
           settings = {
             typescript = {
               format = {
+                enable = false,
                 indentSize = vim.o.shiftwidth,
                 convertTabsToSpaces = vim.o.expandtab,
                 tabSize = vim.o.tabstop,
@@ -168,6 +139,7 @@ return {
             },
             javascript = {
               format = {
+                enable = false,
                 indentSize = vim.o.shiftwidth,
                 convertTabsToSpaces = vim.o.expandtab,
                 tabSize = vim.o.tabstop,
@@ -175,6 +147,25 @@ return {
             },
             completions = {
               completeFunctionCalls = true,
+            },
+          },
+        },
+        eslint = {
+          filetypes = {
+            "javascript",
+            "javascriptreact",
+            "javascript.jsx",
+            "typescript",
+            "typescriptreact",
+            "typescript.tsx",
+            "vue",
+            "svelte",
+            "graphql",
+          },
+          settings = {
+            codeAction = {
+              disableRuleComment = { enable = true, location = "separateline" },
+              showDocumentation = { enable = true },
             },
           },
         },
@@ -233,20 +224,3 @@ return {
   --   end,
   -- },
 }
-
--- return {
---   {
---     "pmizio/typescript-tools.nvim",
---     dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
---     opts = {},
---     config = function(_, opts)
---       require("typescript-tools").setup(vim.tbl_deep_extend("force", opts, {
---         settings = {
---           tsserver_plugins = {
---             "@styled/typescript-styled-plugin",
---           },
---         },
---       }))
---     end,
---   },
--- }

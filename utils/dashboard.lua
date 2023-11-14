@@ -1,4 +1,4 @@
-local path_ok, plenary_path = pcall(require, "plenary.path")
+local path_ok, _ = pcall(require, "plenary.path")
 if not path_ok then return end
 
 local dashboard = require "alpha.themes.dashboard"
@@ -130,41 +130,8 @@ M.mru = function(start, cwd, items_number, opts)
 
     local tbl = {}
     for i, fn in ipairs(oldfiles) do
-      local short_fn
-      if cwd then
-        short_fn = vim.fn.fnamemodify(fn, ":.")
-      else
-        short_fn = vim.fn.fnamemodify(fn, ":~")
-      end
-
-      if #short_fn > target_width then
-        short_fn = plenary_path.new(short_fn):shorten(1, { -2, -1 })
-        if #short_fn > target_width then
-          short_fn = plenary_path.new(short_fn):shorten(1, { -1 })
-          -- Finally truncate best as you can
-          if #short_fn > target_width then
-            local parts = user_utils.str_split(short_fn, "%.")
-            local file_part = short_fn
-            local ell = "..."
-            local ext = ""
-
-            if #parts > 1 then
-              file_part = unpack(parts, 1, #parts - 1)
-              ext = parts[#parts] or ""
-            end
-
-            local to_remove = target_width - #ext - #ell
-            if #file_part > to_remove then
-              file_part = string.sub(file_part, 1, to_remove)
-            end
-            local filename = file_part .. ell .. ext
-            if #filename > 0 then short_fn = filename end
-          end
-        end
-      end
-
+      local short_fn = user_utils.shorten_path(fn, cwd, target_width) or fn
       local shortcut = tostring(i + start - 1)
-
       local file_button_el = file_button(fn, shortcut, short_fn, opts.autocd)
       tbl[i] = file_button_el
     end

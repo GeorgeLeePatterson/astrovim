@@ -18,6 +18,15 @@ local languages = vim.tbl_map(
 -- Load core LSP plugins first
 
 local plugins = {
+  -- [[ Disable ]]
+
+  -- Disabling aerial, causes error with formatting
+  {
+    "stevearc/aerial.nvim",
+    enabled = false,
+    condition = function() return false end,
+  },
+
   -- [[ LSP ]]
 
   -- Mason-lspconfig
@@ -27,6 +36,7 @@ local plugins = {
       opts.ensure_installed =
         require("user.utils").list_insert_unique(opts.ensure_installed, {
           "ansiblels",
+          "bashls",
           "yamlls",
         })
     end,
@@ -76,6 +86,7 @@ local plugins = {
         sources = require("user.utils").list_insert_unique(opts.sources, {
           null_ls.builtins.formatting.just,
           null_ls.builtins.formatting.shfmt,
+          null_ls.builtins.formatting.yamlfmt,
         }),
         -- should_attach = function(bufnr)
         --   local large_buf = vim.b[bufnr].large_buf
@@ -137,7 +148,7 @@ local plugins = {
     keys = {
       {
         "<leader>lc",
-        function() require("lint").try_lint() end,
+        function() require("lint").try_lint(nil, { ignore_errors = true }) end,
         mode = { "n" },
         desc = "Lint file",
       },
@@ -148,16 +159,17 @@ local plugins = {
       },
     },
     config = function()
-      local lint = require "lint"
       local lint_augroup = vim.api.nvim_create_augroup("lint", { clear = true })
       vim.api.nvim_create_autocmd(
         { "BufEnter", "BufWritePost", "InsertLeave" },
         {
           group = lint_augroup,
+          desc = "Run nvim-lint",
           callback = function(args)
             local large_file = (vim.b[args.buf] or {}).large_buf
             if large_file ~= nil and large_file then return end
-            lint.try_lint()
+            local lint = require "lint"
+            lint.try_lint(nil, { ignore_errors = true })
           end,
         }
       )

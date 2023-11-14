@@ -88,17 +88,17 @@ return {
   -- anything that doesn't fit in the normal config locations above can go here
   polish = function()
     -- Set up custom filetypes
-    -- vim.filetype.add {
-    --   extension = {
-    --     foo = "fooscript",
-    --   },
-    --   filename = {
-    --     ["Foofile"] = "fooscript",
-    --   },
-    --   pattern = {
-    --     ["~/%.config/foo/.*"] = "fooscript",
-    --   },
-    -- }
+    vim.filetype.add {
+      extension = {
+        ["hcl.j2"] = "hcl",
+      },
+      --   filename = {
+      --     ["Foofile"] = "fooscript",
+      --   },
+      --   pattern = {
+      --     ["~/%.config/foo/.*"] = "fooscript",
+      --   },
+    }
 
     -- update path to include brew
     vim.opt.rtp:prepend "/opt/homebrew/bin"

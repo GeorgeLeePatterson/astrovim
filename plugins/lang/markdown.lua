@@ -65,17 +65,15 @@ return {
     end,
   },
 
-  -- Nvim-lint
-  {
-    "mfussenegger/nvim-lint",
-    opts = function(_, opts)
-      return vim.tbl_deep_extend("force", opts, {
-        linters_by_ft = {
-          markdown = { "markdownlint" },
-        },
-      })
-    end,
-  },
+  -- -- Nvim-lint
+  -- {
+  --   "mfussenegger/nvim-lint",
+  --   opts = function(_, opts)
+  --     opts = opts or {}
+  --     opts["linters_by_ft"]["markdown"] = { "markdownlint" }
+  --     return opts
+  --   end,
+  -- },
 
   -- Vim-markdown
   {

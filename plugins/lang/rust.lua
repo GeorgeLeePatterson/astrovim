@@ -71,9 +71,11 @@ vim.g.rustaceanvim = function()
     server = server,
     dap = { adapter = adapter },
     tools = {
+      autoSetHints = true,
       inlay_hints = {
         auto = true,
         highlight = "LspInlayHint",
+        show_parameter_hints = true,
       },
       on_initialized = function()
         -- Autocommand to refresh codelens

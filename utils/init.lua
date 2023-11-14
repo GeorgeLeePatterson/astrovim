@@ -200,21 +200,37 @@ function M.shorten_path(path, cwd, target_width)
   local path_ok, plenary_path = pcall(require, "plenary.path")
   if not path_ok then return path end
   target_width = target_width or 35
-  local short_fn = vim.fn.fnamemodify(path, ":.")
-  if cwd then short_fn = vim.fn.fnamemodify(path, ":~") end
+
+  local short_fn
+  if cwd then
+    short_fn = vim.fn.fnamemodify(path, ":.")
+  else
+    short_fn = vim.fn.fnamemodify(path, ":~")
+  end
+
   if #short_fn > target_width then
-    local short_fn_result, err = pcall(
-      ---@diagnostic disable-next-line: param-type-mismatch
-      function() return plenary_path.new(short_fn):shorten(1, { -2, -1 }) end
-    )
-    if err then return short_fn end
-    if #short_fn_result > target_width then
-      local short_fn_final, err_final = pcall(
-        ---@diagnostic disable-next-line: param-type-mismatch
-        function() return plenary_path.new(short_fn_result):shorten(1, { -1 }) end
-      )
-      if err_final then return short_fn_result end
-      return short_fn_final
+    short_fn = plenary_path.new(short_fn):shorten(1, { -2, -1 })
+    if #short_fn > target_width then
+      short_fn = plenary_path.new(short_fn):shorten(1, { -1 })
+
+      if #short_fn > target_width then
+        local parts = M.str_split(short_fn, "%.")
+        local file_part = short_fn
+        local ell = "..."
+        local ext = ""
+
+        if #parts > 1 then
+          file_part = unpack(parts, 1, #parts - 1)
+          ext = parts[#parts] or ""
+        end
+
+        local to_remove = target_width - #ext - #ell
+        if #file_part > to_remove then
+          file_part = string.sub(file_part, 1, to_remove)
+        end
+        local filename = file_part .. ell .. ext
+        if #filename > 0 then short_fn = filename end
+      end
     end
   end
   return short_fn

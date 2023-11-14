@@ -1,3 +1,31 @@
+local ag = vim.api.nvim_create_augroup
+local au = vim.api.nvim_create_autocmd
+
+local tf_group = ag("terraform_ft", { clear = true })
+-- detect terraform
+au({ "BufRead", "BufNewFile" }, {
+  group = tf_group,
+  desc = "Properly set TF filetypes",
+  pattern = { "*.tf" },
+  callback = function() vim.api.nvim_command "set filetype=terraform" end,
+})
+
+-- detect terraform vars
+au({ "BufRead", "BufNewFile" }, {
+  group = tf_group,
+  pattern = { "*.hcl.j2", "terraform-vars" },
+  desc = "Set tf-vars and hcl.j2 to hcl",
+  callback = function() vim.api.nvim_command "set filetype=hcl" end,
+})
+
+-- fix terraform and hcl comment string
+au({ "BufRead", "BufNewFile" }, {
+  pattern = { "*tf" },
+  group = ag("FixTerraformCommentString", { clear = true }),
+  desc = "Fix terraform comment string",
+  callback = function(ev) vim.bo[ev.buf].commentstring = "# %s" end,
+})
+
 return {
   -- [[ LSP ]]
   {
@@ -6,13 +34,18 @@ return {
       opts.ensure_installed =
         require("user.utils").list_insert_unique(opts.ensure_installed, {
           "terraformls",
-          "tflint",
         })
       return opts
     end,
   },
 
   -- [[ Linting / Formatting ]]
+
+  -- Vim-terraform
+  {
+    "hashivim/vim-terraform",
+    cmd = "Terraform",
+  },
 
   -- Mason-null-ls
   {
@@ -40,7 +73,9 @@ return {
     opts = function(_, opts)
       local nls = require "null-ls"
       opts.sources = vim.list_extend(opts.sources or {}, {
-        nls.builtins.formatting.terraform_fmt,
+        nls.builtins.formatting.terraform_fmt.with {
+          extra_filetypes = { "hcl", "hcl.j2" },
+        },
         nls.builtins.diagnostics.terraform_validate,
       })
       return opts
@@ -51,12 +86,12 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
     opts = function(_, opts)
-      if type(opts.ensure_installed) == "table" then
-        vim.list_extend(opts.ensure_installed, {
+      opts = opts or {}
+      opts.ensure_installed =
+        require("user.utils").list_insert_unique(opts.ensure_installed, {
           "terraform",
           "hcl",
         })
-      end
       return opts
     end,
   },
