@@ -1,3 +1,8 @@
+function disable_formatting(client)
+  client.server_capabilities.documentFormattingProvider = false
+  client.server_capabilities.documentRangeFormattingProvider = false
+end
+
 return {
   -- [[ LSP ]]
   {
@@ -25,7 +30,7 @@ return {
       ),
       on_attach = function(client, bufnr)
         require("astronvim.utils.lsp").on_attach(client, bufnr)
-        client.resolved_capabilities.document_formatting = false
+        disable_formatting(client)
       end,
 
       settings = {
