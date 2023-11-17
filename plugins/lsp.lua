@@ -104,6 +104,7 @@ local plugins = {
   -- Conform
   {
     "stevearc/conform.nvim",
+    dependencies = { "mason.nvim" },
     event = { "VeryLazy" },
     cmd = { "ConformInfo" },
     keys = {
@@ -111,8 +112,7 @@ local plugins = {
         "<leader>lF",
         function()
           require("conform").format {
-            lsp_fallback = true,
-            async = true,
+            formatters = { "injected" },
           }
         end,
         mode = { "n", "v" },
@@ -137,7 +137,7 @@ local plugins = {
         },
       })
     end,
-    config = function(_, opts) require("conform").setup(opts) end,
+    -- config = function(_, opts) require("conform").setup(opts) end,
     init = function() vim.o.formatexpr = "v:lua.require'conform'.formatexpr()" end,
   },
 

@@ -20,7 +20,7 @@ end
 
 ---@param on_attach fun(client:lsp.Client, buffer:integer)
 function M.lsp_on_attach(on_attach)
-  local lsp_attach_au = ag("lsp_attach_au", { clear = true })
+  local lsp_attach_au = ag("CustomLspAttach", { clear = true })
   au("LspAttach", {
     group = lsp_attach_au,
     callback = function(args)

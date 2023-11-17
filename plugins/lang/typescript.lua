@@ -31,6 +31,7 @@ return {
       on_attach = function(client, bufnr)
         require("astronvim.utils.lsp").on_attach(client, bufnr)
         disable_formatting(client)
+        vim.notify "RAN TSTOOLS"
       end,
 
       settings = {
@@ -80,6 +81,32 @@ return {
         })
       return opts
     end,
+  },
+
+  -- Conform
+  {
+    "stevearc/conform.nvim",
+    optional = true,
+    opts = {
+      formatters_by_ft = {
+        ["javascript"] = { "prettier" },
+        ["javascriptreact"] = { "prettier" },
+        ["typescript"] = { "prettier" },
+        ["typescriptreact"] = { "prettier" },
+        ["vue"] = { "prettier" },
+        ["css"] = { "prettier" },
+        ["scss"] = { "prettier" },
+        ["less"] = { "prettier" },
+        ["html"] = { "prettier" },
+        ["json"] = { "prettier" },
+        ["jsonc"] = { "prettier" },
+        ["yaml"] = { "prettier" },
+        ["markdown"] = { "prettier" },
+        ["markdown.mdx"] = { "prettier" },
+        ["graphql"] = { "prettier" },
+        ["handlebars"] = { "prettier" },
+      },
+    },
   },
 
   -- None-ls
@@ -168,12 +195,24 @@ return {
             "graphql",
           },
           settings = {
+            workingDirectory = { mode = "auto" },
             codeAction = {
               disableRuleComment = { enable = true, location = "separateline" },
               showDocumentation = { enable = true },
             },
           },
         },
+      },
+      setup = {
+        eslint = function()
+          require("user.utils.lsp").on_attach(function(client)
+            if client.name == "eslint" then
+              client.server_capabilities.documentFormattingProvider = true
+            elseif client.name == "tsserver" then
+              client.server_capabilities.documentFormattingProvider = false
+            end
+          end)
+        end,
       },
     },
   },

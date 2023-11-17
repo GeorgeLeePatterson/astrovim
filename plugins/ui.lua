@@ -159,27 +159,6 @@ return {
     opts = require "user.plugins.config.noice",
   },
 
-  -- Dressing
-  {
-    "stevearc/dressing.nvim",
-    dependencies = {
-      "nvim-telescope/telescope.nvim",
-      "MunifTanjim/nui.nvim",
-    },
-    init = function()
-      ---@diagnostic disable-next-line: duplicate-set-field
-      vim.ui.select = function(...)
-        require("lazy").load { plugins = { "dressing.nvim" } }
-        return vim.ui.select(...)
-      end
-      ---@diagnostic disable-next-line: duplicate-set-field
-      vim.ui.input = function(...)
-        require("lazy").load { plugins = { "dressing.nvim" } }
-        return vim.ui.input(...)
-      end
-    end,
-  },
-
   -- Indent-blankline
   {
     "lukas-reineke/indent-blankline.nvim",
