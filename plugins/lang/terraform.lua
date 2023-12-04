@@ -13,8 +13,8 @@ au({ "BufRead", "BufNewFile" }, {
 -- detect terraform vars
 au({ "BufRead", "BufNewFile" }, {
   group = tf_group,
-  pattern = { "*.hcl.j2", "terraform-vars" },
-  desc = "Set tf-vars and hcl.j2 to hcl",
+  pattern = { "terraform-vars" },
+  desc = "Set tf-vars to hcl",
   callback = function() vim.api.nvim_command "set filetype=hcl" end,
 })
 
@@ -74,7 +74,7 @@ return {
       local nls = require "null-ls"
       opts.sources = vim.list_extend(opts.sources or {}, {
         nls.builtins.formatting.terraform_fmt.with {
-          extra_filetypes = { "hcl", "hcl.j2" },
+          extra_filetypes = { "hcl" },
         },
         nls.builtins.diagnostics.terraform_validate,
       })

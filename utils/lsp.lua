@@ -5,15 +5,19 @@ local au = vim.api.nvim_create_autocmd
 
 function M.capabilities(capabilities)
   capabilities = capabilities or vim.lsp.protocol.make_client_capabilities()
-  capabilities.textDocument.foldingRange = {
-    dynamicRegistration = false,
-    lineFoldingOnly = true,
-  }
 
   local cmp_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
   if cmp_ok then
     -- Add additional capabilities supported by nvim-cmp
     capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
+  end
+
+  local ufo_present, _ = pcall(require, "ufo")
+  if ufo_present then
+    capabilities.textDocument.foldingRange = {
+      dynamicRegistration = false,
+      lineFoldingOnly = true,
+    }
   end
   return capabilities
 end

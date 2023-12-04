@@ -37,10 +37,22 @@ return {
         desc = "[s]earch",
       },
       {
+        "<Leader>jS",
+        function() vim.cmd "FzfLua live_grep_native" end,
+        mode = { "n", "v" },
+        desc = "[S]earch (performant)",
+      },
+      {
         "<Leader>jm",
         function() vim.cmd "FzfLua marks" end,
         mode = { "n", "v" },
         desc = "[m]arks",
+      },
+      {
+        "<Leader>j<CR>",
+        function() vim.cmd "FzfLua resume" end,
+        mode = { "n", "v" },
+        desc = "[Enter] Resume",
       },
       {
         "<Leader>jb",
