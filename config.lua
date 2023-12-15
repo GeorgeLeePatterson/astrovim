@@ -34,6 +34,7 @@ local config = {
     -- `Copilot auth` for copilot and `TabnineHub` for tabnine before using.
     copilot = true,
     tabnine = true,
+    chatgpt = true,
   },
 
   -- [[ Colorscheme setup ]]

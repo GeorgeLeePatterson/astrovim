@@ -27,6 +27,23 @@ return {
 
   -- [[ AI ]]
 
+  -- GPT
+  {
+    "robitx/gp.nvim",
+    event = "VeryLazy",
+    enabled = require("user.config").ai.chatgpt,
+    config = function()
+      require("gp").setup {
+        openai_api_key = { "rbw", "get", "OPENAPI_API_KEY" },
+      }
+
+      -- or setup with your own config (see Install > Configuration in Readme)
+      -- require("gp").setup(config)
+
+      -- shortcuts might be setup here (see Usage > Shortcuts in Readme)
+    end,
+  },
+
   -- Copilot
   {
     "zbirenbaum/copilot.lua",

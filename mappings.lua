@@ -308,10 +308,10 @@ maps.n["<leader>bd"] = false
 maps.n["<leader>b\\"] = false
 maps.n["<leader>b|"] = false
 
--- AI
+-- [[ AI ]]
 maps.n = vim.tbl_extend("force", maps.n, {
-  ["<leader>A"] = { name = " AI" },
-  ["<leader>At"] = {
+  ["<leader>a"] = { name = favorite " AI" },
+  ["<leader>aT"] = {
     function()
       local tn_ok, _ = pcall(require, "tabnine")
       if tn_ok then
@@ -322,7 +322,7 @@ maps.n = vim.tbl_extend("force", maps.n, {
 
     desc = "[t]oggle Tabnine",
   },
-  ["<leader>Acd"] = {
+  ["<leader>acd"] = {
     function()
       local tn_ok, _ = pcall(require, "copilot")
       if tn_ok then
@@ -333,6 +333,147 @@ maps.n = vim.tbl_extend("force", maps.n, {
 
     desc = "[c]opilot [d]isable",
   },
+})
+
+-- [[ ChatGPT ]]
+maps.v = vim.tbl_extend("force", maps.v or {}, {
+  -- ...
+  ["<leader>a"] = {
+    n = { ":<C-u>'<,'>GpChatNew<cr>", "Visual ChatGPT [n]ew" },
+    p = { ":<C-u>'<,'>GpChatPaste<cr>", "Visual ChatGPT [p]aste" },
+    t = { ":<C-u>'<,'>GpChatToggle<cr>", "[t]oggle ChatGPT" },
+
+    ["<C-x>"] = { ":<C-u>'<,'>GpChatNew split<cr>", "Visual ChatGPT New split" },
+    ["<C-v>"] = {
+      ":<C-u>'<,'>GpChatNew vsplit<cr>",
+      "Visual ChatGPT New vsplit",
+    },
+    ["<C-t>"] = {
+      ":<C-u>'<,'>GpChatNew tabnew<cr>",
+      "Visual ChatGPT New tabnew",
+    },
+
+    r = { ":<C-u>'<,'>GpRewrite<cr>", "Visual GPT Rewrite" },
+    a = { ":<C-u>'<,'>GpAppend<cr>", "Visual GPT Append (after)" },
+    b = { ":<C-u>'<,'>GpPrepend<cr>", "Visual GPT Prepend (before)" },
+    i = { ":<C-u>'<,'>GpImplement<cr>", "GPT Implement selection" },
+
+    g = {
+      name = "generate into new ..",
+      p = { ":<C-u>'<,'>GpPopup<cr>", "Visual GPT Popup" },
+      e = { ":<C-u>'<,'>GpEnew<cr>", "Visual GPT GpEnew" },
+      n = { ":<C-u>'<,'>GpNew<cr>", "Visual GPT GpNew" },
+      v = { ":<C-u>'<,'>GpVnew<cr>", "Visual GPT GpVnew" },
+      t = { ":<C-u>'<,'>GpTabnew<cr>", "Visual GPT GpTabnew" },
+    },
+
+    N = { "<cmd>GpNextAgent<cr>", "GPT Next Agent" },
+    S = { "<cmd>GpStop<cr>", "GPTStop" },
+    x = { ":<C-u>'<,'>GpContext<cr>", "Visual GPT Context" },
+
+    w = {
+      name = "Whisper",
+      w = { ":<C-u>'<,'>GpWhisper<cr>", "Whisper" },
+      r = { ":<C-u>'<,'>GpWhisperRewrite<cr>", "Whisper Rewrite" },
+      a = { ":<C-u>'<,'>GpWhisperAppend<cr>", "Whisper Append (after)" },
+      b = { ":<C-u>'<,'>GpWhisperPrepend<cr>", "Whisper Prepend (before)" },
+      p = { ":<C-u>'<,'>GpWhisperPopup<cr>", "Whisper Popup" },
+      e = { ":<C-u>'<,'>GpWhisperEnew<cr>", "Whisper Enew" },
+      n = { ":<C-u>'<,'>GpWhisperNew<cr>", "Whisper New" },
+      v = { ":<C-u>'<,'>GpWhisperVnew<cr>", "Whisper Vnew" },
+      t = { ":<C-u>'<,'>GpWhisperTabnew<cr>", "Whisper Tabnew" },
+    },
+  },
+})
+
+-- NORMAL mode mappings
+maps.n = vim.tbl_extend("force", maps.n or {}, {
+  -- ...
+  ["<leader>a"] = {
+    n = { "<cmd>GpChatNew<cr>", "[n]ew ChatGPT" },
+    t = { "<cmd>GpChatToggle<cr>", "Toggle ChatGPT" },
+    f = { "<cmd>GpChatFinder<cr>", "ChatGPT [f]inder" },
+
+    ["<C-x>"] = { "<cmd>GpChatNew split<cr>", "New ChatGPT split" },
+    ["<C-v>"] = { "<cmd>GpChatNew vsplit<cr>", "New ChatGPT vsplit" },
+    ["<C-t>"] = { "<cmd>GpChatNew tabnew<cr>", "New ChatGPT tabnew" },
+
+    r = { "<cmd>GpRewrite<cr>", "Inline GPT [r]ewrite" },
+    a = { "<cmd>GpAppend<cr>", "[a]ppend GPT ([a]fter)" },
+    b = { "<cmd>GpPrepend<cr>", "Prepend GPT ([b]efore)" },
+
+    g = {
+      name = "generate into new ..",
+      p = { "<cmd>GpPopup<cr>", "Popup" },
+      e = { "<cmd>GpEnew<cr>", "GpEnew" },
+      n = { "<cmd>GpNew<cr>", "GpNew" },
+      v = { "<cmd>GpVnew<cr>", "GpVnew" },
+      t = { "<cmd>GpTabnew<cr>", "GpTabnew" },
+    },
+
+    N = { "<cmd>GpNextAgent<cr>", "Next GPT Agent" },
+    S = { "<cmd>GpStop<cr>", "GPT Stop" },
+    x = { "<cmd>GpContext<cr>", "Toggle GPT Context" },
+
+    w = {
+      name = "Whisper",
+      w = { "<cmd>GpWhisper<cr>", "Whisper" },
+      r = { "<cmd>GpWhisperRewrite<cr>", "Whisper Inline Rewrite" },
+      a = { "<cmd>GpWhisperAppend<cr>", "Whisper Append (after)" },
+      b = { "<cmd>GpWhisperPrepend<cr>", "Whisper Prepend (before)" },
+      p = { "<cmd>GpWhisperPopup<cr>", "Whisper Popup" },
+      e = { "<cmd>GpWhisperEnew<cr>", "Whisper Enew" },
+      n = { "<cmd>GpWhisperNew<cr>", "Whisper New" },
+      v = { "<cmd>GpWhisperVnew<cr>", "Whisper Vnew" },
+      t = { "<cmd>GpWhisperTabnew<cr>", "Whisper Tabnew" },
+    },
+  },
+  -- ...
+})
+
+-- INSERT mode mappings
+maps.i = vim.tbl_extend("force", maps.i or {}, {
+  -- ...
+  ["<C-g>"] = {
+    n = { "<cmd>GpChatNew<cr>", "[n]ew ChatGPT" },
+    t = { "<cmd>GpChatToggle<cr>", "[t]oggle ChatGPT" },
+    f = { "<cmd>GpChatFinder<cr>", "ChatGPT [f]inder" },
+
+    ["<C-x>"] = { "<cmd>GpChatNew split<cr>", "New ChatGPT split" },
+    ["<C-v>"] = { "<cmd>GpChatNew vsplit<cr>", "New ChatGPT vsplit" },
+    ["<C-t>"] = { "<cmd>GpChatNew tabnew<cr>", "New ChatGPT tabnew" },
+
+    r = { "<cmd>GpRewrite<cr>", "Inline [r]ewrite" },
+    a = { "<cmd>GpAppend<cr>", "[a]ppend ([a]fter)" },
+    b = { "<cmd>GpPrepend<cr>", "Prepend ([b]efore)" },
+
+    g = {
+      name = "generate into new ..",
+      p = { "<cmd>GpPopup<cr>", "Popup" },
+      e = { "<cmd>GpEnew<cr>", "GpEnew" },
+      n = { "<cmd>GpNew<cr>", "GpNew" },
+      v = { "<cmd>GpVnew<cr>", "GpVnew" },
+      t = { "<cmd>GpTabnew<cr>", "GpTabnew" },
+    },
+
+    x = { "<cmd>GpContext<cr>", "Toggle GPT Context" },
+    S = { "<cmd>GpStop<cr>", "GPT [S]top" },
+    N = { "<cmd>GpNextAgent<cr>", "[N]ext GPT Agent" },
+
+    w = {
+      name = "Whisper",
+      w = { "<cmd>GpWhisper<cr>", "Whisper" },
+      r = { "<cmd>GpWhisperRewrite<cr>", "Whisper Inline Rewrite" },
+      a = { "<cmd>GpWhisperAppend<cr>", "Whisper Append (after)" },
+      b = { "<cmd>GpWhisperPrepend<cr>", "Whisper Prepend (before)" },
+      p = { "<cmd>GpWhisperPopup<cr>", "Whisper Popup" },
+      e = { "<cmd>GpWhisperEnew<cr>", "Whisper Enew" },
+      n = { "<cmd>GpWhisperNew<cr>", "Whisper New" },
+      v = { "<cmd>GpWhisperVnew<cr>", "Whisper Vnew" },
+      t = { "<cmd>GpWhisperTabnew<cr>", "Whisper Tabnew" },
+    },
+  },
+  -- ...
 })
 
 return maps
