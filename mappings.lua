@@ -22,6 +22,16 @@ local maps = {
       desc = "[c]hange [d]irectory",
     },
 
+    ["<leader>lH"] = {
+      function()
+        vim.b[0].inlay_hints_enabled = not vim.b[0].inlay_hints_enabled
+        if vim.lsp.inlay_hint then
+          vim.lsp.inlay_hint.enable(0, vim.b[0].inlay_hints_enabled)
+        end
+      end,
+      desc = "toggle inlay [H]ints",
+    },
+
     -- [[ Buffer ]]
 
     ["<leader>b"] = { name = "Buffers" },
@@ -228,9 +238,13 @@ maps.v = add_description(maps.v, "<leader>N", "󰍨 Noice")
 maps.n = add_description(maps.n, "<leader>s", "󰬲 Search & Replace")
 maps.v = add_description(maps.v, "<leader>s", "󰬲 Search & Replace")
 
--- Lspsaga
+-- View More
 maps.n = add_description(maps.n, "<leader>v", favorite " View More")
 maps.v = add_description(maps.v, "<leader>v", favorite " View More")
+
+-- Lspsaga
+maps.n = add_description(maps.n, "<leader>L", favorite "󰲽 LspSaga")
+maps.v = add_description(maps.v, "<leader>L", favorite "󰲽 LspSaga")
 
 -- Wezterm
 maps.n = add_description(maps.n, "<leader>W", favorite " Wezterm")

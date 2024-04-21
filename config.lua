@@ -3,13 +3,37 @@ local config = {
     -- Only used if auto-dark-mode is enabled
     theme = {
       light = "dayfox",
-      dark = "gruvbox",
+      -- dark = "gruvbox",
+      dark = "rose-pine",
     },
     background = "dark",
     background_toggle = false,
     search_hl = { fg = "#E95678" },
     -- Whether to turn zen on at startup
     zen = false,
+  },
+
+  -- [[ Colorscheme setup ]]
+  colorscheme = {
+    debug = false,
+    favorite_themes = {
+      -- -- The loader uses the key (if k/v) or name to configure the theme.
+      -- -- If the name of the theme you want to randomly load is different
+      -- -- from the name of its plugin, them use the format below.
+      -- ["github-nvim-theme"] = { "github_dark", "github_light" },
+
+      -- -- More examples of some themes
+      -- "mellifluous",
+      -- "tokyonight",
+      -- "bluloco",
+      -- "nightfox",
+
+      -- Default themes. Keep, delete, add, whatever you want.
+      -- "gruvbox",
+      -- "gruvbox-material"
+      -- "gruvbox-baby",
+      ["rose-pine"] = { "rose-pine-moon" },
+    },
   },
 
   -- [[ Language Plugins ]]
@@ -35,28 +59,6 @@ local config = {
     copilot = true,
     tabnine = true,
     chatgpt = true,
-  },
-
-  -- [[ Colorscheme setup ]]
-  colorscheme = {
-    debug = false,
-    favorite_themes = {
-      -- -- The loader uses the key (if k/v) or name to configure the theme.
-      -- -- If the name of the theme you want to randomly load is different
-      -- -- from the name of its plugin, them use the format below.
-      -- ["github-nvim-theme"] = { "github_dark", "github_light" },
-
-      -- -- More examples of some themes
-      -- "mellifluous",
-      -- "tokyonight",
-      -- "bluloco",
-      -- "nightfox",
-
-      -- Default themes. Keep, delete, add, whatever you want.
-      -- "gruvbox",
-      -- "gruvbox-material"
-      "gruvbox-baby",
-    },
   },
 
   -- [[ Ui ]]

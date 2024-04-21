@@ -225,15 +225,18 @@ local options = function(o)
       ["<CR>"] = cmp.mapping {
         i = function(fallback)
           if cmp.visible() and cmp.get_active_entry() then
-            cmp.confirm { behavior = cmp.ConfirmBehavior.Replace, select = false }
+            cmp.confirm { behavior = cmp.ConfirmBehavior.Insert, select = true }
           else
             fallback()
           end
         end,
-        s = cmp.mapping.confirm { select = true },
+        s = cmp.mapping.confirm {
+          behavior = cmp.ConfirmBehavior.Insert,
+          select = true,
+        },
         c = function(fallback)
           if cmp.visible() and cmp.get_active_entry() then
-            cmp.confirm { behavior = cmp.ConfirmBehavior.Replace, select = false }
+            cmp.confirm { behavior = cmp.ConfirmBehavior.Replace, select = true }
           else
             fallback()
           end
@@ -265,6 +268,16 @@ local options = function(o)
           fallback()
         end
       end, { "i", "s" }),
+      -- Mappings for scrolling through copilot suggestions
+
+      ["<C-.>"] = cmp.mapping(function()
+        local copilot_ok, copilot = pcall(require, "copilot.suggestion")
+        if copilot_ok and copilot.is_visible() then copilot.next() end
+      end),
+      ["<C-,>"] = cmp.mapping(function()
+        local copilot_ok, copilot = pcall(require, "copilot.suggestion")
+        if copilot_ok and copilot.is_visible() then copilot.prev() end
+      end),
     }),
     preselect = cmp.PreselectMode.None,
     -- Ghost text

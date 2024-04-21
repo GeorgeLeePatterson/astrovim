@@ -34,6 +34,11 @@ local _themes = {
     lazy = false,
   },
   {
+    "rose-pine/neovim",
+    name = "rose-pine",
+    lazy = false,
+  },
+  {
     "luisiacc/gruvbox-baby",
     lazy = false,
     branch = "main",

@@ -11,9 +11,9 @@ local rust_setup = function(bufnr)
   -- Keymaps
   keymap(
     { "n", "v" },
-    "<leader>a",
+    "<leader>lA",
     function() vim.cmd.RustLsp { "hover", "actions" } end,
-    { desc = "🦀 Rust [a]ctions", buffer = bufnr }
+    { desc = "🦀 Rust [A]ctions", buffer = bufnr }
   )
   keymap(
     { "n", "v" },
@@ -31,7 +31,7 @@ local setup_dap = function()
     local package_path = package:get_install_path()
     local codelldb_path = package_path .. "/codelldb"
     local liblldb_path = package_path .. "/extension/lldb/lib/liblldb"
-    local this_os = vim.loop.os_uname().sysname
+    local this_os = vim.uv.os_uname().sysname
 
     -- The path in windows is different
     if this_os:find "Windows" then
@@ -61,7 +61,7 @@ vim.g.rustaceanvim = function()
 
   -- COnfigure dap
   local adapter
-  local ok, dap = pcall(require, "rustaceanvim.dap")
+  local ok, dap = pcall(require, "rustaceanvim.config")
   if ok then
     local dap_paths = setup_dap() or {}
     adapter = dap.get_codelldb_adapter(dap_paths[1], dap_paths[2])
@@ -114,7 +114,7 @@ return {
     "williamboman/mason-lspconfig.nvim",
     opts = function(_, opts)
       opts.ensure_installed = utils.list_insert_unique(opts.ensure_installed, {
-        "rust_analyzer",
+        -- "rust_analyzer",
         "taplo",
       })
       return opts

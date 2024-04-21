@@ -85,19 +85,40 @@ return {
     },
     keys = {
       {
-        "<leader>vci",
+        "<leader>La",
+        function() vim.cmd [[Lspsaga code_action]] end,
+        mode = { "n" },
+        desc = favorite "code [a]ctions",
+      },
+      {
+        "<leader>Li",
         function() vim.cmd [[Lspsaga incoming_calls]] end,
         mode = { "n" },
         desc = favorite "[c]alls [i]ncoming",
       },
       {
-        "<leader>vco",
+        "<leader>Lf",
+        function() vim.cmd [[Lspsaga finder def+ref+imp]] end,
+        mode = { "n" },
+        desc = favorite "[f]ind def, ref, & impl",
+        -- FYI (keymaps)
+        -- shuttle = '[w' shuttle bettween the finder layout window
+        -- toggle_or_open = 'o' toggle expand or open
+        -- vsplit = 's' open in vsplit
+        -- split = 'i' open in split
+        -- tab = 't' open in tab
+        -- tabnew = 'r' open in new tab
+        -- quit = 'q' quit the finder, only works in layout left window
+        -- close = '<C-c>k' close finder
+      },
+      {
+        "<leader>Lo",
         function() vim.cmd [[Lspsaga outgoing_calls]] end,
         mode = { "n" },
         desc = favorite "[c]alls [o]utgoing",
       },
       {
-        "<leader>vd",
+        "<leader>Ld",
         function() vim.cmd [[Lspsaga peek_definition]] end,
         mode = { "n" },
         desc = "[d]efinition",
@@ -133,7 +154,7 @@ return {
         "ga",
         function() require("actions-preview").code_actions() end,
         mode = { "v", "n" },
-        desc = "[a]ctions",
+        desc = favorite "Preview [a]ctions",
       },
     },
     config = function(_, opts)
@@ -184,6 +205,37 @@ return {
     },
     opts = {
       border = { enable = true },
+      -- mappings = {
+      --     list = {
+      --       ['j'] = actions.next, -- Bring the cursor to the next item in the list
+      --       ['k'] = actions.previous, -- Bring the cursor to the previous item in the list
+      --       ['<Down>'] = actions.next,
+      --       ['<Up>'] = actions.previous,
+      --       ['<Tab>'] = actions.next_location, -- Bring the cursor to the next location skipping groups in the list
+      --       ['<S-Tab>'] = actions.previous_location, -- Bring the cursor to the previous location skipping groups in the list
+      --       ['<C-u>'] = actions.preview_scroll_win(5),
+      --       ['<C-d>'] = actions.preview_scroll_win(-5),
+      --       ['v'] = actions.jump_vsplit,
+      --       ['s'] = actions.jump_split,
+      --       ['t'] = actions.jump_tab,
+      --       ['<CR>'] = actions.jump,
+      --       ['o'] = actions.jump,
+      --       ['l'] = actions.open_fold,
+      --       ['h'] = actions.close_fold,
+      --       ['<leader>l'] = actions.enter_win('preview'), -- Focus preview window
+      --       ['q'] = actions.close,
+      --       ['Q'] = actions.close,
+      --       ['<Esc>'] = actions.close,
+      --       ['<C-q>'] = actions.quickfix,
+      --       -- ['<Esc>'] = false -- disable a mapping
+      --     },
+      --     preview = {
+      --       ['Q'] = actions.close,
+      --       ['<Tab>'] = actions.next_location,
+      --       ['<S-Tab>'] = actions.previous_location,
+      --       ['<leader>l'] = actions.enter_win('list'), -- Focus list window
+      --     },
+      --   },
     },
     config = function(_, opts) require("glance").setup(opts) end,
   },

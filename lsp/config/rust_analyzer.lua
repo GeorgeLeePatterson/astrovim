@@ -16,7 +16,7 @@ return function(opts)
           fullFunctionSignatures = { enable = true },
         },
         diagnostics = {
-          experimental = true,
+          disabled = { "inactive-code" },
         },
         hover = {
           actions = {
@@ -38,14 +38,14 @@ return function(opts)
             trait = { enable = true },
           },
         },
-        procMacro = {
-          enable = true,
-          ignored = {
-            ["async-trait"] = { "async_trait" },
-            ["napi-derive"] = { "napi" },
-            ["async-recursion"] = { "async_recursion" },
-          },
-        },
+        -- procMacro = {
+        --   enable = true,
+        --   ignored = {
+        --     ["async-trait"] = { "async_trait" },
+        --     ["napi-derive"] = { "napi" },
+        --     ["async-recursion"] = { "async_recursion" },
+        --   },
+        -- },
         typing = {
           autoClosingAngleBrackets = { enable = true },
         },
